@@ -1,5 +1,5 @@
 {
-  "name": "Life",
+  "name": "portfolio",
   "homepage": "",
   "description": "Life of Jatin Mangla",
   "repository": "https://github.com/JatinMangla",
@@ -7,9 +7,9 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix vite:build",
+    "build": "remix build",
+    "start": "remix-serve build",
     "dev": "node ./scripts/dev.cjs && remix vite:dev",
-    "start": "wrangler pages dev ./build/client",
     "postinstall": "node ./scripts/draco.cjs",
     "deploy": "npm run build && wrangler pages deploy ./build/client --project-name portfolio",
     "dev:storybook": "storybook dev -p 6006",
