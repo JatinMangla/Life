@@ -26,11 +26,10 @@ export default defineConfig({
       providerImportSource: '@mdx-js/react',
     }),
     remixCloudflareDevProxy(),
-    
     remix({
       routes(defineRoutes) {
         return defineRoutes(route => {
-          route('/', 'app/routes/home/route.js', { index: true });
+          route('/', 'routes/home/route.js', { index: true });
         });
       },
     }),
