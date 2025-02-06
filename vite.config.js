@@ -16,9 +16,9 @@ export default defineConfig({
   build: {
     assetsInlineLimit: 1024,
   },
-  server: {
-    port: 7777,
-  },
+  // server: {
+  //   port: 7777,
+  // },
   plugins: [
     mdx({
       rehypePlugins: [[rehypeImgSize, { dir: 'public' }], rehypeSlug, rehypePrism],
