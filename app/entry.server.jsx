@@ -8,7 +8,6 @@ export default async function handleRequest(
   responseHeaders,
   remixContext
 ) {
-  // Render the Remix app to a readable stream.
   const stream = await renderToReadableStream(
     <RemixServer context={remixContext} url={request.url} />
   );
