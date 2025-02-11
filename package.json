@@ -7,7 +7,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix build",
+    "build": "remix vite:build",
     "dev": "node ./scripts/dev.cjs && remix vite:dev",
     "vercel-build": "remix build && remix-serve build",
     "start": "remix-serve build",

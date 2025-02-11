@@ -1,7 +1,16 @@
 {
     "version": 2,
     "builds": [
-      { "src": "package.json", "use": "@vercel/remix" }
+      {
+        "src": "build/server/index.js",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "/build/server/index.js"
+      }
     ]
   }
   
