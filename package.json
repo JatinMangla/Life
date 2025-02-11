@@ -7,7 +7,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix vite:build",
+    "build": "remix build",
     "dev": "node ./scripts/dev.cjs && remix vite:dev",
     "vercel-build": "remix build && remix-serve build",
     "start": "remix-serve build",
@@ -23,6 +23,7 @@
     "@remix-run/node": "^2.15.3",
     "@remix-run/react": "^2.7.1",
     "@remix-run/vercel": "^1.19.3",
+    "@vercel/remix": "^2.15.3",
     "framer-motion": "11.0.5",
     "isbot": "^4.1.0",
     "miniflare": "^3.20231030.4",
