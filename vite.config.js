@@ -32,7 +32,7 @@ export default defineConfig({
     jsconfigPaths(),
   ],
   ssr: {
-    // Prevent Vite from bundling server-only modules
-    noExternal: ['@remix-run/node']
+    // Ensure that certain Node-only modules remain external (not bundled)
+    noExternal: ['@remix-run/node', 'undici']
   },
 });
