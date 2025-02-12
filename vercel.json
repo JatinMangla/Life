@@ -1,10 +1,6 @@
 {
-    "version": 2,
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "server.js"
-      }
-    ]
-  }
-  
+  "version": 2,
+  "builds": [
+    { "src": "package.json", "use": "@vercel/remix" }
+  ]
+}
