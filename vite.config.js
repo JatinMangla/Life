@@ -1,5 +1,5 @@
-import { vitePlugin as remix } from '@remix-run/dev';
 import { defineConfig } from 'vite';
+import { vitePlugin as remix } from '@remix-run/dev';
 import jsconfigPaths from 'vite-jsconfig-paths';
 import mdx from '@mdx-js/rollup';
 import remarkFrontmatter from 'remark-frontmatter';
@@ -24,11 +24,15 @@ export default defineConfig({
     }),
     remix({
       routes(defineRoutes) {
-        return defineRoutes(route => {
+        return defineRoutes((route) => {
           route('/', 'routes/home/route.js', { index: true });
         });
       },
     }),
     jsconfigPaths(),
   ],
+  ssr: {
+    // Prevent Vite from bundling server-only modules
+    noExternal: ['@remix-run/node']
+  },
 });
