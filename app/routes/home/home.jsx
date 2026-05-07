@@ -41,8 +41,8 @@ export const links = () => {
 
 export const meta = () => {
   return baseMeta({
-    title: 'Developer',
-    description: `Design portfolio of ${config.name} — a product designer working on web apps with a focus on motion, experience design, and accessibility.`,
+    title: 'Frontend Developer',
+    description: `Portfolio of ${config.name} — a frontend developer specializing in React.js, TypeScript, and scalable web applications with a focus on performance, 3D interactions, and modern UI/UX.`,
   });
 };
 
@@ -103,13 +103,13 @@ export const Home = () => {
         sectionRef={projectOne}
         visible={visibleSections.includes(projectOne.current)}
         index={1}
-        title="Designing the future of education"
-        description="Designing a platform to help educators build better online courseware"
+        title="Mera Monitor — Employee Productivity Platform"
+        description="Lead front-end development for a fintech SaaS product with 3,500+ active users, featuring real-time monitoring, Redux state management, and SSO authentication."
         buttonText="View project"
         buttonLink="/projects/smart-sparrow"
         model={{
           type: 'laptop',
-          alt: 'Smart Sparrow lesson builder',
+          alt: 'Mera Monitor dashboard showing employee productivity metrics',
           textures: [
             {
               srcSet: `${sprTexture} 1280w, ${sprTextureLarge} 2560w`,
@@ -124,13 +124,13 @@ export const Home = () => {
         sectionRef={projectTwo}
         visible={visibleSections.includes(projectTwo.current)}
         index={2}
-        title="Video game progress tracking"
-        description="Design and development for a video game tracking app built in React Native"
-        buttonText="View website"
-        buttonLink="https://gamestack.hamishw.com"
+        title="Screen Coach — Screen Time Monitoring"
+        description="Developed responsive UI and RESTful APIs for a screen-time monitoring tool optimized for low-memory devices using Node.js and MongoDB."
+        buttonText="View project"
+        buttonLink="/projects/volkihar-knight"
         model={{
           type: 'phone',
-          alt: 'App login screen',
+          alt: 'Screen Coach app showing screen time analytics',
           textures: [
             {
               srcSet: `${gamestackTexture} 375w, ${gamestackTextureLarge} 750w`,
@@ -148,13 +148,13 @@ export const Home = () => {
         sectionRef={projectThree}
         visible={visibleSections.includes(projectThree.current)}
         index={3}
-        title="Biomedical image collaboration"
-        description="Increasing the amount of collaboration in Slice, an app for biomedical imaging"
+        title="UI Integration — Messaging Automation"
+        description="Designed and implemented user interfaces for WhatsApp, Telegram, and SMS automation integrations with cross-browser compatibility and responsive design."
         buttonText="View project"
         buttonLink="/projects/slice"
         model={{
           type: 'laptop',
-          alt: 'Annotating a biomedical image in the Slice app',
+          alt: 'Messaging automation integration interface',
           textures: [
             {
               srcSet: `${sliceTexture} 800w, ${sliceTextureLarge} 1920w`,

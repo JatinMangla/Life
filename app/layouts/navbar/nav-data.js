@@ -6,17 +6,17 @@ export const navLinks = [
     pathname: '/#project-1',
   },
   {
-    label: 'Professional',
+    label: 'About',
     pathname: '/#details',
   },
   {
-    label: 'Hobby',
-    pathname: '/',
+    label: 'Tech Stack',
+    pathname: '/uses',
   },
-  // {
-  //   label: 'Contact',
-  //   pathname: '/contact',
-  // },
+  {
+    label: 'Contact',
+    pathname: '/contact',
+  },
 ];
 
 export const socialLinks = [

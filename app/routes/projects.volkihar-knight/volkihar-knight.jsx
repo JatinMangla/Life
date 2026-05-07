@@ -47,10 +47,10 @@ const Carousel = lazy(() =>
 
 const Armor = lazy(() => import('./armor').then(module => ({ default: module.Armor })));
 
-const title = 'Volkihar Knight';
+const title = 'Screen Coach — Screen Time Monitoring';
 const description =
-  'A lore-friendly armor mod for The Elder Scrolls V: Skyrim. Released on PC and Xbox One with over one million downloads across both platforms.';
-const roles = ['3D Modelling', 'Texturing', 'Graphic Design'];
+  'Developed a responsive UI and RESTful APIs for a screen-time monitoring tool optimized for low-memory set-top devices. Built with JavaScript, Node.js, and MongoDB for real-time data handling and smooth frontend-backend integration.';
+const roles = ['Frontend Development', 'Node.js & MongoDB APIs', 'Performance Optimization', 'Real-time Data'];
 
 export const meta = () => {
   return baseMeta({ title, description, prefix: 'Projects' });
@@ -84,8 +84,6 @@ export function VolkiharKnight() {
         <ProjectHeader
           title={title}
           description={description}
-          linkLabel="Get the mod"
-          url="https://www.nexusmods.com/skyrimspecialedition/mods/4806/"
           roles={roles}
         />
         <ProjectSection>
@@ -95,7 +93,7 @@ export function VolkiharKnight() {
               width={800}
               height={436}
               placeholder={volkiharBannerPlaceholder}
-              alt="A dark elf wearing the Volkihar Knight armor with the logo overlaid on the image."
+              alt="Screen Coach application dashboard showing screen time analytics and usage patterns."
               sizes={`(max-width: ${media.mobile}px) 500px, (max-width: ${media.tablet}px) 800px, 1000px`}
             />
           </ProjectSectionContent>
@@ -107,7 +105,7 @@ export function VolkiharKnight() {
               width={480}
               height={300}
               placeholder={volkiharBookPlaceholder}
-              alt="A book containing a sketch depicting the logo and armor"
+              alt="Screen Coach backend architecture diagram showing Node.js API endpoints and MongoDB data flow"
               sizes={`(max-width: ${media.mobile}px) 90vw, (max-width: ${media.tablet}px) 80vw, 70vw`}
             />
           </ProjectSectionContent>
@@ -120,19 +118,18 @@ export function VolkiharKnight() {
               </Suspense>
             </div>
             <div className={styles.textSection}>
-              <ProjectSectionHeading>Armor design</ProjectSectionHeading>
+              <ProjectSectionHeading>Technical Architecture</ProjectSectionHeading>
               <ProjectSectionText>
-                As a player I noticed there weren’t any heavy armor options for the
-                Volkihar faction. This kinda sucks when you’ve specialised in heavy armor
-                and decide to join the faction and discover they all wear light armor.
+                Screen Coach required a lightweight frontend optimized for low-memory
+                set-top box devices. I built the UI using vanilla JavaScript with
+                minimal dependencies, ensuring smooth performance on resource-constrained
+                hardware.
               </ProjectSectionText>
               <ProjectSectionText>
-                My solution was to create a mod that combines meshes from the Volkihar
-                faction armor with heavy plate armor. The mod builds upon textures and
-                meshes from the base game, so it unifies with Skyrim’s overall aesthetic.
-                I combined and modified the meshes in 3DS Max. To establish a cohesive
-                design across the set, I edited existing textures, and designed custom
-                textures in Photoshop.
+                On the backend, I developed RESTful APIs using Node.js and Express.js
+                with MongoDB for storing screen time data. The system handles real-time
+                data synchronization between devices and the monitoring dashboard,
+                with efficient querying for usage analytics and trend reporting.
               </ProjectSectionText>
             </div>
           </ProjectSectionColumns>
@@ -146,11 +143,12 @@ export function VolkiharKnight() {
               />
             </div>
             <ProjectTextRow center noMargin>
-              <ProjectSectionHeading>Identity design</ProjectSectionHeading>
+              <ProjectSectionHeading>Performance & Debugging</ProjectSectionHeading>
               <ProjectSectionText>
-                The monogram uses custom designed typography to get the right balance of
-                weight and angularity. I combined this with Trajan for the text, which is
-                also used for Skyrim’s game title wordmark.
+                Optimized JavaScript execution for low-memory environments. Implemented
+                efficient memory management, lazy resource loading, and debounced event
+                handlers to ensure smooth operation on constrained devices while
+                maintaining accurate real-time screen time tracking.
               </ProjectSectionText>
             </ProjectTextRow>
           </ProjectSectionContent>
@@ -206,20 +204,22 @@ export function VolkiharKnight() {
                 sizes={`(max-width: ${media.mobile}px) 100vw, (max-width: ${media.tablet}px) 100vw, 220px`}
                 style={{ maxWidth: 220, width: '100%', marginBottom: 30 }}
               />
-              <ProjectSectionHeading>Featured in Enderal</ProjectSectionHeading>
+              <ProjectSectionHeading>Project Outcomes</ProjectSectionHeading>
               <ProjectSectionText>
-                I was super stoked to have my work featured in the major standalone mod
-                Enderal, which won best fan creation at the game awards in 2016. Within
-                the game my armor design can be found being used for the Wandering Mage
-                armor set.
+                Screen Coach successfully delivered a performant screen-time monitoring
+                solution for resource-constrained devices. The optimized JavaScript
+                frontend maintained smooth performance even on low-memory set-top boxes,
+                while the Node.js/MongoDB backend handled real-time data streaming
+                efficiently. The project improved debugging workflows and established
+                best practices for building performance-critical applications.
               </ProjectSectionText>
               <Button
                 secondary
                 iconHoverShift
                 icon="chevron-right"
-                href="https://store.steampowered.com/app/933480/Enderal_Forgotten_Stories/"
+                href="https://meramonitor.com"
               >
-                View on Steam
+                View Mera Monitor
               </Button>
             </ProjectTextRow>
           </ProjectSectionContent>

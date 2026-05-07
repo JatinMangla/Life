@@ -9,7 +9,7 @@
   "scripts": {
     "build": "remix vite:build",
     "dev": "node ./scripts/dev.cjs && remix vite:dev",
-    "vercel-build": "remix build && remix-serve build",
+    "vercel-build": "remix vite:build",
     "start": "remix-serve build",
     "postinstall": "node ./scripts/draco.cjs",
     "deploy": "npm run build && vercel --prod",

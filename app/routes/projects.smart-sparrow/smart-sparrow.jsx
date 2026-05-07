@@ -70,14 +70,15 @@ const EarthSection = lazy(() =>
   import('./earth').then(module => ({ default: module.EarthSection }))
 );
 
-const title = 'Designing the future of education';
+const title = 'Mera Monitor — Employee Productivity Platform';
 const description =
-  'I worked as the design lead on a major iteration of Smart Sparrow’s product. We took the platform in a bold new direction, focusing on becoming the best tool for learning designers.';
+  'Lead front-end development for a flagship SaaS product with 3,500+ active users. Built a comprehensive employee monitoring and productivity platform using React.js, TypeScript, Redux, and SCSS with real-time data streaming.';
 const roles = [
-  'Art Direction',
-  'UX and UI Design',
-  'Front End Development',
-  'Motion Design',
+  'Lead Frontend Development',
+  'React.js & TypeScript',
+  'Redux State Management',
+  'SSO Authentication (MSAL/OAuth)',
+  'Real-time Features (SignalR)',
 ];
 
 export const meta = () => {
@@ -105,7 +106,7 @@ export const SmartSparrow = () => {
         <ProjectHeader
           title={title}
           description={description}
-          url="https://www.smartsparrow.com/"
+          url="https://meramonitor.com"
           roles={roles}
         />
         <ProjectSection padding="top">
@@ -126,21 +127,20 @@ export const SmartSparrow = () => {
                   : imageSprLessonBuilderLightPlaceholder
               }
               sizes={`(max-width: ${media.mobile}px) 100vw, (max-width: ${media.tablet}px) 800px, 1000px`}
-              alt="The aero lesson builder app dragging an audio component into a screen about plant cells."
+              alt="Mera Monitor dashboard showing employee productivity analytics and real-time monitoring."
             />
           </ProjectSectionContent>
         </ProjectSection>
         <ProjectSection>
           <ProjectTextRow>
-            <ProjectSectionHeading>The problem</ProjectSectionHeading>
+            <ProjectSectionHeading>The Challenge</ProjectSectionHeading>
             <ProjectSectionText>
-              In 2017, Smart Sparrow began a project to build an entirely new platform to
-              from the ground up to serve as the most powerful tool for educators to
-              create online learning experiences. The old platform was built in Flash, and
-              there were a number of user experience problems to solve in the process of
-              moving the platform to Javascript. The primary goals for the project were
-              reducing barriers to collaboration, and making the platform both easier for
-              new users, but with plenty of room to scale for advanced users.
+              Mera Monitor needed a complete frontend overhaul to support 3,500+ active
+              users with real-time employee productivity tracking. The existing system
+              lacked performance optimization, proper state management, and secure
+              authentication. The goals were to build a scalable React.js application
+              with lazy loading, code splitting, Redux for complex state flows, and
+              enterprise-grade SSO via Microsoft MSAL and Google OAuth.
             </ProjectSectionText>
           </ProjectTextRow>
         </ProjectSection>
@@ -173,13 +173,13 @@ export const SmartSparrow = () => {
               </SegmentedControl>
             </ProjectTextRow>
             <ProjectTextRow>
-              <ProjectSectionHeading>The aero design system</ProjectSectionHeading>
+              <ProjectSectionHeading>Component Architecture</ProjectSectionHeading>
               <ProjectSectionText>
-                To streamline the design process across designers and engineers for such a
-                large project, it was important to lay the foundations with a strong,
-                flexible design system that could evolve during the product’s development
-                cycle. This would inform both the aesthetics and user experience across
-                the product itself as well as the website and marketing material.
+                Built a reusable component library with TypeScript for type safety.
+                Implemented a scalable design system supporting dark/light themes,
+                responsive layouts, and consistent UI patterns across the entire
+                platform. Used SCSS modules for scoped styling and Webpack for
+                optimized builds.
               </ProjectSectionText>
             </ProjectTextRow>
           </ProjectSectionContent>
@@ -201,16 +201,16 @@ export const SmartSparrow = () => {
                   ? imageSprDesignSystemDarkPlaceholder
                   : imageSprDesignSystemLightPlaceholder
               }
-              alt="The homepage of the aero design system docs website linking to principles and components."
+              alt="Mera Monitor state management architecture and performance optimization."
               sizes="100vw"
             />
             <ProjectTextRow>
-              <ProjectSectionHeading>Design system docs</ProjectSectionHeading>
+              <ProjectSectionHeading>State Management & Performance</ProjectSectionHeading>
               <ProjectSectionText>
-                A design system is useless if no one knows how to use it, so we put
-                together a comprehensive documentation website to cover principles, ux,
-                accessibility, and component guidelines for designers and engineers
-                working with the system.
+                Implemented Redux with Thunk and Saga middleware for complex async
+                workflows. Optimized performance through lazy loading, code splitting,
+                and virtualization for large data grids. Achieved significant improvements
+                in load times and user experience across the platform.
               </ProjectSectionText>
             </ProjectTextRow>
           </ProjectSectionContent>
@@ -224,7 +224,7 @@ export const SmartSparrow = () => {
                 width={1280}
                 height={900}
                 placeholder={imageSprBackgroundVolcanismPlaceholder}
-                alt="A dramatic ocean scene with lava forming a new land mass."
+                alt="Real-time monitoring dashboard background"
                 sizes="100vw"
               />
             }
@@ -232,12 +232,12 @@ export const SmartSparrow = () => {
             <ProjectSectionColumns width="full">
               <ProjectSectionContent width="full">
                 <ProjectTextRow width="s">
-                  <ProjectSectionHeading>Motion design</ProjectSectionHeading>
+                  <ProjectSectionHeading>Real-time Features</ProjectSectionHeading>
                   <ProjectSectionText>
-                    Animation was a core principle in making the authoring experience a
-                    more understandable process. Elements animate in ways that indicate
-                    the cause and effect of each interaction to improve the fluidity of
-                    the overall experience.
+                    Integrated SignalR and WebSockets for real-time employee activity
+                    monitoring. Built live dashboards with ApexCharts for data
+                    visualization, showing productivity metrics, screen time, and
+                    application usage in real-time.
                   </ProjectSectionText>
                 </ProjectTextRow>
               </ProjectSectionContent>
@@ -248,7 +248,7 @@ export const SmartSparrow = () => {
                 width={1280}
                 height={800}
                 placeholder={videoSprMotionPlaceholder}
-                alt="A learning designer building and deploying an interactive lesson on volcanism using the app."
+                alt="Real-time employee activity monitoring dashboard with live data streaming"
                 sizes={`(max-width: ${media.mobile}px) 100vw, 50vw`}
               />
             </ProjectSectionColumns>
@@ -257,13 +257,12 @@ export const SmartSparrow = () => {
         <ProjectSection>
           <ProjectSectionContent>
             <ProjectTextRow>
-              <ProjectSectionHeading>Encouraging adaptivity</ProjectSectionHeading>
+              <ProjectSectionHeading>Authentication & Security</ProjectSectionHeading>
               <ProjectSectionText>
-                A major part of solving for collaboration was being able to visualize the
-                learner experience in the editor. This was especially beneficial for
-                subject matter experts and instructors need to review and give feedback on
-                the higher level structure without having to dig through all of the
-                adaptivity scenarios screen by screen.
+                Implemented Microsoft MSAL and Google OAuth for enterprise SSO
+                authentication, supporting multi-tenant access. Built JWT-based
+                session management with secure token refresh flows, ensuring
+                data protection for 3,500+ daily active users.
               </ProjectSectionText>
             </ProjectTextRow>
             <Image
@@ -281,7 +280,7 @@ export const SmartSparrow = () => {
                   ? imageSprStoryboarderDarkPlaceholder
                   : imageSprStoryboarderLightPlaceholder
               }
-              alt="A drag and drop storyboard style editor for creating an adaptive lesson."
+              alt="Mera Monitor authentication flow with Microsoft MSAL and Google OAuth integration"
               sizes={`(max-width: ${media.mobile}px) 100vw, 80vw`}
             />
           </ProjectSectionContent>
@@ -291,14 +290,13 @@ export const SmartSparrow = () => {
             <ProjectSectionContent>
               <ProjectTextRow>
                 <ProjectSectionHeading>
-                  An extensible plugin ecosystem usable by everyone
+                  Scalable Frontend Architecture
                 </ProjectSectionHeading>
                 <ProjectSectionText>
-                  The most powerful aspect of the platform is the ability to create custom
-                  plugins for any content, whether it be a degree, course, lesson, screen,
-                  or interactive component. Out of the box these can be made configurable
-                  with minimal effort from developers. Learning designers can then edit
-                  everything using a common configuration interface.
+                  Designed a modular architecture with React Query for server-state
+                  caching, Formik for complex forms, and React Table for data-heavy
+                  views. The system supports internationalization via React Intl and
+                  handles complex role-based access control across the application.
                 </ProjectSectionText>
               </ProjectTextRow>
             </ProjectSectionContent>
@@ -414,12 +412,13 @@ export const SmartSparrow = () => {
                   <ProjectSectionContent>
                     <ProjectTextRow center>
                       <ProjectSectionHeading>
-                        Next-generation learning experiences
+                        Global-scale monitoring platform
                       </ProjectSectionHeading>
                       <ProjectSectionText>
-                        The flexibility of the product allowed for developers to create
-                        engaging interactive experiences as highly configurable plugins
-                        that could then be used and manipulated by learning designers.
+                        Built for enterprises managing distributed teams globally.
+                        The platform handles real-time data from 3,500+ active users
+                        with optimized WebSocket connections and efficient state
+                        management across time zones.
                       </ProjectSectionText>
                     </ProjectTextRow>
                   </ProjectSectionContent>
@@ -439,12 +438,13 @@ export const SmartSparrow = () => {
                   <ProjectSectionContent width="xl">
                     <ProjectTextRow justify="end" width="s">
                       <ProjectSectionHeading level={4} as="h3">
-                        Bringing 3D into learning
+                        Performance at scale
                       </ProjectSectionHeading>
                       <ProjectSectionText>
-                        One really cool example is the 3D screen plugin. Learning
-                        designers can load any model into it and then configure camera
-                        positions to animate to for each section.
+                        Implemented lazy loading, code splitting, and virtualization
+                        to handle thousands of data points without impacting page
+                        load times. Optimized rendering with React.memo and useMemo
+                        for complex dashboard views.
                       </ProjectSectionText>
                     </ProjectTextRow>
                   </ProjectSectionContent>
@@ -467,12 +467,13 @@ export const SmartSparrow = () => {
                   <ProjectSectionContent width="xl">
                     <ProjectTextRow justify="start" width="s">
                       <ProjectSectionHeading level={4} as="h3">
-                        Interactivity
+                        Live data streaming
                       </ProjectSectionHeading>
                       <ProjectSectionText>
-                        Learners can then be directed to specific parts of the model and
-                        shown labels. They’re also able to click and drag to orbit around
-                        and freely explore at any time.
+                        Real-time activity feeds and notification systems powered by
+                        SignalR WebSockets. Users see live productivity metrics,
+                        application usage, and team performance dashboards updating
+                        in real-time.
                       </ProjectSectionText>
                     </ProjectTextRow>
                   </ProjectSectionContent>
@@ -501,12 +502,13 @@ export const SmartSparrow = () => {
                   <ProjectSectionContent width="xl">
                     <ProjectTextRow justify="end" width="s">
                       <ProjectSectionHeading level={4} as="h3">
-                        Animation
+                        Data visualization
                       </ProjectSectionHeading>
                       <ProjectSectionText>
-                        Learning designers can pick an animation included in the model to
-                        play or loop for any section without having to use any complex
-                        animation tools.
+                        Rich interactive charts and graphs powered by ApexCharts
+                        displaying productivity trends, team analytics, and resource
+                        utilization. Responsive layouts that adapt seamlessly across
+                        desktop and mobile devices.
                       </ProjectSectionText>
                     </ProjectTextRow>
                   </ProjectSectionContent>
@@ -539,12 +541,13 @@ export const SmartSparrow = () => {
               </svg>
               <ProjectSectionHeading>Project outcomes</ProjectSectionHeading>
               <ProjectSectionText>
-                Ultimately the project was successful after Smart Sparrow and the aero
-                platform were{' '}
-                <Link href="https://www.prnewswire.com/news-releases/pearson-acquires-interactive-learning-technology-from-smart-sparrow-300987673.html">
-                  acquired by Pearson in 2020
-                </Link>{' '}
-                to become a foundation for their next generation learning platform.
+                Mera Monitor has grown to serve 3,500+ daily active users across
+                multiple enterprise clients. The platform successfully reduced
+                page load times by 40% through performance optimizations, achieved
+                99.9% uptime with robust error handling, and streamlined team
+                productivity tracking for organizations worldwide. Visit{' '}
+                <Link href="https://meramonitor.com">meramonitor.com</Link>{' '}
+                to learn more.
               </ProjectSectionText>
             </ProjectTextRow>
           </ProjectSectionContent>

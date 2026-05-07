@@ -22,13 +22,13 @@ const ProfileText = ({ visible, titleId }) => (
       <DecoderText text="Hi there" start={visible} delay={500} />
     </Heading>
     <Text className={styles.description} data-visible={visible} size="s" as="p">
-      I am Jatin Mangla, a Frontend Web Developer with 3+ years of experience in building high-performance, scalable web applications. Specializing in React.js, TypeScript, and JavaScript, I focus on creating responsive, user-friendly interfaces with optimized performance.
+      I'm Jatin Mangla, a Frontend Developer with 3.5+ years of experience specializing in React.js, TypeScript, and JavaScript. I build high-performance, scalable fintech and technology web applications at AAPNA Infotech Pvt. Ltd, where I lead front-end development.
     </Text>
     <Text className={styles.description} data-visible={visible} size="s" as="p">
-      I have worked on live products with 1,000+ active users, implementing Redux for state management, lazy loading for faster load times, and middleware like Redux-Saga and Thunk. With expertise in SCSS, HTML, and CSS, I ensure visually appealing and interactive web applications.
+      I've worked on live products with 3,500+ active users, implementing Redux (Thunk/Saga) for state management, lazy loading and code splitting for performance, and integrated Microsoft MSAL and Google OAuth for secure SSO authentication. I also contribute to Node.js/MongoDB backends to deliver full-stack features.
     </Text>
     <Text className={styles.description} data-visible={visible} size="s" as="p">
-      Passionate about problem-solving and performance optimization, I thrive in Agile/Scrum environments, delivering high-quality, efficient solutions.
+      With expertise in SCSS, Webpack, React Query, and real-time technologies like SignalR and WebSockets, I deliver responsive, SEO-optimized interfaces. I thrive in Agile/Scrum environments, consistently shipping high-quality, performant solutions.
     </Text>
   </Fragment>
 );

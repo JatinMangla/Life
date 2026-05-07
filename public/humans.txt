@@ -10,16 +10,17 @@ _______________________________________________________________________________
 
 DESIGNER | デザイナー
 
-Hamish Williams
-Hand crafted design & web development
+Jatin Mangla
+Frontend Developer | React.js & TypeScript
 
-Design tools:
+Development tools:
+VS Code
+React DevTools
+Chrome DevTools
 Figma
-Photoshop
-Blender
 
-twitter.com/hamishmw
-github.com/hamishmw
+linkedin.com/in/jatin-mangla-22435060
+github.com/JatinMangla
 
 _______________________________________________________________________________
 

@@ -31,8 +31,4 @@ export default defineConfig({
     }),
     jsconfigPaths(),
   ],
-  ssr: {
-    // Ensure that certain Node-only modules remain external (not bundled)
-    noExternal: ['@remix-run/node', 'undici']
-  },
 });

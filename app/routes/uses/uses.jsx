@@ -20,7 +20,7 @@ import styles from './uses.module.css';
 export const meta = () => {
   return baseMeta({
     title: 'Uses',
-    description: 'A list of hardware and software I use to do my thing',
+    description: 'A list of tools, frameworks, and technologies I use to build modern web applications',
   });
 };
 
@@ -35,31 +35,41 @@ export const Uses = () => {
         />
         <ProjectHeader
           title="Uses"
-          description="A somewhat comprehensive list of tools, apps, hardware, and more that I use on a daily basis to design and code things. And yeah, that is a Johnny Mnemonic GIF in the background."
+          description="A comprehensive list of tools, frameworks, and technologies I use daily to build high-performance web applications. From React.js to Node.js, here's my full tech stack."
         />
         <ProjectSection padding="none" className={styles.section}>
           <ProjectSectionContent>
             <ProjectTextRow width="m">
-              <ProjectSectionHeading>Design</ProjectSectionHeading>
+              <ProjectSectionHeading>Frontend</ProjectSectionHeading>
               <ProjectSectionText as="div">
                 <List>
                   <ListItem>
-                    <Link href="https://www.figma.com">Figma</Link> is my primary tool for
-                    UI design these days. Made the switch from Sketch in 2020 and haven’t
-                    looked back. I’ve also created{' '}
-                    <Link href="https://www.figma.com/@hamish">a few plugins</Link> that
-                    you can install.
+                    <Link href="https://reactjs.org/">React.js</Link> is my primary
+                    framework for building interactive UIs. Combined with{' '}
+                    <Link href="https://www.typescriptlang.org/">TypeScript</Link> for
+                    type safety and better developer experience.
                   </ListItem>
                   <ListItem>
-                    Any motion graphics I create are created in Adobe After Effects. So
-                    far I haven’t found a non-Adobe product that’s as good. If anyone has
-                    suggestions please <Link href="/contact">message me</Link>.
+                    For state management, I use{' '}
+                    <Link href="https://redux.js.org/">Redux</Link> with Thunk and Saga
+                    middleware, along with{' '}
+                    <Link href="https://tanstack.com/query">React Query</Link> for
+                    server-state management.
                   </ListItem>
                   <ListItem>
-                    For any 3D models and video editing I use{' '}
-                    <Link href="https://www.blender.org/">Blender</Link>. Since 2.8 it’s
-                    become way simpler to use and in a lot of ways better than expensive
-                    paid tools like 3DS Max or Maya.
+                    Styling is done with SCSS modules, Tailwind CSS, and Bootstrap/Material
+                    UI for rapid prototyping. I focus on responsive, cross-browser
+                    compatible designs.
+                  </ListItem>
+                  <ListItem>
+                    For data-heavy UIs, I leverage React Table for grids, ApexCharts for
+                    data visualization, Formik for forms, and virtualization for
+                    large lists.
+                  </ListItem>
+                  <ListItem>
+                    For 3D effects and interactive experiences I use{' '}
+                    <Link href="https://threejs.org/">Three.js</Link> with WebGL shaders
+                    &mdash; like what you see on this very portfolio site.
                   </ListItem>
                 </List>
               </ProjectSectionText>
@@ -69,45 +79,55 @@ export const Uses = () => {
         <ProjectSection padding="none" className={styles.section}>
           <ProjectSectionContent>
             <ProjectTextRow width="m">
-              <ProjectSectionHeading>Development</ProjectSectionHeading>
+              <ProjectSectionHeading>Backend & APIs</ProjectSectionHeading>
               <ProjectSectionText as="div">
                 <List>
                   <ListItem>
-                    I use <Link href="https://vscodium.com/">VSCodium</Link> as my text
-                    editor, with the Tokyo Night theme and Operator Mono as my typeface of
-                    choice.
+                    <Link href="https://nodejs.org/">Node.js</Link> with{' '}
+                    <Link href="https://expressjs.com/">Express.js</Link> for building
+                    RESTful APIs and server-side logic.
                   </ListItem>
                   <ListItem>
-                    Firefox is my main browser for both development and general use.
+                    <Link href="https://www.mongodb.com/">MongoDB</Link> with Mongoose ORM
+                    for NoSQL data storage, PostgreSQL for relational data, and Firebase
+                    for real-time features.
                   </ListItem>
                   <ListItem>
-                    <Link href="https://reactjs.org/">React</Link> is my front end
-                    Javascript library of choice. The component-centric mental model is
-                    the first thing that truly made sense to me as a designer.
+                    Real-time communication using SignalR, WebSockets, and GraphQL for
+                    efficient data fetching. JWT Authentication for secure API access.
                   </ListItem>
                   <ListItem>
-                    For 3D effects and image shaders I use{' '}
-                    <Link href="https://threejs.org/">three.js</Link>. It has a bit of a
-                    learning curve but you can do some really powerful stuff with it.
+                    Implemented Microsoft MSAL and Google OAuth for enterprise SSO
+                    authentication in production applications.
+                  </ListItem>
+                </List>
+              </ProjectSectionText>
+            </ProjectTextRow>
+          </ProjectSectionContent>
+        </ProjectSection>
+        <ProjectSection padding="none" className={styles.section}>
+          <ProjectSectionContent>
+            <ProjectTextRow width="m">
+              <ProjectSectionHeading>Development Tools</ProjectSectionHeading>
+              <ProjectSectionText as="div">
+                <List>
+                  <ListItem>
+                    <Link href="https://code.visualstudio.com/">VS Code</Link> is my
+                    editor of choice with ESLint, Prettier, and SonarQube for code quality.
                   </ListItem>
                   <ListItem>
-                    For CSS I’ve used a myriad pre-processors and css-in-js solutions like
-                    styled-components, but these days I’m using vanilla CSS with{' '}
-                    <Link href="https://postcss.org/">PostCSS</Link> to get upcoming CSS
-                    features today.
+                    Build tools include{' '}
+                    <Link href="https://vitejs.dev/">Vite</Link>, Webpack, and Babel for
+                    module bundling and transpilation. PM2 and Nodemon for server
+                    management.
                   </ListItem>
                   <ListItem>
-                    For Javascript animations I use{' '}
-                    <Link href="https://www.framer.com/motion/">Framer Motion</Link>, it’s
-                    a great way to add spring animations to React and three.js.
+                    Version control with Git, GitHub, and GitLab. API testing with Postman.
+                    Deployment via Vercel and FTP with FileZilla.
                   </ListItem>
                   <ListItem>
-                    For building and testing UI components in isolation I use{' '}
-                    <Link href="https://storybook.js.org/">Storybook</Link>. Check out the{' '}
-                    <Link href="https://storybook.hamishw.com">
-                      storybook for this website
-                    </Link>
-                    .
+                    <Link href="https://jestjs.io/">Jest</Link> for unit testing, and
+                    Storybook for building and testing UI components in isolation.
                   </ListItem>
                 </List>
               </ProjectSectionText>
@@ -117,44 +137,40 @@ export const Uses = () => {
         <ProjectSection padding="none" className={styles.section}>
           <ProjectSectionContent>
             <ProjectTextRow stretch width="m">
-              <ProjectSectionHeading>System</ProjectSectionHeading>
+              <ProjectSectionHeading>Tech Stack Summary</ProjectSectionHeading>
               <Table>
                 <TableBody>
                   <TableRow>
-                    <TableHeadCell>Desktop</TableHeadCell>
-                    <TableCell>Custom built</TableCell>
+                    <TableHeadCell>Languages</TableHeadCell>
+                    <TableCell>JavaScript, TypeScript, HTML5, CSS3, SCSS</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableHeadCell>Operating system</TableHeadCell>
-                    <TableCell>Arch Linux (by the way)</TableCell>
+                    <TableHeadCell>Frameworks</TableHeadCell>
+                    <TableCell>React.js, Redux, React Router, Express.js, Three.js</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableHeadCell>Browser</TableHeadCell>
-                    <TableCell>Zen Browser</TableCell>
+                    <TableHeadCell>Databases</TableHeadCell>
+                    <TableCell>MongoDB, PostgreSQL, Firebase</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableHeadCell>Monitor</TableHeadCell>
-                    <TableCell>1440p IPS 144hz LG 27GL850</TableCell>
+                    <TableHeadCell>Build Tools</TableHeadCell>
+                    <TableCell>Vite, Webpack, Babel, ESLint, Prettier</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableHeadCell>Keyboard</TableHeadCell>
-                    <TableCell>Tofu65</TableCell>
+                    <TableHeadCell>APIs</TableHeadCell>
+                    <TableCell>GraphQL, REST, SignalR, WebSockets</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableHeadCell>Mouse</TableHeadCell>
-                    <TableCell>Logitech G403</TableCell>
+                    <TableHeadCell>Auth</TableHeadCell>
+                    <TableCell>Microsoft MSAL, Google OAuth, JWT</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableHeadCell>Laptop</TableHeadCell>
-                    <TableCell>Macbook Pro 14″</TableCell>
+                    <TableHeadCell>Testing</TableHeadCell>
+                    <TableCell>Jest, Storybook, SonarQube</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableHeadCell>Headphones</TableHeadCell>
-                    <TableCell>Audio Technica ATH-M50x/Apple Airpods</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableHeadCell>Microphone</TableHeadCell>
-                    <TableCell>Blue Yeti</TableCell>
+                    <TableHeadCell>Methodology</TableHeadCell>
+                    <TableCell>Agile/Scrum, Lean</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
