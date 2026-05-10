@@ -1,14 +1,4 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "functions/[[path]].js", "use": "@vercel/node" },
-    { "src": "build/client/**", "use": "@vercel/static" },
-    { "src": "public/**", "use": "@vercel/static" }
-  ],
-  "routes": [
-    { "src": "/assets/(.*)", "dest": "/build/client/assets/$1" },
-    { "src": "/draco/(.*)", "dest": "/public/draco/$1" },
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/functions/[[path]].js" }
-  ]
+  "builds": [{ "src": "package.json", "use": "@vercel/remix" }]
 }
