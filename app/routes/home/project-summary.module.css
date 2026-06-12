@@ -96,14 +96,14 @@
 
   &[data-device='laptop'] {
     top: 6%;
-    left: 14%;
+    left: 6%;
 
     @media (--mediaDesktop) {
-      --width: 180%;
+      --width: 160%;
     }
 
     @media (--mediaTablet) {
-      --width: 140%;
+      --width: 130%;
 
       top: 10%;
       left: 0;
@@ -111,11 +111,11 @@
   }
 
   &[data-device='phone'] {
-    --width: 116%;
+    --width: 106%;
     --aspectRatio: 7 / 10;
 
     top: 5%;
-    left: -10%;
+    left: -3%;
 
     @media (--mediaDesktop) {
       --width: 108%;
@@ -159,14 +159,14 @@
 
   &[data-device='laptop'] {
     position: absolute;
-    width: 100%;
-    right: -36%;
+    width: 80%;
+    right: -20%;
     bottom: 24%;
     transform: translateY(50%);
 
     @media (--mediaTablet) {
-      width: 80%;
-      right: -10%;
+      width: 60%;
+      right: -5%;
       bottom: 18%;
     }
 
