@@ -9,11 +9,12 @@
 @custom-media --mediaTouch (pointer: coarse);
 @custom-media --mediaNoTouch (pointer: fine);
 
-:global(:root) {
+:root {
   --mobileNavOffset: calc(var(--spaceOuter) * 2 + var(--space2XL));
 }
 
-:global(html, body) {
+html,
+body {
   font-family: var(--fontStack);
   font-weight: var(--fontWeightRegular);
   background-color: var(--background);
@@ -23,31 +24,33 @@
   width: 100%;
   overflow-x: hidden;
   opacity: 1;
-
-  &:focus {
-    outline: none;
-  }
 }
 
-:global(:where(code, pre)) {
+html:focus,
+body:focus {
+  outline: none;
+}
+
+code,
+pre {
   font-family: var(--monoFontStack);
 }
 
-:global(::selection) {
+::selection {
   background: var(--accent);
   color: var(--black);
 }
 
-:global(:focus) {
+:focus {
   outline: 4px solid var(--text);
   outline-offset: 4px;
 }
 
-:global(:focus:not(:focus-visible)) {
+:focus:not(:focus-visible) {
   outline: none;
 }
 
-@keyframes :global(fade-in) {
+@keyframes fade-in {
   0% {
     opacity: 0;
   }
@@ -57,7 +60,7 @@
   }
 }
 
-@keyframes :global(reveal) {
+@keyframes reveal {
   0% {
     transform: scale3d(0, 1, 1);
     transform-origin: left;
