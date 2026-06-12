@@ -9,74 +9,72 @@
 @custom-media --mediaTouch (pointer: coarse);
 @custom-media --mediaNoTouch (pointer: fine);
 
-@layer base {
-  :global(:root) {
-    --mobileNavOffset: calc(var(--spaceOuter) * 2 + var(--space2XL));
-  }
+:global(:root) {
+  --mobileNavOffset: calc(var(--spaceOuter) * 2 + var(--space2XL));
+}
 
-  :global(html, body) {
-    font-family: var(--fontStack);
-    font-weight: var(--fontWeightRegular);
-    background-color: var(--background);
-    transition: var(--durationM) ease;
-    transition-property: background, opacity;
-    color: var(--textBody);
-    width: 100%;
-    overflow-x: hidden;
-    opacity: 1;
+:global(html, body) {
+  font-family: var(--fontStack);
+  font-weight: var(--fontWeightRegular);
+  background-color: var(--background);
+  transition: var(--durationM) ease;
+  transition-property: background, opacity;
+  color: var(--textBody);
+  width: 100%;
+  overflow-x: hidden;
+  opacity: 1;
 
-    &:focus {
-      outline: none;
-    }
-  }
-
-  :global(:where(code, pre)) {
-    font-family: var(--monoFontStack);
-  }
-
-  :global(::selection) {
-    background: var(--accent);
-    color: var(--black);
-  }
-
-  :global(:focus) {
-    outline: 4px solid var(--text);
-    outline-offset: 4px;
-  }
-
-  :global(:focus:not(:focus-visible)) {
+  &:focus {
     outline: none;
   }
+}
 
-  @keyframes :global(fade-in) {
-    0% {
-      opacity: 0;
-    }
+:global(:where(code, pre)) {
+  font-family: var(--monoFontStack);
+}
 
-    100% {
-      opacity: 1;
-    }
+:global(::selection) {
+  background: var(--accent);
+  color: var(--black);
+}
+
+:global(:focus) {
+  outline: 4px solid var(--text);
+  outline-offset: 4px;
+}
+
+:global(:focus:not(:focus-visible)) {
+  outline: none;
+}
+
+@keyframes :global(fade-in) {
+  0% {
+    opacity: 0;
   }
 
-  @keyframes :global(reveal) {
-    0% {
-      transform: scale3d(0, 1, 1);
-      transform-origin: left;
-    }
+  100% {
+    opacity: 1;
+  }
+}
 
-    50% {
-      transform: scale3d(1, 1, 1);
-      transform-origin: left;
-    }
+@keyframes :global(reveal) {
+  0% {
+    transform: scale3d(0, 1, 1);
+    transform-origin: left;
+  }
 
-    51% {
-      transform: scale3d(1, 1, 1);
-      transform-origin: right;
-    }
+  50% {
+    transform: scale3d(1, 1, 1);
+    transform-origin: left;
+  }
 
-    100% {
-      transform: scale3d(0, 1, 1);
-      transform-origin: right;
-    }
+  51% {
+    transform: scale3d(1, 1, 1);
+    transform-origin: right;
+  }
+
+  100% {
+    transform: scale3d(0, 1, 1);
+    transform-origin: right;
   }
 }

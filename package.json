@@ -22,7 +22,6 @@
     "@mdx-js/react": "^3.0.1",
     "@remix-run/node": "^2.15.3",
     "@remix-run/react": "^2.7.1",
-    "@remix-run/vercel": "^1.19.3",
     "framer-motion": "11.0.5",
     "isbot": "^4.1.0",
     "miniflare": "^3.20231030.4",
@@ -61,6 +60,7 @@
     "remark-frontmatter": "^5.0.0",
     "remark-mdx-frontmatter": "^4.0.0",
     "storybook": "^7.6.17",
+    "vercel": "^54.12.2",
     "vite": "^5.1.0",
     "vite-jsconfig-paths": "^2.0.1"
   },

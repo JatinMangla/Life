@@ -95,10 +95,6 @@ export function createMediaTokenProperties() {
   );
 }
 
-const layerStyles = squish(`
-  @layer theme, base, components, layout;
-`);
-
 const tokenStyles = squish(`
   :root {
     ${createThemeProperties(tokens.base)}
@@ -174,10 +170,6 @@ const fontStyles = squish(`
 `);
 
 export const themeStyles = squish(`
-  ${layerStyles}
-
-  @layer theme {
-    ${tokenStyles}
-    ${fontStyles}
-  }
+  ${tokenStyles}
+  ${fontStyles}
 `);

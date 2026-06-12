@@ -87,6 +87,66 @@ export const Model = ({
   const reduceMotion = useReducedMotion();
   const rotationX = useSpring(0, rotationSpringConfig);
   const rotationY = useSpring(0, rotationSpringConfig);
+  const renderFrameRef = useRef();
+
+  const blurShadow = useCallback(amount => {
+    blurPlane.current.visible = true;
+
+    // Blur horizontally and draw in the renderTargetBlur
+    blurPlane.current.material = horizontalBlurMaterial.current;
+    blurPlane.current.material.uniforms.tDiffuse.value = renderTarget.current.texture;
+    horizontalBlurMaterial.current.uniforms.h.value = amount * (1 / 256);
+
+    renderer.current.setRenderTarget(renderTargetBlur.current);
+    renderer.current.render(blurPlane.current, shadowCamera.current);
+
+    // Blur vertically and draw in the main renderTarget
+    blurPlane.current.material = verticalBlurMaterial.current;
+    blurPlane.current.material.uniforms.tDiffuse.value = renderTargetBlur.current.texture;
+    verticalBlurMaterial.current.uniforms.v.value = amount * (1 / 256);
+
+    renderer.current.setRenderTarget(renderTarget.current);
+    renderer.current.render(blurPlane.current, shadowCamera.current);
+
+    blurPlane.current.visible = false;
+  }, []);
+
+  // Handle render passes for a single frame
+  const renderFrame = useCallback(() => {
+    const blurAmount = 5;
+
+    // Remove the background
+    const initialBackground = scene.current.background;
+    scene.current.background = null;
+
+    // Force the depthMaterial to everything
+    scene.current.overrideMaterial = depthMaterial.current;
+
+    // Render to the render target to get the depths
+    renderer.current.setRenderTarget(renderTarget.current);
+    renderer.current.render(scene.current, shadowCamera.current);
+
+    // And reset the override material
+    scene.current.overrideMaterial = null;
+
+    blurShadow(blurAmount);
+
+    // A second pass to reduce the artifacts
+    // (0.4 is the minimum blur amout so that the artifacts are gone)
+    blurShadow(blurAmount * 0.4);
+
+    // Reset and render the normal scene
+    renderer.current.setRenderTarget(null);
+    scene.current.background = initialBackground;
+
+    modelGroup.current.rotation.x = rotationX.get();
+    modelGroup.current.rotation.y = rotationY.get();
+
+    renderer.current.render(scene.current, camera.current);
+  }, [blurShadow, rotationX, rotationY]);
+
+  // Keep ref synchronized with latest callback to avoid stale closures in effects
+  renderFrameRef.current = renderFrame;
 
   useEffect(() => {
     const { clientWidth, clientHeight } = container.current;
@@ -207,8 +267,9 @@ export const Model = ({
     verticalBlurMaterial.current = new ShaderMaterial(VerticalBlurShader);
     verticalBlurMaterial.current.depthTest = false;
 
-    const unsubscribeX = rotationX.on('change', renderFrame);
-    const unsubscribeY = rotationY.on('change', renderFrame);
+    // Subscribe using ref to avoid stale closure
+    const unsubscribeX = rotationX.on('change', () => renderFrameRef.current());
+    const unsubscribeY = rotationY.on('change', () => renderFrameRef.current());
 
     return () => {
       renderTarget.current.dispose();
@@ -221,63 +282,6 @@ export const Model = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const blurShadow = useCallback(amount => {
-    blurPlane.current.visible = true;
-
-    // Blur horizontally and draw in the renderTargetBlur
-    blurPlane.current.material = horizontalBlurMaterial.current;
-    blurPlane.current.material.uniforms.tDiffuse.value = renderTarget.current.texture;
-    horizontalBlurMaterial.current.uniforms.h.value = amount * (1 / 256);
-
-    renderer.current.setRenderTarget(renderTargetBlur.current);
-    renderer.current.render(blurPlane.current, shadowCamera.current);
-
-    // Blur vertically and draw in the main renderTarget
-    blurPlane.current.material = verticalBlurMaterial.current;
-    blurPlane.current.material.uniforms.tDiffuse.value = renderTargetBlur.current.texture;
-    verticalBlurMaterial.current.uniforms.v.value = amount * (1 / 256);
-
-    renderer.current.setRenderTarget(renderTarget.current);
-    renderer.current.render(blurPlane.current, shadowCamera.current);
-
-    blurPlane.current.visible = false;
-  }, []);
-
-  // Handle render passes for a single frame
-  const renderFrame = useCallback(() => {
-    const blurAmount = 5;
-
-    // Remove the background
-    const initialBackground = scene.current.background;
-    scene.current.background = null;
-
-    // Force the depthMaterial to everything
-    // cameraHelper.visible = false;
-    scene.current.overrideMaterial = depthMaterial.current;
-
-    // Render to the render target to get the depths
-    renderer.current.setRenderTarget(renderTarget.current);
-    renderer.current.render(scene.current, shadowCamera.current);
-
-    // And reset the override material
-    scene.current.overrideMaterial = null;
-
-    blurShadow(blurAmount);
-
-    // A second pass to reduce the artifacts
-    // (0.4 is the minimum blur amout so that the artifacts are gone)
-    blurShadow(blurAmount * 0.4);
-
-    // Reset and render the normal scene
-    renderer.current.setRenderTarget(null);
-    scene.current.background = initialBackground;
-
-    modelGroup.current.rotation.x = rotationX.get();
-    modelGroup.current.rotation.y = rotationY.get();
-
-    renderer.current.render(scene.current, camera.current);
-  }, [blurShadow, rotationX, rotationY]);
 
   // Handle mouse move animation
   useEffect(() => {
