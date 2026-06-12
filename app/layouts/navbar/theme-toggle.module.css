@@ -3,11 +3,10 @@
     --offset: 6px;
     --inset: calc(var(--spaceOuter) - var(--offset));
 
-    /* position: fixed; */
     z-index: var(--zIndex4);
-    /* top: var(--inset);
-    right: var(--inset); */
     transform: translate3d(0, 0, 0);
+    margin-left: auto;
+    margin-right: 4rem;
 
     @media (--mediaMobile), (--mediaMobileLS) {
       &:not([data-mobile='true']) {
@@ -23,6 +22,7 @@
       bottom: var(--inset);
       margin-top: 0;
       margin-right: 0;
+      margin-left: 0;
     }
   }
 
