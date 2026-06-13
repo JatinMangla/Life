@@ -1,28 +1,17 @@
-import volkiharBackgroundLarge from '~/assets/volkihar-background-large.jpg';
-import volkiharBackgroundPlaceholder from '~/assets/volkihar-background-placeholder.jpg';
-import volkiharBackground from '~/assets/volkihar-background.jpg';
-import volkiharBannerLarge from '~/assets/volkihar-banner-large.jpg';
-import volkiharBannerPlaceholder from '~/assets/volkihar-banner-placeholder.jpg';
-import volkiharBanner from '~/assets/volkihar-banner.jpg';
-import volkiharBookLarge from '~/assets/volkihar-book-large.png';
-import volkiharBookPlaceholder from '~/assets/volkihar-book-placeholder.png';
-import volkiharBook from '~/assets/volkihar-book.png';
-import volkiharEnderalLarge from '~/assets/volkihar-enderal-large.jpg';
-import volkiharEnderalLogoLarge from '~/assets/volkihar-enderal-logo-large.png';
-import volkiharEnderalLogoPlaceholder from '~/assets/volkihar-enderal-logo-placeholder.png';
-import volkiharEnderalLogo from '~/assets/volkihar-enderal-logo.png';
-import volkiharEnderalPlaceholder from '~/assets/volkihar-enderal-placeholder.jpg';
-import volkiharEnderal from '~/assets/volkihar-enderal.jpg';
-import volkiharSlide1Large from '~/assets/volkihar-slide-1-large.jpg';
-import volkiharSlide1 from '~/assets/volkihar-slide-1.jpg';
-import volkiharSlide2Large from '~/assets/volkihar-slide-2-large.jpg';
-import volkiharSlide2 from '~/assets/volkihar-slide-2.jpg';
-import volkiharSlide3Large from '~/assets/volkihar-slide-3-large.jpg';
-import volkiharSlide3 from '~/assets/volkihar-slide-3.jpg';
-import volkiharSlidePlaceholder from '~/assets/volkihar-slide-placeholder.jpg';
+import scHowItWorks from '~/assets/sc-how-it-works.gif';
+import scAnimateBox from '~/assets/sc-animate-box.gif';
+import scChildDriven from '~/assets/sc-child-driven.gif';
+import scTamperproof from '~/assets/sc-tamperproof.png';
+import scRewards from '~/assets/sc-rewards.png';
+import scNagFree from '~/assets/sc-nag-free.png';
+import scFunFilled from '~/assets/sc-fun-filled.png';
+import scReport from '~/assets/sc-report.png';
+import scTeen from '~/assets/sc-teen.png';
+import scLogo from '~/assets/sc-logo.png';
 import { Button } from '~/components/button';
 import { Footer } from '~/components/footer';
 import { Image } from '~/components/image';
+import { Link } from '~/components/link';
 import {
   ProjectBackground,
   ProjectContainer,
@@ -35,22 +24,19 @@ import {
   ProjectSectionText,
   ProjectTextRow,
 } from '~/layouts/project';
-import { Fragment, Suspense, lazy } from 'react';
+import { Fragment } from 'react';
 import { media } from '~/utils/style';
 import { baseMeta } from '~/utils/meta';
-import { VolkiharLogo } from './volkihar-logo';
-import styles from './volkihar-knight.module.css';
-
-const Carousel = lazy(() =>
-  import('~/components/carousel').then(module => ({ default: module.Carousel }))
-);
-
-const Armor = lazy(() => import('./armor').then(module => ({ default: module.Armor })));
 
 const title = 'Screen Coach — Screen Time Monitoring';
 const description =
   'Developed a responsive UI and RESTful APIs for a screen-time monitoring tool optimized for low-memory set-top devices. Built with JavaScript, Node.js, and MongoDB for real-time data handling and smooth frontend-backend integration.';
-const roles = ['Frontend Development', 'Node.js & MongoDB APIs', 'Performance Optimization', 'Real-time Data'];
+const roles = [
+  'Frontend Development',
+  'Node.js & MongoDB APIs',
+  'Performance Optimization',
+  'Real-time Data',
+];
 
 export const meta = () => {
   return baseMeta({ title, description, prefix: 'Projects' });
@@ -59,167 +45,233 @@ export const meta = () => {
 export function VolkiharKnight() {
   return (
     <Fragment>
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-            [data-theme='dark'] {
-              --primary: oklch(87.71% 0.084 85.29);
-              --accent: oklch(87.71% 0.084 85.29);
-            }
-            [data-theme='light'] {
-              --primary: oklch(52.25% 0.121 81.53);
-              --accent: oklch(52.25% 0.121 81.53);
-            }
-          `,
-        }}
-      />
       <ProjectContainer>
         <ProjectBackground
-          srcSet={`${volkiharBackground} 1280w, ${volkiharBackgroundLarge} 1920w`}
-          width={1280}
-          height={720}
-          placeholder={volkiharBackgroundPlaceholder}
           opacity={0.5}
+          src={scAnimateBox}
+          srcSet={`${scAnimateBox} 800w`}
+          placeholder={scAnimateBox}
         />
         <ProjectHeader
           title={title}
           description={description}
+          url="https://www.myscreencoach.com"
           roles={roles}
         />
-        <ProjectSection>
+        <ProjectSection padding="top">
           <ProjectSectionContent>
-            <ProjectImage
-              srcSet={`${volkiharBanner} 800w, ${volkiharBannerLarge} 1100w`}
-              width={800}
-              height={436}
-              placeholder={volkiharBannerPlaceholder}
-              alt="Screen Coach application dashboard showing screen time analytics and usage patterns."
-              sizes={`(max-width: ${media.mobile}px) 500px, (max-width: ${media.tablet}px) 800px, 1000px`}
-            />
-          </ProjectSectionContent>
-        </ProjectSection>
-        <ProjectSection>
-          <ProjectSectionContent>
-            <Image
-              srcSet={`${volkiharBook} 490w, ${volkiharBookLarge} 960w`}
-              width={480}
-              height={300}
-              placeholder={volkiharBookPlaceholder}
-              alt="Screen Coach backend architecture diagram showing Node.js API endpoints and MongoDB data flow"
-              sizes={`(max-width: ${media.mobile}px) 90vw, (max-width: ${media.tablet}px) 80vw, 70vw`}
-            />
-          </ProjectSectionContent>
-        </ProjectSection>
-        <ProjectSection>
-          <ProjectSectionColumns>
-            <div className={styles.armor}>
-              <Suspense>
-                <Armor alt="3D model of the Volkihar Knight armor" />
-              </Suspense>
-            </div>
-            <div className={styles.textSection}>
-              <ProjectSectionHeading>Technical Architecture</ProjectSectionHeading>
-              <ProjectSectionText>
-                Screen Coach required a lightweight frontend optimized for low-memory
-                set-top box devices. I built the UI using vanilla JavaScript with
-                minimal dependencies, ensuring smooth performance on resource-constrained
-                hardware.
-              </ProjectSectionText>
-              <ProjectSectionText>
-                On the backend, I developed RESTful APIs using Node.js and Express.js
-                with MongoDB for storing screen time data. The system handles real-time
-                data synchronization between devices and the monitoring dashboard,
-                with efficient querying for usage analytics and trend reporting.
-              </ProjectSectionText>
-            </div>
-          </ProjectSectionColumns>
-        </ProjectSection>
-        <ProjectSection>
-          <ProjectSectionContent>
-            <div className={styles.logoContainer}>
-              <VolkiharLogo
-                role="img"
-                aria-label="The Volkihar Knight logo, a monogram using the letters 'V' and 'K"
-              />
-            </div>
             <ProjectTextRow center noMargin>
-              <ProjectSectionHeading>Performance & Debugging</ProjectSectionHeading>
+              <ProjectImage
+                raised
+                srcSet={`${scHowItWorks} 1000w`}
+                width={1000}
+                height={150}
+                placeholder={scHowItWorks}
+                sizes={`(max-width: ${media.mobile}px) 100vw, 1000px`}
+                alt="Screen Coach application showing how the screen time monitoring works"
+                style={{ maxWidth: '100%' }}
+              />
+            </ProjectTextRow>
+          </ProjectSectionContent>
+        </ProjectSection>
+        <ProjectSection>
+          <ProjectTextRow>
+            <ProjectSectionHeading>The Challenge</ProjectSectionHeading>
+            <ProjectSectionText>
+              Screen Coach needed a lightweight, performant frontend optimized for
+              low-memory set-top box devices while providing real-time screen time
+              monitoring capabilities. The backend required RESTful APIs with Node.js
+              and MongoDB for efficient data synchronization between devices and the
+              monitoring dashboard.
+            </ProjectSectionText>
+          </ProjectTextRow>
+        </ProjectSection>
+        <ProjectSection light>
+          <ProjectSectionContent>
+            <ProjectTextRow center noMargin>
+              <Image
+                srcSet={`${scChildDriven} 950w`}
+                width={950}
+                height={1920}
+                placeholder={scChildDriven}
+                alt="Screen Coach child-driven screen time management interface"
+                sizes="(max-width: 600px) 95vw, 400px"
+                style={{ maxWidth: '400px', width: '100%', height: 'auto' }}
+              />
+            </ProjectTextRow>
+            <ProjectTextRow>
+              <ProjectSectionHeading>Child-Driven Screen Time Management</ProjectSectionHeading>
               <ProjectSectionText>
-                Optimized JavaScript execution for low-memory environments. Implemented
-                efficient memory management, lazy resource loading, and debounced event
-                handlers to ensure smooth operation on constrained devices while
-                maintaining accurate real-time screen time tracking.
+                Built an intuitive interface that empowers children to manage their
+                own screen time through a reward-based system. The child-driven
+                approach encourages responsible device usage while giving parents
+                visibility into screen time patterns and habits.
               </ProjectSectionText>
             </ProjectTextRow>
           </ProjectSectionContent>
         </ProjectSection>
         <ProjectSection>
           <ProjectSectionContent>
-            <Suspense>
-              <Carousel
-                placeholder={volkiharSlidePlaceholder}
-                images={[
-                  {
-                    srcSet: `${volkiharSlide1} 960w, ${volkiharSlide1Large} 1920w`,
-                    sizes: `(max-width: ${media.mobile}px) 100vw, (max-width: ${media.tablet}px) 100vw, 1096px`,
-                    alt: 'A female character wearing the black coloured armor set.',
-                  },
-                  {
-                    srcSet: `${volkiharSlide2} 960w, ${volkiharSlide2Large} 1920w`,
-                    sizes: `(max-width: ${media.mobile}px) 100vw, (max-width: ${media.tablet}px) 100vw, 1096px`,
-                    alt: 'A close up of the custom gauntlets design.',
-                  },
-                  {
-                    srcSet: `${volkiharSlide3} 960w, ${volkiharSlide3Large} 1920w`,
-                    sizes: `(max-width: ${media.mobile}px) 100vw, (max-width: ${media.tablet}px) 100vw, 1096px`,
-                    alt: 'A female character wielding a sword and wearing the red coloured armor.',
-                  },
-                ]}
-                width={1920}
-                height={1080}
+            <ProjectTextRow center noMargin>
+              <ProjectImage
+                raised
+                srcSet={`${scTamperproof} 950w`}
+                width={950}
+                height={1920}
+                placeholder={scTamperproof}
+                alt="Screen Coach tamper-proof protection preventing children from bypassing screen time limits"
+                sizes="(max-width: 600px) 95vw, 400px"
+                style={{ maxWidth: '400px', width: '100%', height: 'auto' }}
               />
-            </Suspense>
+            </ProjectTextRow>
+            <ProjectTextRow>
+              <ProjectSectionHeading>Tamper-Proof Protection</ProjectSectionHeading>
+              <ProjectSectionText>
+                Implemented robust tamper-proof mechanisms to prevent children from
+                bypassing screen time limits. The system monitors device activity in
+                real-time and enforces time restrictions even across multiple apps,
+                ensuring the monitoring cannot be easily circumvented.
+              </ProjectSectionText>
+            </ProjectTextRow>
           </ProjectSectionContent>
         </ProjectSection>
-        <ProjectSection
-          backgroundElement={
-            <Image
-              srcSet={`${volkiharEnderal} 1280w, ${volkiharEnderalLarge} 1920w`}
-              width={1280}
-              height={720}
-              placeholder={volkiharEnderalPlaceholder}
-              alt="A promotional image from Enderal showing several characters in the game overlooking a distant city."
-              sizes={`100vw`}
-            />
-          }
-        >
+        <ProjectSection>
+          <ProjectSectionContent>
+            <ProjectTextRow center noMargin>
+              <ProjectImage
+                raised
+                srcSet={`${scRewards} 800w`}
+                width={800}
+                height={1600}
+                placeholder={scRewards}
+                alt="Screen Coach rewards system encouraging positive screen time behavior"
+                sizes="(max-width: 600px) 95vw, 400px"
+                style={{ maxWidth: '400px', width: '100%', height: 'auto' }}
+              />
+            </ProjectTextRow>
+            <ProjectTextRow>
+              <ProjectSectionHeading>Rewards System</ProjectSectionHeading>
+              <ProjectSectionText>
+                Developed a gamified rewards system that motivates children to earn
+                additional screen time through positive behaviors. The reward
+                mechanism tracks tasks and achievements, converting them into
+                screen time credits with real-time updates.
+              </ProjectSectionText>
+            </ProjectTextRow>
+          </ProjectSectionContent>
+        </ProjectSection>
+        <ProjectSection light>
+          <ProjectSectionContent>
+            <ProjectTextRow center noMargin>
+              <Image
+                srcSet={`${scReport} 500w`}
+                width={500}
+                height={600}
+                placeholder={scReport}
+                alt="Screen Coach reporting dashboard showing screen time analytics"
+                sizes="(max-width: 600px) 95vw, 500px"
+                style={{ maxWidth: '500px', width: '100%', height: 'auto' }}
+              />
+            </ProjectTextRow>
+            <ProjectTextRow>
+              <ProjectSectionHeading>Reporting & Analytics</ProjectSectionHeading>
+              <ProjectSectionText>
+                Built comprehensive reporting dashboards that give parents detailed
+                insights into screen time usage across all devices. The dashboard
+                shows daily and weekly trends, app-by-app breakdowns, and helps
+                parents make informed decisions about screen time limits.
+              </ProjectSectionText>
+            </ProjectTextRow>
+          </ProjectSectionContent>
+        </ProjectSection>
+        <ProjectSection>
+          <ProjectTextRow>
+            <ProjectSectionHeading>Nag-Free & Fun-Filled Experience</ProjectSectionHeading>
+            <ProjectSectionText>
+              Screen Coach eliminates the constant nagging between parents and children
+              about screen time. The app provides a fun-filled, engaging experience
+              where kids take ownership of their screen time, while parents get peace
+              of mind knowing the system is working in the background.
+            </ProjectSectionText>
+          </ProjectTextRow>
+        </ProjectSection>
+        <ProjectSection>
+          <ProjectSectionContent>
+            <ProjectSectionColumns>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
+                <Image
+                  raised
+                  srcSet={`${scNagFree} 800w`}
+                  width={800}
+                  height={1600}
+                  placeholder={scNagFree}
+                  alt="Screen Coach nag-free screen time monitoring"
+                  sizes="(max-width: 600px) 45vw, 250px"
+                  style={{ maxWidth: '250px', width: '100%', height: 'auto' }}
+                />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
+                <Image
+                  raised
+                  srcSet={`${scFunFilled} 800w`}
+                  width={800}
+                  height={1600}
+                  placeholder={scFunFilled}
+                  alt="Screen Coach fun-filled experience for children"
+                  sizes="(max-width: 600px) 45vw, 250px"
+                  style={{ maxWidth: '250px', width: '100%', height: 'auto' }}
+                />
+              </div>
+            </ProjectSectionColumns>
+          </ProjectSectionContent>
+        </ProjectSection>
+        <ProjectSection>
+          <ProjectSectionContent>
+            <ProjectTextRow center noMargin>
+              <Image
+                raised
+                srcSet={`${scTeen} 451w`}
+                width={451}
+                height={340}
+                placeholder={scTeen}
+                alt="Screen Coach teen-focused screen time monitoring and parental controls"
+                sizes="(max-width: 600px) 95vw, 600px"
+                style={{ maxWidth: '600px', width: '100%', height: 'auto' }}
+              />
+            </ProjectTextRow>
+            <ProjectTextRow>
+              <ProjectSectionHeading>Technical Architecture</ProjectSectionHeading>
+              <ProjectSectionText>
+                On the backend, I developed RESTful APIs using Node.js and Express.js
+                with MongoDB for storing screen time data. The system handles real-time
+                data synchronization between devices and the monitoring dashboard,
+                with efficient querying for usage analytics and trend reporting.
+                Optimized JavaScript execution for low-memory environments with lazy
+                resource loading and debounced event handlers.
+              </ProjectSectionText>
+            </ProjectTextRow>
+          </ProjectSectionContent>
+        </ProjectSection>
+        <ProjectSection>
           <ProjectSectionContent>
             <ProjectTextRow center centerMobile noMargin>
-              <Image
-                srcSet={`${volkiharEnderalLogo} 180w, ${volkiharEnderalLogoLarge} 360w`}
-                width={180}
-                height={200}
-                placeholder={volkiharEnderalLogoPlaceholder}
-                alt="The Enderal game logo"
-                sizes={`(max-width: ${media.mobile}px) 100vw, (max-width: ${media.tablet}px) 100vw, 220px`}
-                style={{ maxWidth: 220, width: '100%', marginBottom: 30 }}
-              />
               <ProjectSectionHeading>Project Outcomes</ProjectSectionHeading>
               <ProjectSectionText>
                 Screen Coach successfully delivered a performant screen-time monitoring
                 solution for resource-constrained devices. The optimized JavaScript
                 frontend maintained smooth performance even on low-memory set-top boxes,
                 while the Node.js/MongoDB backend handled real-time data streaming
-                efficiently. The project improved debugging workflows and established
-                best practices for building performance-critical applications.
+                efficiently. Visit{' '}
+                <Link href="https://www.myscreencoach.com">myscreencoach.com</Link>{' '}
+                to learn more.
               </ProjectSectionText>
               <Button
                 secondary
                 iconHoverShift
                 icon="chevron-right"
-                href="https://meramonitor.com"
+                href="https://www.myscreencoach.com"
               >
-                View Mera Monitor
+                Visit Screen Coach
               </Button>
             </ProjectTextRow>
           </ProjectSectionContent>

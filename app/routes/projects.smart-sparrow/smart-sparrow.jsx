@@ -1,53 +1,21 @@
 import backgroundSprLarge from '~/assets/spr-background-large.jpg';
 import backgroundSprPlaceholder from '~/assets/spr-background-placeholder.jpg';
-import imageSprBackgroundVolcanismLarge from '~/assets/spr-background-volcanism-large.jpg';
-import imageSprBackgroundVolcanismPlaceholder from '~/assets/spr-background-volcanism-placeholder.jpg';
-import imageSprBackgroundVolcanism from '~/assets/spr-background-volcanism.jpg';
 import backgroundSpr from '~/assets/spr-background.jpg';
-import imageSprComponentsDarkLarge from '~/assets/spr-components-dark-large.png';
-import imageSprComponentsDarkPlaceholder from '~/assets/spr-components-dark-placeholder.png';
-import imageSprComponentsDark from '~/assets/spr-components-dark.png';
-import imageSprComponentsLightLarge from '~/assets/spr-components-light-large.png';
-import imageSprComponentsLightPlaceholder from '~/assets/spr-components-light-placeholder.png';
-import imageSprComponentsLight from '~/assets/spr-components-light.png';
-import imageSprDesignSystemDarkLarge from '~/assets/spr-design-system-dark-large.png';
-import imageSprDesignSystemDarkPlaceholder from '~/assets/spr-design-system-dark-placeholder.png';
-import imageSprDesignSystemDark from '~/assets/spr-design-system-dark.png';
-import imageSprDesignSystemLightLarge from '~/assets/spr-design-system-light-large.png';
-import imageSprDesignSystemLightPlaceholder from '~/assets/spr-design-system-light-placeholder.png';
-import imageSprDesignSystemLight from '~/assets/spr-design-system-light.png';
-import imageSprLessonBuilderDarkLarge from '~/assets/spr-lesson-builder-dark-large.jpg';
-import imageSprLessonBuilderDarkPlaceholder from '~/assets/spr-lesson-builder-dark-placeholder.jpg';
-import imageSprLessonBuilderDark from '~/assets/spr-lesson-builder-dark.jpg';
-import imageSprLessonBuilderLightLarge from '~/assets/spr-lesson-builder-light-large.jpg';
-import imageSprLessonBuilderLightPlaceholder from '~/assets/spr-lesson-builder-light-placeholder.jpg';
-import imageSprLessonBuilderLight from '~/assets/spr-lesson-builder-light.jpg';
-import videoSprMotionLarge from '~/assets/spr-motion-large.mp4';
-import videoSprMotionPlaceholder from '~/assets/spr-motion-placeholder.jpg';
-import videoSprMotion from '~/assets/spr-motion.mp4';
-import imageSprSchema1DarkLarge from '~/assets/spr-schema-1-dark-large.png';
-import imageSprSchema1DarkPlaceholder from '~/assets/spr-schema-1-dark-placeholder.png';
-import imageSprSchema1Dark from '~/assets/spr-schema-1-dark.png';
-import imageSprSchema1LightLarge from '~/assets/spr-schema-1-light-large.png';
-import imageSprSchema1LightPlaceholder from '~/assets/spr-schema-1-light-placeholder.png';
-import imageSprSchema1Light from '~/assets/spr-schema-1-light.png';
-import imageSprSchema2DarkLarge from '~/assets/spr-schema-2-dark-large.png';
-import imageSprSchema2DarkPlaceholder from '~/assets/spr-schema-2-dark-placeholder.png';
-import imageSprSchema2Dark from '~/assets/spr-schema-2-dark.png';
-import imageSprSchema2LightLarge from '~/assets/spr-schema-2-light-large.png';
-import imageSprSchema2LightPlaceholder from '~/assets/spr-schema-2-light-placeholder.png';
-import imageSprSchema2Light from '~/assets/spr-schema-2-light.png';
-import imageSprStoryboarderDarkLarge from '~/assets/spr-storyboarder-dark-large.png';
-import imageSprStoryboarderDarkPlaceholder from '~/assets/spr-storyboarder-dark-placeholder.png';
-import imageSprStoryboarderDark from '~/assets/spr-storyboarder-dark.png';
-import imageSprStoryboarderLightLarge from '~/assets/spr-storyboarder-light-large.png';
-import imageSprStoryboarderLightPlaceholder from '~/assets/spr-storyboarder-light-placeholder.png';
-import imageSprStoryboarderLight from '~/assets/spr-storyboarder-light.png';
+import mmAnalyticsDashboard from '~/assets/mm-analytics-dashboard.png';
+import mmScreenMonitoring from '~/assets/mm-screen-monitoring.png';
+import mmProductivity from '~/assets/mm-productivity.png';
+import mmWebApps from '~/assets/mm-web-apps.png';
+import mmAttendance from '~/assets/mm-attendance.png';
+import mmTeamSupport from '~/assets/mm-team-support.png';
+import mmEfficiency from '~/assets/mm-efficiency.png';
+import mmVisibility from '~/assets/mm-visibility.png';
+import mmHoursSaved from '~/assets/mm-hours-saved.png';
+import mmPrivateMode from '~/assets/mm-private-mode.png';
+import mmTimeClaim from '~/assets/mm-time-claim.png';
+import mmHomeFeatured from '~/assets/mm-home-featured.gif';
 import { Footer } from '~/components/footer';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
-import { SegmentedControl, SegmentedControlOption } from '~/components/segmented-control';
-import { ThemeProvider, useTheme } from '~/components/theme-provider';
 import {
   ProjectBackground,
   ProjectContainer,
@@ -61,14 +29,7 @@ import {
   ProjectTextRow,
 } from '~/layouts/project';
 import { baseMeta } from '~/utils/meta';
-import { Suspense, lazy, useMemo } from 'react';
 import { media } from '~/utils/style';
-import styles from './smart-sparrow.module.css';
-
-const Earth = lazy(() => import('./earth').then(module => ({ default: module.Earth })));
-const EarthSection = lazy(() =>
-  import('./earth').then(module => ({ default: module.EarthSection }))
-);
 
 const title = 'Mera Monitor — Employee Productivity Platform';
 const description =
@@ -86,19 +47,11 @@ export const meta = () => {
 };
 
 export const SmartSparrow = () => {
-  const { theme, toggleTheme } = useTheme();
-  const isDark = theme === 'dark';
-  const themes = ['dark', 'light'];
-
-  const handleThemeChange = index => {
-    toggleTheme(themes[index]);
-  };
-
   return (
     <>
       <ProjectContainer>
         <ProjectBackground
-          opacity={isDark ? 0.5 : 0.8}
+          opacity={0.5}
           src={backgroundSpr}
           srcSet={`${backgroundSpr} 1080w, ${backgroundSprLarge} 2160w`}
           placeholder={backgroundSprPlaceholder}
@@ -113,19 +66,10 @@ export const SmartSparrow = () => {
           <ProjectSectionContent>
             <ProjectImage
               raised
-              key={theme}
-              srcSet={
-                isDark
-                  ? `${imageSprLessonBuilderDark} 1280w, ${imageSprLessonBuilderDarkLarge} 2560w`
-                  : `${imageSprLessonBuilderLight} 1280w, ${imageSprLessonBuilderLightLarge} 2560w`
-              }
+              srcSet={`${mmHomeFeatured} 1280w`}
               width={1280}
               height={800}
-              placeholder={
-                isDark
-                  ? imageSprLessonBuilderDarkPlaceholder
-                  : imageSprLessonBuilderLightPlaceholder
-              }
+              placeholder={mmHomeFeatured}
               sizes={`(max-width: ${media.mobile}px) 100vw, (max-width: ${media.tablet}px) 800px, 1000px`}
               alt="Mera Monitor dashboard showing employee productivity analytics and real-time monitoring."
             />
@@ -144,146 +88,174 @@ export const SmartSparrow = () => {
             </ProjectSectionText>
           </ProjectTextRow>
         </ProjectSection>
-        <ProjectSection light={isDark}>
+        <ProjectSection light>
           <ProjectSectionContent>
             <Image
-              key={theme}
-              srcSet={
-                isDark
-                  ? `${imageSprComponentsDark} 1024w, ${imageSprComponentsDarkLarge} 2048w`
-                  : `${imageSprComponentsLight} 1024w, ${imageSprComponentsLightLarge} 2048w`
-              }
+              srcSet={`${mmAnalyticsDashboard} 1024w`}
               width={1024}
-              hright={800}
-              placeholder={
-                isDark
-                  ? imageSprComponentsDarkPlaceholder
-                  : imageSprComponentsLightPlaceholder
-              }
-              alt={`A set of ${theme} themed components for the aero design system`}
+              height={800}
+              placeholder={mmAnalyticsDashboard}
+              alt="Mera Monitor analytics dashboard with real-time productivity metrics and team performance data"
               sizes="100vw"
             />
             <ProjectTextRow>
-              <SegmentedControl
-                currentIndex={themes.indexOf(theme)}
-                onChange={handleThemeChange}
-              >
-                <SegmentedControlOption>Dark theme</SegmentedControlOption>
-                <SegmentedControlOption>Light theme</SegmentedControlOption>
-              </SegmentedControl>
-            </ProjectTextRow>
-            <ProjectTextRow>
-              <ProjectSectionHeading>Component Architecture</ProjectSectionHeading>
+              <ProjectSectionHeading>Analytics Dashboard</ProjectSectionHeading>
               <ProjectSectionText>
-                Built a reusable component library with TypeScript for type safety.
-                Implemented a scalable design system supporting dark/light themes,
-                responsive layouts, and consistent UI patterns across the entire
-                platform. Used SCSS modules for scoped styling and Webpack for
-                optimized builds.
+                Built a comprehensive analytics dashboard with interactive charts powered
+                by ApexCharts, displaying real-time productivity metrics, screen time
+                tracking, application usage statistics, and team performance insights.
+                The dashboard supports multiple data views and custom date ranges for
+                enterprise reporting.
               </ProjectSectionText>
             </ProjectTextRow>
           </ProjectSectionContent>
         </ProjectSection>
         <ProjectSection>
           <ProjectSectionContent>
-            <Image
+            <ProjectImage
               raised
-              key={theme}
-              srcSet={
-                isDark
-                  ? `${imageSprDesignSystemDark} 1280w, ${imageSprDesignSystemDarkLarge} 2560w`
-                  : `${imageSprDesignSystemLight} 1280w, ${imageSprDesignSystemLightLarge} 2560w`
-              }
+              srcSet={`${mmScreenMonitoring} 1280w`}
               width={1280}
               height={800}
-              placeholder={
-                isDark
-                  ? imageSprDesignSystemDarkPlaceholder
-                  : imageSprDesignSystemLightPlaceholder
-              }
-              alt="Mera Monitor state management architecture and performance optimization."
+              placeholder={mmScreenMonitoring}
+              alt="Mera Monitor screen monitoring showing live employee activity tracking"
               sizes="100vw"
             />
             <ProjectTextRow>
-              <ProjectSectionHeading>State Management & Performance</ProjectSectionHeading>
+              <ProjectSectionHeading>Screen Monitoring & Activity Tracking</ProjectSectionHeading>
               <ProjectSectionText>
-                Implemented Redux with Thunk and Saga middleware for complex async
-                workflows. Optimized performance through lazy loading, code splitting,
-                and virtualization for large data grids. Achieved significant improvements
-                in load times and user experience across the platform.
+                Implemented real-time screen monitoring with periodic screenshot capture
+                and activity tracking. Built an intuitive interface for managers to view
+                live employee screens, track application usage, and monitor productivity
+                levels. The system handles concurrent streams from 3,500+ active users
+                with optimized WebSocket connections via SignalR.
               </ProjectSectionText>
             </ProjectTextRow>
           </ProjectSectionContent>
         </ProjectSection>
-        <ThemeProvider theme="dark" data-invert>
-          <ProjectSection
-            backgroundOverlayOpacity={0.5}
-            backgroundElement={
-              <Image
-                srcSet={`${imageSprBackgroundVolcanism} 1280w, ${imageSprBackgroundVolcanismLarge} 2560w`}
-                width={1280}
-                height={900}
-                placeholder={imageSprBackgroundVolcanismPlaceholder}
-                alt="Real-time monitoring dashboard background"
-                sizes="100vw"
-              />
-            }
-          >
-            <ProjectSectionColumns width="full">
-              <ProjectSectionContent width="full">
-                <ProjectTextRow width="s">
-                  <ProjectSectionHeading>Real-time Features</ProjectSectionHeading>
-                  <ProjectSectionText>
-                    Integrated SignalR and WebSockets for real-time employee activity
-                    monitoring. Built live dashboards with ApexCharts for data
-                    visualization, showing productivity metrics, screen time, and
-                    application usage in real-time.
-                  </ProjectSectionText>
-                </ProjectTextRow>
-              </ProjectSectionContent>
-              <Image
-                raised
-                className={styles.video}
-                srcSet={`${videoSprMotion} 1280w, ${videoSprMotionLarge} 2560w`}
-                width={1280}
-                height={800}
-                placeholder={videoSprMotionPlaceholder}
-                alt="Real-time employee activity monitoring dashboard with live data streaming"
-                sizes={`(max-width: ${media.mobile}px) 100vw, 50vw`}
-              />
-            </ProjectSectionColumns>
-          </ProjectSection>
-        </ThemeProvider>
         <ProjectSection>
           <ProjectSectionContent>
-            <ProjectTextRow>
-              <ProjectSectionHeading>Authentication & Security</ProjectSectionHeading>
-              <ProjectSectionText>
-                Implemented Microsoft MSAL and Google OAuth for enterprise SSO
-                authentication, supporting multi-tenant access. Built JWT-based
-                session management with secure token refresh flows, ensuring
-                data protection for 3,500+ daily active users.
-              </ProjectSectionText>
-            </ProjectTextRow>
-            <Image
+            <ProjectImage
               raised
-              key={theme}
-              srcSet={
-                isDark
-                  ? `${imageSprStoryboarderDark} 1280w, ${imageSprStoryboarderDarkLarge} 2560w`
-                  : `${imageSprStoryboarderLight} 1280w, ${imageSprStoryboarderLightLarge} 2560w`
-              }
+              srcSet={`${mmProductivity} 1280w`}
               width={1280}
               height={800}
-              placeholder={
-                isDark
-                  ? imageSprStoryboarderDarkPlaceholder
-                  : imageSprStoryboarderLightPlaceholder
-              }
-              alt="Mera Monitor authentication flow with Microsoft MSAL and Google OAuth integration"
+              placeholder={mmProductivity}
+              alt="Mera Monitor productivity and unproductivity tracking interface"
+              sizes="100vw"
+            />
+            <ProjectTextRow>
+              <ProjectSectionHeading>Productivity & Unproductivity Classification</ProjectSectionHeading>
+              <ProjectSectionText>
+                Developed an intelligent productivity classification system that categorizes
+                employee activities as productive or unproductive based on application
+                usage, time spent, and custom rules. Built Redux-powered state management
+                for complex async workflows with Thunk and Saga middleware.
+              </ProjectSectionText>
+            </ProjectTextRow>
+          </ProjectSectionContent>
+        </ProjectSection>
+        <ProjectSection light>
+          <ProjectSectionContent>
+            <Image
+              srcSet={`${mmWebApps} 1024w`}
+              width={1024}
+              height={800}
+              placeholder={mmWebApps}
+              alt="Mera Monitor web applications monitoring dashboard"
+              sizes="100vw"
+            />
+            <ProjectTextRow>
+              <ProjectSectionHeading>Web Applications & URL Tracking</ProjectSectionHeading>
+              <ProjectSectionText>
+                Built comprehensive web application monitoring that tracks visited URLs,
+                time spent on each site, and categorizes websites by productivity level.
+                Implemented with React.js, TypeScript for type safety, and SCSS modules
+                for scoped styling with Webpack for optimized builds.
+              </ProjectSectionText>
+            </ProjectTextRow>
+          </ProjectSectionContent>
+        </ProjectSection>
+        <ProjectSection>
+          <ProjectTextRow>
+            <ProjectSectionHeading>Authentication & Security</ProjectSectionHeading>
+            <ProjectSectionText>
+              Implemented Microsoft MSAL and Google OAuth for enterprise SSO
+              authentication, supporting multi-tenant access. Built JWT-based
+              session management with secure token refresh flows, ensuring
+              data protection for 3,500+ daily active users.
+            </ProjectSectionText>
+          </ProjectTextRow>
+        </ProjectSection>
+        <ProjectSection>
+          <ProjectSectionContent>
+            <ProjectImage
+              raised
+              srcSet={`${mmAttendance} 1280w`}
+              width={1280}
+              height={800}
+              placeholder={mmAttendance}
+              alt="Mera Monitor attendance tracking and time management interface"
               sizes={`(max-width: ${media.mobile}px) 100vw, 80vw`}
             />
           </ProjectSectionContent>
+        </ProjectSection>
+        <ProjectSection>
+          <ProjectSectionContent>
+            <ProjectImage
+              raised
+              srcSet={`${mmPrivateMode} 1280w`}
+              width={1280}
+              height={800}
+              placeholder={mmPrivateMode}
+              alt="Mera Monitor private mode and time claim management"
+              sizes={`(max-width: ${media.mobile}px) 100vw, 80vw`}
+            />
+            <ProjectTextRow>
+              <ProjectSectionHeading>Private Mode & Time Claims</ProjectSectionHeading>
+              <ProjectSectionText>
+                Developed privacy-aware monitoring features including private mode toggles
+                and time claim management. Employees can request breaks or mark specific
+                time periods with custom reasons, while admins get full visibility into
+                attendance patterns and work-hour tracking.
+              </ProjectSectionText>
+            </ProjectTextRow>
+          </ProjectSectionContent>
+        </ProjectSection>
+        <ProjectSection>
+          <ProjectSectionColumns width="full">
+            <ProjectSectionContent width="full">
+              <ProjectTextRow width="s">
+                <ProjectSectionHeading>Real-time Features</ProjectSectionHeading>
+                <ProjectSectionText>
+                  Integrated SignalR and WebSockets for real-time employee activity
+                  monitoring. Built live dashboards with ApexCharts for data
+                  visualization, showing productivity metrics, screen time, and
+                  application usage in real-time across the entire platform.
+                </ProjectSectionText>
+              </ProjectTextRow>
+            </ProjectSectionContent>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', maxWidth: '600px' }}>
+              <Image
+                raised
+                srcSet={`${mmEfficiency} 400w`}
+                width={400}
+                height={300}
+                placeholder={mmEfficiency}
+                alt="Increased efficiency metrics from Mera Monitor"
+                sizes={`(max-width: ${media.mobile}px) 50vw, 25vw`}
+              />
+              <Image
+                raised
+                srcSet={`${mmVisibility} 400w`}
+                width={400}
+                height={300}
+                placeholder={mmVisibility}
+                alt="More visibility in team operations"
+                sizes={`(max-width: ${media.mobile}px) 50vw, 25vw`}
+              />
+            </div>
+          </ProjectSectionColumns>
         </ProjectSection>
         <ProjectSection>
           <ProjectSectionColumns>
@@ -297,249 +269,37 @@ export const SmartSparrow = () => {
                   caching, Formik for complex forms, and React Table for data-heavy
                   views. The system supports internationalization via React Intl and
                   handles complex role-based access control across the application.
+                  Optimized performance through lazy loading, code splitting, and
+                  virtualization for large data grids.
                 </ProjectSectionText>
               </ProjectTextRow>
             </ProjectSectionContent>
-            <div className={styles.sidebarImages}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <Image
-                className={styles.sidebarImage}
-                srcSet={
-                  isDark
-                    ? `${imageSprSchema2Dark} 260w, ${imageSprSchema2DarkLarge} 520w`
-                    : `${imageSprSchema2Light} 260w, ${imageSprSchema2LightLarge} 520w`
-                }
-                width={260}
-                height={660}
-                placeholder={
-                  isDark
-                    ? imageSprSchema2DarkPlaceholder
-                    : imageSprSchema2LightPlaceholder
-                }
-                alt="Configuration options for a component."
+                raised
+                srcSet={`${mmTimeClaim} 400w`}
+                width={400}
+                height={600}
+                placeholder={mmTimeClaim}
+                alt="Time claim management interface"
                 sizes={`(max-width: ${media.mobile}px) 50vw, 25vw`}
               />
               <Image
-                className={styles.sidebarImage}
-                srcSet={
-                  isDark
-                    ? `${imageSprSchema1Dark} 260w, ${imageSprSchema1DarkLarge} 520w`
-                    : `${imageSprSchema1Light} 260w, ${imageSprSchema1LightLarge} 520w`
-                }
-                width={260}
-                height={660}
-                placeholder={
-                  isDark
-                    ? imageSprSchema1DarkPlaceholder
-                    : imageSprSchema1LightPlaceholder
-                }
-                alt="Configuration options for text."
+                raised
+                srcSet={`${mmHoursSaved} 400w`}
+                width={400}
+                height={600}
+                placeholder={mmHoursSaved}
+                alt="Hours saved per week through productivity insights"
                 sizes={`(max-width: ${media.mobile}px) 50vw, 25vw`}
               />
             </div>
           </ProjectSectionColumns>
         </ProjectSection>
-        <ThemeProvider theme="dark" data-invert>
-          <Suspense>
-            <Earth
-              className={styles.earth}
-              hideMeshes={useMemo(
-                () => ['Atmosphere', 'EarthPartial', 'Chunk', 'EarthFull'],
-                []
-              )}
-              position={useMemo(() => [0, 0, 0], [])}
-              labels={useMemo(
-                () => [
-                  {
-                    position: [0.54, 0.19, 0.18],
-                    text: 'Pacific ring of fire',
-                    hidden: true,
-                  },
-                  {
-                    position: [0.47, -0.38, 0.04],
-                    text: 'Ruapehu',
-                    hidden: true,
-                  },
-                  {
-                    position: [0.22, 0.44, -0.35],
-                    text: 'St. Helens',
-                    hidden: true,
-                  },
-                  {
-                    position: [0.16, -0.06, 0.58],
-                    text: 'Krakatoa',
-                    hidden: true,
-                  },
-                  {
-                    position: [0.11, 0.2, -0.56],
-                    text: 'Parícutin',
-                    hidden: true,
-                  },
-                  {
-                    position: [0.52, 0.2, -0.23],
-                    text: 'Kīlauea',
-                    hidden: true,
-                  },
-                  {
-                    position: [-0.24, 0.75, 0.24],
-                    text: 'Mantle',
-                    delay: 800,
-                    hidden: true,
-                  },
-                  {
-                    position: [-0.24, 0.55, 0.24],
-                    text: 'Outer core',
-                    delay: 800,
-                    hidden: true,
-                  },
-                  {
-                    position: [-0.24, 0.35, 0.24],
-                    text: 'Inner core',
-                    delay: 800,
-                    hidden: true,
-                  },
-                ],
-                []
-              )}
-              scale={0.6}
-            >
-              <EarthSection
-                scrim
-                animations={['0:loop']}
-                camera={[0, 0, 1.5]}
-                meshes={['Atmosphere', 'EarthFull']}
-              >
-                <ProjectSection>
-                  <ProjectSectionContent>
-                    <ProjectTextRow center>
-                      <ProjectSectionHeading>
-                        Global-scale monitoring platform
-                      </ProjectSectionHeading>
-                      <ProjectSectionText>
-                        Built for enterprises managing distributed teams globally.
-                        The platform handles real-time data from 3,500+ active users
-                        with optimized WebSocket connections and efficient state
-                        management across time zones.
-                      </ProjectSectionText>
-                    </ProjectTextRow>
-                  </ProjectSectionContent>
-                </ProjectSection>
-              </EarthSection>
-              <EarthSection
-                animations={['0:loop']}
-                camera={[0, 0, 2.4]}
-                meshes={['Atmosphere', 'EarthFull']}
-              />
-              <EarthSection
-                animations={['0:loop']}
-                camera={[1.14, -1.39, 0.94]}
-                meshes={['Atmosphere', 'EarthFull']}
-              >
-                <ProjectSection>
-                  <ProjectSectionContent width="xl">
-                    <ProjectTextRow justify="end" width="s">
-                      <ProjectSectionHeading level={4} as="h3">
-                        Performance at scale
-                      </ProjectSectionHeading>
-                      <ProjectSectionText>
-                        Implemented lazy loading, code splitting, and virtualization
-                        to handle thousands of data points without impacting page
-                        load times. Optimized rendering with React.memo and useMemo
-                        for complex dashboard views.
-                      </ProjectSectionText>
-                    </ProjectTextRow>
-                  </ProjectSectionContent>
-                </ProjectSection>
-              </EarthSection>
-              <EarthSection
-                animations={['0:loop']}
-                camera={[1.17, 0.69, -1.47]}
-                meshes={['Atmosphere', 'EarthFull']}
-                labels={[
-                  'Pacific ring of fire',
-                  'Ruapehu',
-                  'St. Helens',
-                  'Krakatoa',
-                  'Parícutin',
-                  'Kīlauea',
-                ]}
-              >
-                <ProjectSection>
-                  <ProjectSectionContent width="xl">
-                    <ProjectTextRow justify="start" width="s">
-                      <ProjectSectionHeading level={4} as="h3">
-                        Live data streaming
-                      </ProjectSectionHeading>
-                      <ProjectSectionText>
-                        Real-time activity feeds and notification systems powered by
-                        SignalR WebSockets. Users see live productivity metrics,
-                        application usage, and team performance dashboards updating
-                        in real-time.
-                      </ProjectSectionText>
-                    </ProjectTextRow>
-                  </ProjectSectionContent>
-                </ProjectSection>
-              </EarthSection>
-              <EarthSection
-                animations={['0:loop']}
-                camera={[1.81, 0.51, 0.43]}
-                meshes={['Atmosphere', 'EarthFull']}
-                labels={[
-                  'Pacific ring of fire',
-                  'Ruapehu',
-                  'St. Helens',
-                  'Krakatoa',
-                  'Parícutin',
-                  'Kīlauea',
-                ]}
-              />
-              <EarthSection
-                animations={['0:loop']}
-                camera={[0.37, 1.02, 1.84]}
-                meshes={['EarthPartial', 'Chunk']}
-                labels={['Mantle', 'Outer core', 'Inner core']}
-              >
-                <ProjectSection>
-                  <ProjectSectionContent width="xl">
-                    <ProjectTextRow justify="end" width="s">
-                      <ProjectSectionHeading level={4} as="h3">
-                        Data visualization
-                      </ProjectSectionHeading>
-                      <ProjectSectionText>
-                        Rich interactive charts and graphs powered by ApexCharts
-                        displaying productivity trends, team analytics, and resource
-                        utilization. Responsive layouts that adapt seamlessly across
-                        desktop and mobile devices.
-                      </ProjectSectionText>
-                    </ProjectTextRow>
-                  </ProjectSectionContent>
-                </ProjectSection>
-              </EarthSection>
-              <EarthSection
-                scrimReverse
-                animations={['0:loop']}
-                camera={[0.37, 1.02, 1.84]}
-                meshes={['Atmosphere', 'EarthFull']}
-              />
-            </Earth>
-          </Suspense>
-        </ThemeProvider>
         <ProjectSection>
           <ProjectSectionContent>
             <ProjectTextRow center centerMobile noMargin>
-              <svg
-                width="141"
-                height="43"
-                viewBox="0 0 141 43"
-                fill="currentColor"
-                style={{ marginBottom: '2em' }}
-              >
-                <path d="M87.92 30.05a.3.3 0 0 0-.34-.18l-.04.02c-.42.08-.74.06-.97-.1-.32-.2-.47-.69-.47-1.47V21.3c0-2.75-1.66-4.14-4.94-4.14-2.93 0-5.23 1.37-5.23 3.12 0 .9.55 1.55 1.37 1.64a1.7 1.7 0 0 0 1.42-.56c.72-.75.63-1.64-.25-2.6a3.52 3.52 0 0 1 2.48-.85c1.7 0 2.43 1 2.43 3.33v1.78c-.4.12-.77.24-1.45.4a18.9 18.9 0 0 0-4.7 1.52 3.19 3.19 0 0 0-1.78 2.99c0 1.46.98 3.17 3.73 3.17 1.54 0 2.92-.72 4.33-2.26.12 1.6.74 2.2 2.24 2.2.72 0 1.3-.16 1.98-.49a.4.4 0 0 0 .2-.49Zm-4.54-2.15c-.33.46-1.42 1.83-2.78 1.83-1.84 0-2.23-1.27-2.23-2.34 0-1.75 1.37-2.57 5.01-3.46v3.97Zm35.23 3.25c-3.9 0-6.83-3-6.83-7 0-3.9 3.06-7.09 6.83-7.09 3.81 0 6.8 3.06 6.8 6.98 0 4.4-3.53 7.11-6.8 7.11Zm-.15-13.34c-1.68 0-3.61.72-3.61 6.28 0 4.25 1.27 6.31 3.88 6.31 2.5 0 3.61-1.94 3.61-6.3 0-4.23-1.27-6.29-3.88-6.29Zm-60.06-.5c0 3.24-.8 5.02-4.94 5.02h-2.2v-9.78h2.29c4.28 0 4.85 2.4 4.85 4.76Zm-7.14 11.01v-5.09h1.99c2.96 0 5.22-.61 6.7-1.83a5.06 5.06 0 0 0 1.88-4.03c0-4.65-4.55-5.63-8.37-5.63h.01-7.74a.32.32 0 0 0-.32.31v.03-.01c0 .16.1.3.25.36.69.25 2.56-.1 2.56 1.88v14.01c0 1.02-.46 1.74-2.55 1.94a.31.31 0 0 0-.3.3v.06c0 .17.15.3.33.3h8.27c.18 0 .32-.13.32-.3v-.05a.3.3 0 0 0-.3-.3c-2.27-.19-2.73-.88-2.73-1.95v-5.08 5.08ZM68.1 17.06c-3.6 0-6.53 3.21-6.53 7.17 0 4 2.75 6.9 6.53 6.9 3.18 0 4.73-1.87 5.62-3.28a.31.31 0 0 0-.09-.42l-.04-.03a.32.32 0 0 0-.44.07c-1.17 1.44-2.19 2.28-3.96 2.28-2.23 0-4.62-1.52-4.62-5.79v-.71h9.15c.03 0 .05-.02.05-.05v-.07a5.72 5.72 0 0 0-1.4-4.42 5.67 5.67 0 0 0-4.27-1.65Zm-3.47 5.29c.3-2.92 1.45-4.52 3.26-4.52.91 0 1.58.25 2.06.76.65.7.93 1.96.82 3.76h-6.14Zm41.39.15c-2.5-.69-3.48-1.39-3.48-2.5 0-1.26 1.01-2.17 2.4-2.17 1.65 0 2.36.77 4.1 3.64l.01.03.03.03h.25c.18 0 .32-.14.32-.32v-4.1c0-.03-.02-.05-.02-.05h-.34c-.1 0-.19.04-.25.11l-.55.66a6.64 6.64 0 0 0-2.98-.77c-2.87 0-4.88 1.75-4.88 4.25 0 2.36 1.58 3.24 4.31 3.97 2.66.71 3.6 1.46 3.6 2.85 0 1.54-1.51 2.23-2.59 2.23-2 0-2.84-.73-4.76-4.13l-.02-.04-.02-.02h-.26a.32.32 0 0 0-.32.31v4.6c0 .03.02.06.05.06h.32c.09 0 .17-.04.23-.1l.87-.86c1.03.63 2.56.96 3.56.96 1.5 0 2.72-.47 3.55-1.36a4.54 4.54 0 0 0 1.15-3.14c0-2.14-1.16-3.26-4.28-4.14Zm-15.14 6.78c0 .7-.18.94-1.33 1.01a.32.32 0 0 0-.3.31c0 .18.15.31.32.31h5.66a.3.3 0 0 0 .31-.3c0-.17-.13-.3-.3-.31-1.3-.07-1.65-.28-1.65-1.02v-8.2c.94-1.52 1.6-2.32 2.74-2.56-.06.2-.1.42-.1.6 0 1 .7 1.7 1.72 1.7.99 0 1.68-.7 1.68-1.7 0-.93-.6-2.03-2.28-2.03-1.37 0-2.69.78-3.82 2.64v-2.1a.39.39 0 0 0-.4-.39l-3.56.1a.3.3 0 0 0-.3.3v.05c0 .16.1.3.26.31 1.19.17 1.35.73 1.35 1.3v9.98Zm39.15-12.05c.08 0 .16.04.22.1.06.05.1.13.1.22v2.33s1.17-2.74 4.94-2.74h.04c2.35 0 3.7 1.48 3.7 4.06v8.06c0 .71.18.95 1.32 1.02.17 0 .3.14.3.31 0 .17-.14.31-.32.31h-5.08a.32.32 0 0 1-.03-.63c.92-.08 1.07-.3 1.07-1v-7.29c0-2.4-.7-3.33-2.47-3.33-1.2 0-2.19 1.03-2.8 1.9 0 0-.31.38-.65 1.12l.03 7.6c0 .7.15.92 1.05 1a.32.32 0 0 1-.03.63h-5.06a.32.32 0 0 1-.31-.31c0-.17.13-.3.3-.31 1.14-.08 1.32-.3 1.32-1.02v-9.95c0-.58-.16-1.14-1.36-1.31a.31.31 0 0 1-.26-.31v-.05c0-.17.13-.3.3-.31l3.68-.1Z" />
-                <path
-                  fillRule="evenodd"
-                  d="M35.47 30.82c6.24-11.43 4.15-22.73-4.81-27.77C20.76-2.5 7.84.52 2.28 12.46c-3.84 8.2-2.1 22.48 6.82 27.6 8.92 5.1 20.9.81 26.37-9.23Zm-3.02-12.15c.3-2.3-.24-5.1-2-6.95l-.02-.02c-3.38-3.76-8.06-4-11.02-3.92a16.61 16.61 0 0 0-7.55 2.14c-1.68.86-3.2 2.35-3.81 3.08-.4.47-1.06 1.44-.7 2.31.29.73 1.4.68 1.81.37.22-.16.45-.37.7-.6l.72-.64c2.53-2.07 4.78-3.37 10-3.37 5.23 0 8.06 3.22 8.06 6.09 0 2.87-1.38 4.82-3.97 6.09a10.54 10.54 0 0 1-4.4 1.18c.13-2.78.2-5.41.2-5.41 0-.33.02-.65.03-.96.07-1.55.12-2.72-1.01-2.94-1.36-.27-3.86 0-3.9 1.52-.06-.23.25 12.51.31 12.77l.02.29c.03.32.15.6.35.83a1.38 1.38 0 0 0 .98.41c.28 0 .68-.05 1.09-.16.5-.15 1.02-.39 1.31-.77.15-.2.27-.38.34-.72.04-.24.13-1.72.15-2.15 2.75-.02 5.54-.53 7.67-1.8 2.68-1.62 4.29-4.04 4.64-6.67ZM18.23 32.41a2.12 2.12 0 0 1 1.69 1.99c0 .52-.22.99-.63 1.32-.35.28-.8.43-1.3.43h-.01c-.23 0-.46-.03-.69-.1-.39-.1-.7-.29-.9-.52-.19-.22-.31-.5-.37-.83-.08-.5.05-1.04.36-1.48a1.9 1.9 0 0 1 1.53-.84c.1 0 .22 0 .32.03Z"
-                />
-              </svg>
-              <ProjectSectionHeading>Project outcomes</ProjectSectionHeading>
+              <ProjectSectionHeading>Project Outcomes</ProjectSectionHeading>
               <ProjectSectionText>
                 Mera Monitor has grown to serve 3,500+ daily active users across
                 multiple enterprise clients. The platform successfully reduced
@@ -550,6 +310,19 @@ export const SmartSparrow = () => {
                 to learn more.
               </ProjectSectionText>
             </ProjectTextRow>
+          </ProjectSectionContent>
+        </ProjectSection>
+        <ProjectSection light>
+          <ProjectSectionContent>
+            <ProjectImage
+              raised
+              srcSet={`${mmTeamSupport} 1280w`}
+              width={1280}
+              height={800}
+              placeholder={mmTeamSupport}
+              alt="Mera Monitor team support and enterprise deployment"
+              sizes="100vw"
+            />
           </ProjectSectionContent>
         </ProjectSection>
       </ProjectContainer>

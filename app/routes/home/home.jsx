@@ -1,15 +1,10 @@
-import gamestackTexture2Large from '~/assets/gamestack-list-large.jpg';
-import gamestackTexture2Placeholder from '~/assets/gamestack-list-placeholder.jpg';
-import gamestackTexture2 from '~/assets/gamestack-list.jpg';
-import gamestackTextureLarge from '~/assets/gamestack-login-large.jpg';
-import gamestackTexturePlaceholder from '~/assets/gamestack-login-placeholder.jpg';
-import gamestackTexture from '~/assets/gamestack-login.jpg';
+import scHowItWorks from '~/assets/sc-how-it-works.gif';
+import scAnimateBox from '~/assets/sc-animate-box.gif';
 import sliceTextureLarge from '~/assets/slice-app-large.jpg';
 import sliceTexturePlaceholder from '~/assets/slice-app-placeholder.jpg';
 import sliceTexture from '~/assets/slice-app.jpg';
-import sprTextureLarge from '~/assets/spr-lesson-builder-dark-large.jpg';
-import sprTexturePlaceholder from '~/assets/spr-lesson-builder-dark-placeholder.jpg';
-import sprTexture from '~/assets/spr-lesson-builder-dark.jpg';
+import mmDashboardImage from '~/assets/mm-analytics-dashboard.png';
+import mmScreenMonitoring from '~/assets/mm-screen-monitoring.png';
 import { Footer } from '~/components/footer';
 import { baseMeta } from '~/utils/meta';
 import { Intro } from './intro';
@@ -114,8 +109,8 @@ export const Home = () => {
           alt: 'Mera Monitor dashboard showing employee productivity metrics',
           textures: [
             {
-              srcSet: `${sprTexture} 1280w, ${sprTextureLarge} 2560w`,
-              placeholder: sprTexturePlaceholder,
+              srcSet: `${mmDashboardImage} 1280w`,
+              placeholder: mmDashboardImage,
             },
           ],
         }}
@@ -135,12 +130,12 @@ export const Home = () => {
           alt: 'Screen Coach app showing screen time analytics',
           textures: [
             {
-              srcSet: `${gamestackTexture} 375w, ${gamestackTextureLarge} 750w`,
-              placeholder: gamestackTexturePlaceholder,
+              srcSet: `${scAnimateBox} 375w`,
+              placeholder: scAnimateBox,
             },
             {
-              srcSet: `${gamestackTexture2} 375w, ${gamestackTexture2Large} 750w`,
-              placeholder: gamestackTexture2Placeholder,
+              srcSet: `${scHowItWorks} 375w`,
+              placeholder: scHowItWorks,
             },
           ],
         }}
