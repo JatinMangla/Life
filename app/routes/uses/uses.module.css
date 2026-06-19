@@ -1,18 +1,270 @@
 .uses {
-  --maxWidthL: var(--maxWidthM);
+  --maxWidthL: var(--maxWidthXL);
 }
 
-.section {
-  opacity: 0;
+/* Shared section reveal */
+.gridSection,
+.summarySection,
+.marqueeSection {
+  width: 100%;
+  padding-top: var(--space3XL);
+  padding-bottom: var(--space3XL);
+}
+
+.marqueeSection {
   padding-top: var(--space2XL);
   padding-bottom: var(--space2XL);
-  margin-top: var(--space2XL);
+}
 
-  &:global {
-    animation: fade-in 1s ease 1s forwards;
+/* --- Marquee of floating tech badges --- */
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    black 12%,
+    black 88%,
+    transparent
+  );
+  mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+}
+
+.marqueeTrack {
+  display: flex;
+  align-items: center;
+  gap: var(--spaceM);
+  width: max-content;
+  padding-block: var(--spaceXS);
+  padding-inline: var(--spaceM);
+  animation: marquee-scroll 36s linear infinite;
+}
+
+.marquee:hover .marqueeTrack {
+  animation-play-state: paused;
+}
+
+.marquee[data-static='true'] .marqueeTrack {
+  animation: none;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: fit-content;
+  gap: var(--spaceS);
+  white-space: nowrap;
+  line-height: 1;
+  padding: var(--spaceS) var(--spaceM);
+  border-radius: 100px;
+  font-size: var(--fontSizeBodyS);
+  font-weight: var(--fontWeightMedium);
+  color: var(--textBody);
+  background: color-mix(in lab, var(--backgroundLight) 92%, transparent);
+  border: 1px solid color-mix(in lab, var(--text) 16%, transparent);
+  backdrop-filter: blur(8px);
+  transition: color var(--durationS) ease, border-color var(--durationS) ease;
+}
+
+.tag:hover {
+  color: var(--text);
+  border-color: color-mix(in lab, var(--accent, var(--primary)) 60%, transparent);
+}
+
+.tagDot {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 8px 1px color-mix(in lab, var(--primary) 70%, transparent);
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
   }
+  to {
+    transform: translateX(-50%);
+  }
+}
 
-  + & {
-    margin-top: 0;
+/* --- 3D tilt card grid --- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spaceXL);
+  perspective: 1600px;
+
+  @media (--mediaTablet) {
+    grid-template-columns: 1fr;
+    perspective: 1200px;
+  }
+}
+
+.card {
+  --accentColor: oklch(84.42% 0.19 var(--accent, 202.24));
+
+  position: relative;
+  border-radius: 18px;
+  padding: 1px;
+  transform-style: preserve-3d;
+  will-change: transform;
+  background: linear-gradient(
+    150deg,
+    color-mix(in lab, var(--accentColor) 38%, transparent),
+    color-mix(in lab, var(--text) 10%, transparent) 45%,
+    transparent 80%
+  );
+  box-shadow: 0 18px 50px -28px rgb(0 0 0 / 0.7);
+  transition: box-shadow var(--durationM) ease;
+}
+
+.card:hover {
+  box-shadow:
+    0 28px 70px -30px rgb(0 0 0 / 0.85),
+    0 0 0 1px color-mix(in lab, var(--accentColor) 30%, transparent);
+}
+
+/* cursor-follow glow */
+.cardGlow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity var(--durationM) ease;
+  background: radial-gradient(
+    420px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    color-mix(in lab, var(--accentColor) 28%, transparent),
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.card:hover .cardGlow {
+  opacity: 1;
+}
+
+.cardContent {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  border-radius: 17px;
+  padding: var(--spaceXL);
+  background: color-mix(in lab, var(--background) 82%, transparent);
+  backdrop-filter: blur(16px);
+  transform: translateZ(40px);
+  transform-style: preserve-3d;
+
+  @media (--mediaMobile) {
+    padding: var(--spaceL);
+  }
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spaceL);
+}
+
+.cardIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  color: var(--accentColor);
+  background: color-mix(in lab, var(--accentColor) 14%, transparent);
+  border: 1px solid color-mix(in lab, var(--accentColor) 30%, transparent);
+  transform: translateZ(30px);
+}
+
+.cardIndex {
+  font-family: var(--monoFontStack);
+  font-size: var(--fontSizeH4);
+  font-weight: var(--fontWeightBold);
+  line-height: 1;
+  color: color-mix(in lab, var(--text) 12%, transparent);
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: var(--fontSizeH4);
+  font-weight: var(--fontWeightBold);
+  color: var(--textTitle);
+  letter-spacing: -0.01em;
+  transform: translateZ(24px);
+}
+
+.cardIntro {
+  margin: var(--spaceXS) 0 var(--spaceL);
+  color: var(--accentColor);
+  font-size: var(--fontSizeBodyS);
+  font-weight: var(--fontWeightMedium);
+}
+
+.cardList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spaceM);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cardItem {
+  position: relative;
+  padding-left: var(--spaceL);
+  color: var(--textBody);
+  font-size: var(--fontSizeBodyS);
+  line-height: var(--lineHeightBody);
+}
+
+.cardItem::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--accentColor);
+  transform: rotate(45deg);
+  box-shadow: 0 0 8px 0 color-mix(in lab, var(--accentColor) 60%, transparent);
+}
+
+.cardItem a {
+  color: var(--text);
+  font-weight: var(--fontWeightMedium);
+}
+
+/* --- Summary table --- */
+.summaryInner {
+  width: 100%;
+}
+
+.tableWrap {
+  margin-top: var(--spaceL);
+  padding: var(--spaceL);
+  border-radius: 16px;
+  background: color-mix(in lab, var(--background) 70%, transparent);
+  border: 1px solid color-mix(in lab, var(--text) 10%, transparent);
+  backdrop-filter: blur(12px);
+
+  @media (--mediaMobile) {
+    padding: var(--spaceM);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marqueeTrack {
+    animation: none;
   }
 }
