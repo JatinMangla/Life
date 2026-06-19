@@ -76,7 +76,7 @@ export const Carousel = ({ width, height, images, placeholder, ...rest }) => {
     });
     camera.current = new OrthographicCamera(...cameraOptions);
     scene.current = new Scene();
-    renderer.current.setPixelRatio(2);
+    renderer.current.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.current.setClearColor(0x111111, 1.0);
     renderer.current.setSize(width, height);
     renderer.current.domElement.style.width = '100%';
@@ -109,7 +109,13 @@ export const Carousel = ({ width, height, images, placeholder, ...rest }) => {
         return imageTexture;
       });
 
-      const textures = await Promise.all(texturePromises);
+      let textures;
+      try {
+        textures = await Promise.all(texturePromises);
+      } catch (err) {
+        console.error('Carousel failed to load images:', err);
+        return;
+      }
 
       // Cancel if the component has unmounted during async code
       if (!mounted) return;
@@ -337,20 +343,29 @@ export const Carousel = ({ width, height, images, placeholder, ...rest }) => {
     [handlePointerMove, handlePointerUp]
   );
 
-  const handleKeyDown = event => {
-    switch (event.key) {
-      case 'ArrowRight':
-        navigate({ direction: 1 });
-        break;
-      case 'ArrowLeft':
-        navigate({ direction: -1 });
-        break;
-    }
-  };
+  const handleKeyDown = useCallback(
+    event => {
+      switch (event.key) {
+        case 'ArrowRight':
+          navigate({ direction: 1 });
+          break;
+        case 'ArrowLeft':
+          navigate({ direction: -1 });
+          break;
+      }
+    },
+    [navigate]
+  );
 
   return (
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div className={styles.carousel} onKeyDown={handleKeyDown} {...rest}>
+    <div
+      className={styles.carousel}
+      onKeyDown={handleKeyDown}
+      tabIndex="0"
+      role="region"
+      aria-roledescription="carousel"
+      {...rest}
+    >
       <div className={styles.content}>
         <div
           className={styles.imageWrapper}

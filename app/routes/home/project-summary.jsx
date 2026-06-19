@@ -50,6 +50,7 @@ export function ProjectSummary({
   function renderKatakana(device, visible) {
     return (
       <svg
+        aria-hidden="true"
         type="project"
         data-visible={visible && modelLoaded}
         data-light={theme === 'light'}

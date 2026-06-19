@@ -1,4 +1,4 @@
-import { createCookieSessionStorage, json } from '@remix-run/node';
+import { json } from '@remix-run/node';
 import { Outlet, useLoaderData } from '@remix-run/react';
 import { MDXProvider } from '@mdx-js/react';
 import { Post, postMarkdown } from '~/layouts/post';
@@ -8,8 +8,17 @@ import { formatTimecode, readingTime } from '~/utils/timecode';
 
 export async function loader({ request }) {
   const slug = request.url.split('/').at(-1);
-  const module = await import(`../articles.${slug}.mdx`);
-  const text = await import(`../articles.${slug}.mdx?raw`);
+
+  let module, text;
+  try {
+    [module, text] = await Promise.all([
+      import(`../articles.${slug}.mdx`),
+      import(`../articles.${slug}.mdx?raw`),
+    ]);
+  } catch {
+    throw new Response('Article not found', { status: 404 });
+  }
+
   const readTime = readingTime(text.default);
   const ogImage = `${config.url}/static/${slug}-og.jpg`;
 

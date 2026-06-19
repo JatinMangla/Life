@@ -85,7 +85,7 @@
       inset: 0;
       background-color: var(--backgroundLight);
       filter: brightness(2.2);
-      clip-path: polygon(0 0, 100% 0, 100% 100%, 100% 100%, 0 100%);
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 
       @media (--mediaUseMotion) {
         transition: clip-path var(--durationM) var(--bezierFastoutSlowin);

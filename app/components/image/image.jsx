@@ -165,7 +165,7 @@ const ImageElements = ({
             {...rest}
           />
           {!noPauseButton && (
-            <Button className={styles.button} onClick={togglePlaying}>
+            <Button className={styles.button} onClick={togglePlaying} aria-pressed={playing}>
               <Icon icon={playing ? 'pause' : 'play'} />
               {playing ? 'Pause' : 'Play'}
             </Button>

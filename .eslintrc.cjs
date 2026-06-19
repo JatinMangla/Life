@@ -27,6 +27,8 @@ module.exports = {
   rules: {
     semi: 'error',
     'no-unused-vars': 'warn',
+    'prefer-const': 'error',
+    'no-console': ['warn', { allow: ['error', 'warn'] }],
   },
 
   overrides: [
@@ -43,6 +45,7 @@ module.exports = {
       rules: {
         'react/prop-types': 'off',
         'react/display-name': 'off',
+        'react-hooks/exhaustive-deps': 'error',
       },
       settings: {
         react: {

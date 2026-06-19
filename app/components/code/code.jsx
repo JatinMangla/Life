@@ -14,12 +14,12 @@ export const Code = props => {
   const lang = props.className?.split('-')[1];
 
   const handleCopy = () => {
-    clearTimeout(copyTimeout);
-    navigator.clipboard.writeText(elementRef.current.textContent);
+    clearTimeout(copyTimeout.current);
+    navigator.clipboard.writeText(elementRef.current.textContent).catch(() => {});
 
     setCopied(true);
 
-    setTimeout(() => {
+    copyTimeout.current = setTimeout(() => {
       setCopied(false);
     }, 2000);
   };
@@ -33,7 +33,10 @@ export const Code = props => {
       )}
       <pre ref={elementRef} {...props} />
       <div className={styles.actions}>
-        <Button iconOnly onClick={handleCopy} aria-label="Copy">
+        <span className="visually-hidden" aria-live="polite" aria-atomic="true">
+          {copied ? 'Copied!' : ''}
+        </span>
+        <Button iconOnly onClick={handleCopy} aria-label={copied ? 'Copied' : 'Copy'}>
           <span className={styles.copyIcon}>
             <Transition in={!copied}>
               {({ visible, nodeRef }) => (

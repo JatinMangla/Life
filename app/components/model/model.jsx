@@ -1,7 +1,6 @@
 import { animate, useReducedMotion, useSpring } from 'framer-motion';
 import { useInViewport } from '~/hooks';
 import {
-  createRef,
   startTransition,
   useCallback,
   useEffect,
@@ -159,7 +158,7 @@ export const Model = ({
       failIfMajorPerformanceCaveat: true,
     });
 
-    renderer.current.setPixelRatio(2);
+    renderer.current.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.current.setSize(clientWidth, clientHeight);
     renderer.current.outputColorSpace = SRGBColorSpace;
 
@@ -370,7 +369,7 @@ const Device = ({
 }) => {
   const [loadDevice, setLoadDevice] = useState();
   const reduceMotion = useReducedMotion();
-  const placeholderScreen = createRef();
+  const placeholderScreen = useRef();
 
   useEffect(() => {
     const applyScreenTexture = async (texture, node) => {
@@ -400,36 +399,41 @@ const Device = ({
 
       modelGroup.current.add(gltf.scene);
 
-      gltf.scene.traverse(async node => {
+      // Collect nodes synchronously before any async work
+      const screenNodes = [];
+      gltf.scene.traverse(node => {
         if (node.material) {
           node.material.color = new Color(0x1f2025);
         }
-
         if (node.name === MeshType.Screen) {
-          // Create a copy of the screen mesh so we can fade it out
-          // over the full resolution screen texture
-          placeholderScreen.current = node.clone();
-          placeholderScreen.current.material = node.material.clone();
-          node.parent.add(placeholderScreen.current);
-          placeholderScreen.current.material.opacity = 1;
-          placeholderScreen.current.position.z += 0.001;
-
-          applyScreenTexture(placeholder, placeholderScreen.current);
-
-          loadFullResTexture = async () => {
-            const image = await resolveSrcFromSrcSet(texture);
-            const fullSize = await textureLoader.loadAsync(image);
-            await applyScreenTexture(fullSize, node);
-
-            animate(1, 0, {
-              onUpdate: value => {
-                placeholderScreen.current.material.opacity = value;
-                renderFrame();
-              },
-            });
-          };
+          screenNodes.push(node);
         }
       });
+
+      for (const node of screenNodes) {
+        // Create a copy of the screen mesh so we can fade it out
+        // over the full resolution screen texture
+        placeholderScreen.current = node.clone();
+        placeholderScreen.current.material = node.material.clone();
+        node.parent.add(placeholderScreen.current);
+        placeholderScreen.current.material.opacity = 1;
+        placeholderScreen.current.position.z += 0.001;
+
+        await applyScreenTexture(placeholder, placeholderScreen.current);
+
+        loadFullResTexture = async () => {
+          const image = await resolveSrcFromSrcSet(texture);
+          const fullSize = await textureLoader.loadAsync(image);
+          await applyScreenTexture(fullSize, node);
+
+          animate(1, 0, {
+            onUpdate: value => {
+              placeholderScreen.current.material.opacity = value;
+              renderFrame();
+            },
+          });
+        };
+      }
 
       const targetPosition = new Vector3(position.x, position.y, position.z);
 

@@ -22,7 +22,7 @@ function ArticlesPost({ slug, frontmatter, timecode, index }) {
 
   useEffect(() => {
     setDateTime(formatDate(date));
-  }, [date, dateTime]);
+  }, [date]);
 
   const handleMouseEnter = () => {
     setHovered(true);
