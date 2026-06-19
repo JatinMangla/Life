@@ -23,6 +23,7 @@ import config from '~/config.json';
 import styles from './root.module.css';
 import './reset.css';
 import './global.css';
+import { Analytics } from '@vercel/analytics/remix';
 
 export const links = () => [
   {
@@ -120,6 +121,7 @@ export default function App() {
         </ThemeProvider>
         <ScrollRestoration />
         <Scripts />
+        <Analytics />
       </body>
     </html>
   );
@@ -143,6 +145,7 @@ export function ErrorBoundary() {
         <Error error={error} />
         <ScrollRestoration />
         <Scripts />
+        <Analytics />
       </body>
     </html>
   );

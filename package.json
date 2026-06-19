@@ -22,6 +22,7 @@
     "@mdx-js/react": "^3.0.1",
     "@remix-run/node": "^2.15.3",
     "@remix-run/react": "^2.7.1",
+    "@vercel/analytics": "^2.0.1",
     "framer-motion": "11.0.5",
     "isbot": "^4.1.0",
     "miniflare": "^3.20231030.4",
