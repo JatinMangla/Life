@@ -1,26 +1,20 @@
-import sliceAnnotationLarge from '~/assets/slice-annotation-large.png';
-import sliceAnnotationPlaceholder from '~/assets/slice-annotation-placeholder.png';
-import sliceAnnotation from '~/assets/slice-annotation.png';
-import sliceAppLarge from '~/assets/slice-app-large.jpg';
-import sliceAppPlaceholder from '~/assets/slice-app-placeholder.jpg';
-import sliceApp from '~/assets/slice-app.jpg';
-import sliceBackgroundBarLarge from '~/assets/slice-background-bar-large.jpg';
-import sliceBackgroundBarPlaceholder from '~/assets/slice-background-bar-placeholder.jpg';
-import sliceBackgroundBar from '~/assets/slice-background-bar.jpg';
-import sliceBackgroundLarge from '~/assets/slice-background-large.jpg';
-import sliceBackgroundPlaceholder from '~/assets/slice-background-placeholder.jpg';
-import sliceBackground from '~/assets/slice-background.jpg';
-import sliceIrlPlaceholder from '~/assets/slice-irl-placeholder.jpg';
-import sliceIrl from '~/assets/slice-irl.jpg';
-import sliceSidebarAnnotationsLarge from '~/assets/slice-sidebar-annotations-large.png';
-import sliceSidebarAnnotationsPlaceholder from '~/assets/slice-sidebar-annotations-placeholder.png';
-import sliceSidebarAnnotations from '~/assets/slice-sidebar-annotations.png';
-import sliceSidebarLayersLarge from '~/assets/slice-sidebar-layers-large.png';
-import sliceSidebarLayersPlaceholder from '~/assets/slice-sidebar-layers-placeholder.png';
-import sliceSidebarLayers from '~/assets/slice-sidebar-layers.png';
-import sliceSlidesLarge from '~/assets/slice-slides-large.jpg';
-import sliceSlidesPlaceholder from '~/assets/slice-slides-placeholder.jpg';
-import sliceSlides from '~/assets/slice-slides.jpg';
+import msgBackground from '~/assets/msg-background.jpg';
+import msgBackgroundLarge from '~/assets/msg-background-large.jpg';
+import msgBackgroundPlaceholder from '~/assets/msg-background-placeholder.jpg';
+import msgApp from '~/assets/msg-laptop-context.jpg';
+import msgAppLarge from '~/assets/msg-laptop-context-large.jpg';
+import msgAppPlaceholder from '~/assets/msg-laptop-context-placeholder.jpg';
+import msgSidebar1 from '~/assets/msg-sidebar-1.jpg';
+import msgSidebar1Large from '~/assets/msg-sidebar-1-large.jpg';
+import msgSidebar1Placeholder from '~/assets/msg-sidebar-1-placeholder.jpg';
+import msgSidebar2 from '~/assets/msg-sidebar-2.jpg';
+import msgSidebar2Large from '~/assets/msg-sidebar-2-large.jpg';
+import msgSidebar2Placeholder from '~/assets/msg-sidebar-2-placeholder.jpg';
+import msgCampaign from '~/assets/msg-laptop-context-2.jpg';
+import msgCampaignLarge from '~/assets/msg-laptop-context-2-large.jpg';
+import msgCampaignPlaceholder from '~/assets/msg-laptop-context-2-placeholder.jpg';
+import msgIrl from '~/assets/msg-team-irl.jpg';
+import msgIrlPlaceholder from '~/assets/msg-team-irl-placeholder.jpg';
 import { Footer } from '~/components/footer';
 import { Image } from '~/components/image';
 import {
@@ -42,8 +36,15 @@ import styles from './slice.module.css';
 
 const title = 'UI Integration — Messaging Automation';
 const description =
-  'Designed and implemented user interfaces for WhatsApp, Telegram, and SMS automation integrations, ensuring cross-browser compatibility and responsive design for enterprise communication tools.';
-const roles = ['Frontend Development', 'UI/UX Design', 'Cross-browser Compatibility', 'Responsive Design'];
+  'Designed and implemented user interfaces for WhatsApp, Telegram, and SMS automation integrations, delivering a unified multi-channel dashboard that supports bulk campaigns, workflow automation, scheduled messaging, and real-time delivery analytics — with full cross-browser compatibility and responsive design.';
+const roles = [
+  'Frontend Development',
+  'UI/UX Design',
+  'REST API Integration',
+  'Cross-browser Compatibility',
+  'Responsive Design',
+  'jQuery & HTML5/CSS3',
+];
 
 export const meta = () => {
   return baseMeta({ title, description, prefix: 'Projects' });
@@ -54,11 +55,11 @@ export const Slice = () => {
     <Fragment>
       <ProjectContainer className={styles.slice}>
         <ProjectBackground
-          src={sliceBackground}
-          srcSet={`${sliceBackground} 1280w, ${sliceBackgroundLarge} 2560w`}
+          src={msgBackground}
+          srcSet={`${msgBackground} 1280w, ${msgBackgroundLarge} 2560w`}
           width={1280}
-          height={800}
-          placeholder={sliceBackgroundPlaceholder}
+          height={720}
+          placeholder={msgBackgroundPlaceholder}
           opacity={0.8}
         />
         <ProjectHeader
@@ -69,11 +70,11 @@ export const Slice = () => {
         <ProjectSection padding="top">
           <ProjectSectionContent>
             <ProjectImage
-              srcSet={`${sliceApp} 800w, ${sliceAppLarge} 1920w`}
-              width={800}
-              height={500}
-              placeholder={sliceAppPlaceholder}
-              alt="Messaging automation interface showing WhatsApp, Telegram, and SMS integration panels."
+              srcSet={`${msgAppLarge} 1920w, ${msgApp} 1280w`}
+              width={1280}
+              height={854}
+              placeholder={msgAppPlaceholder}
+              alt="Laptop displaying the messaging automation dashboard with WhatsApp, Telegram, and SMS channel management."
               sizes={`(max-width: ${media.mobile}px) 100vw, (max-width: ${media.tablet}px) 90vw, 80vw`}
             />
           </ProjectSectionContent>
@@ -81,36 +82,37 @@ export const Slice = () => {
         <ProjectSection>
           <ProjectSectionColumns centered className={styles.columns}>
             <div className={styles.imagesText}>
-              <ProjectSectionHeading>Multi-platform Integration</ProjectSectionHeading>
+              <ProjectSectionHeading>Multi-channel Integration</ProjectSectionHeading>
               <ProjectSectionText>
-                Built unified messaging interfaces that connect WhatsApp, Telegram, and
-                SMS channels into a single dashboard. Users can manage automated
-                campaigns, schedule messages, and monitor delivery analytics across
-                all platforms.
+                Built a unified messaging interface that consolidates WhatsApp, Telegram,
+                and SMS channels into a single dashboard. Operators can manage automated
+                campaigns, schedule messages in advance, and monitor delivery analytics
+                across all platforms without switching tools.
               </ProjectSectionText>
               <ProjectSectionText>
-                The solution uses responsive design patterns to ensure a consistent
-                experience across desktop and mobile devices with cross-browser
-                compatibility.
+                Implemented contact segmentation, template management, and dynamic
+                variable substitution to enable personalised bulk messaging at scale.
+                The UI adapts seamlessly across desktop and mobile with consistent
+                cross-browser behaviour on Chrome, Firefox, Safari, and Edge.
               </ProjectSectionText>
             </div>
             <div className={styles.sidebarImages}>
               <Image
                 className={styles.sidebarImage}
-                srcSet={`${sliceSidebarLayers} 350w, ${sliceSidebarLayersLarge} 700w`}
+                srcSet={`${msgSidebar1Large} 700w, ${msgSidebar1} 440w`}
                 width={350}
-                height={750}
-                placeholder={sliceSidebarLayersPlaceholder}
-                alt="The layers sidebar design, now with user profiles."
+                height={525}
+                placeholder={msgSidebar1Placeholder}
+                alt="Smartphone screen showing active WhatsApp messaging conversation with automated replies."
                 sizes={`(max-width: ${media.mobile}px) 200px, 343px`}
               />
               <Image
                 className={styles.sidebarImage}
-                srcSet={`${sliceSidebarAnnotations} 350w, ${sliceSidebarAnnotationsLarge} 700w`}
+                srcSet={`${msgSidebar2Large} 700w, ${msgSidebar2} 440w`}
                 width={350}
-                height={750}
-                placeholder={sliceSidebarAnnotationsPlaceholder}
-                alt="Multiple user annotations on a shared layer."
+                height={525}
+                placeholder={msgSidebar2Placeholder}
+                alt="Person holding a smartphone using a Telegram or SMS automation chat interface."
                 sizes={`(max-width: ${media.mobile}px) 200px, 343px`}
               />
             </div>
@@ -121,56 +123,26 @@ export const Slice = () => {
             <ProjectTextRow>
               <ProjectSectionHeading>Responsive UI Architecture</ProjectSectionHeading>
               <ProjectSectionText>
-                Built with HTML5, CSS3, and jQuery, the interface adapts seamlessly
-                across screen sizes. Implemented custom form components, drag-and-drop
-                message builders, and real-time preview panels that work consistently
-                across Chrome, Firefox, Safari, and Edge.
+                The frontend is built with HTML5, CSS3, and jQuery, using a custom
+                component library for forms, modals, and notification banners. Implemented
+                drag-and-drop message template builders, real-time delivery status
+                indicators, and role-based permission panels that render correctly at
+                every screen size — from a 320 px phone to a 4 K display.
+              </ProjectSectionText>
+              <ProjectSectionText>
+                RESTful API integrations were kept thin and declarative: each channel
+                adapter exposes a consistent interface so the UI layer never needs to
+                branch on provider-specific payload formats.
               </ProjectSectionText>
             </ProjectTextRow>
             <Image
-              srcSet={`${sliceSlides} 800w, ${sliceSlidesLarge} 1920w`}
-              width={800}
-              height={500}
-              placeholder={sliceSlidesPlaceholder}
-              alt="The new My Slides tab in slice, showing annotated and favorited slides."
+              srcSet={`${msgCampaignLarge} 1920w, ${msgCampaign} 1280w`}
+              width={1280}
+              height={854}
+              placeholder={msgCampaignPlaceholder}
+              alt="Laptop open in a workspace showing the messaging campaign management interface."
               sizes={`(max-width: ${media.mobile}px) 500px, (max-width: ${media.tablet}px) 800px, 1000px`}
             />
-          </ProjectSectionContent>
-        </ProjectSection>
-        <ProjectSection padding="top">
-          <ProjectSectionContent className={styles.grid}>
-            <div className={styles.gridImage}>
-              <div className={styles.gridBackground}>
-                <Image
-                  srcSet={`${sliceBackgroundBar} 440w, ${sliceBackgroundBarLarge} 880w`}
-                  width={440}
-                  height={790}
-                  placeholder={sliceBackgroundBarPlaceholder}
-                  alt=""
-                  role="presentation"
-                  sizes={`(max-width: ${media.mobile}px) 312px, (max-width: ${media.tablet}px) 408px, 514px`}
-                />
-              </div>
-              <div className={styles.gridForeground}>
-                <Image
-                  srcSet={`${sliceAnnotation} 440w, ${sliceAnnotationLarge} 880w`}
-                  width={440}
-                  height={340}
-                  placeholder={sliceAnnotationPlaceholder}
-                  alt="An annotation preview popover with statistics for shape perimeter and area."
-                  sizes={`(max-width: ${media.mobile}px) 584px, (max-width: ${media.tablet}px) 747px, 556px`}
-                />
-              </div>
-            </div>
-            <div className={styles.gridText}>
-              <ProjectSectionHeading>Campaign Management</ProjectSectionHeading>
-              <ProjectSectionText>
-                Built intuitive UI components for managing automated message campaigns
-                with scheduling, template management, and delivery tracking. The
-                responsive grid layout adapts for different content types and provides
-                clear visual hierarchy for campaign metrics and status indicators.
-              </ProjectSectionText>
-            </div>
           </ProjectSectionContent>
         </ProjectSection>
         <ProjectSection>
@@ -178,19 +150,20 @@ export const Slice = () => {
             <ProjectTextRow>
               <ProjectSectionHeading>Project outcomes</ProjectSectionHeading>
               <ProjectSectionText>
-                The messaging automation UI successfully streamlined communication
-                workflows for enterprise clients, enabling bulk messaging across
-                WhatsApp, Telegram, and SMS from a single interface. The responsive
-                design ensured 100% cross-browser compatibility and the intuitive
-                UX reduced onboarding time for new users significantly.
+                The messaging automation UI streamlined communication workflows for
+                enterprise clients, enabling bulk messaging across WhatsApp, Telegram,
+                and SMS from a single interface. Delivery reports and open-rate dashboards
+                gave marketing teams immediate visibility into campaign performance.
+                The responsive design achieved 100 % cross-browser compatibility, and
+                the intuitive UX cut onboarding time for new operators significantly.
               </ProjectSectionText>
             </ProjectTextRow>
             <Image
-              src={sliceIrl}
+              src={msgIrl}
               width={940}
-              height={500}
-              placeholder={sliceIrlPlaceholder}
-              alt="Students at the University of New South Wales using the new collaborative annotation features"
+              height={1410}
+              placeholder={msgIrlPlaceholder}
+              alt="Professional team reviewing messaging campaign analytics on laptops in a modern workspace."
             />
           </ProjectSectionContent>
         </ProjectSection>

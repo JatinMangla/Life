@@ -1,8 +1,10 @@
-import scHowItWorks from '~/assets/sc-how-it-works.gif';
-import scAnimateBox from '~/assets/sc-animate-box.gif';
-import sliceTextureLarge from '~/assets/slice-app-large.jpg';
-import sliceTexturePlaceholder from '~/assets/slice-app-placeholder.jpg';
-import sliceTexture from '~/assets/slice-app.jpg';
+import scPhoneDashboard from '~/assets/sc-phone-dashboard.jpg';
+import scPhoneDashboardPlaceholder from '~/assets/sc-phone-dashboard-placeholder.jpg';
+import scPhoneRewards from '~/assets/sc-phone-rewards.jpg';
+import scPhoneRewardsPlaceholder from '~/assets/sc-phone-rewards-placeholder.jpg';
+import msgDashboard from '~/assets/msg-dashboard-800.jpg';
+import msgDashboardLarge from '~/assets/msg-dashboard-1920.jpg';
+import msgDashboardPlaceholder from '~/assets/msg-dashboard-placeholder.jpg';
 import mmDashboardImage from '~/assets/mm-analytics-dashboard.png';
 import mmScreenMonitoring from '~/assets/mm-screen-monitoring.png';
 import { Footer } from '~/components/footer';
@@ -130,12 +132,12 @@ export const Home = () => {
           alt: 'Screen Coach app showing screen time analytics',
           textures: [
             {
-              srcSet: `${scAnimateBox} 375w`,
-              placeholder: scAnimateBox,
+              srcSet: `${scPhoneDashboard} 750w`,
+              placeholder: scPhoneDashboardPlaceholder,
             },
             {
-              srcSet: `${scHowItWorks} 375w`,
-              placeholder: scHowItWorks,
+              srcSet: `${scPhoneRewards} 750w`,
+              placeholder: scPhoneRewardsPlaceholder,
             },
           ],
         }}
@@ -146,16 +148,16 @@ export const Home = () => {
         visible={visibleSections.includes(projectThree.current)}
         index={3}
         title="UI Integration — Messaging Automation"
-        description="Designed and implemented user interfaces for WhatsApp, Telegram, and SMS automation integrations with cross-browser compatibility and responsive design."
+        description="Built unified dashboards for WhatsApp, Telegram, and SMS automation — enabling bulk campaigns, scheduled messaging, and real-time delivery analytics from a single cross-browser interface."
         buttonText="View project"
         buttonLink="/projects/slice"
         model={{
           type: 'laptop',
-          alt: 'Messaging automation integration interface',
+          alt: 'WhatsApp, Telegram and SMS automation dashboard interface',
           textures: [
             {
-              srcSet: `${sliceTexture} 800w, ${sliceTextureLarge} 1920w`,
-              placeholder: sliceTexturePlaceholder,
+              srcSet: `${msgDashboardLarge} 1920w, ${msgDashboard} 800w`,
+              placeholder: msgDashboardPlaceholder,
             },
           ],
         }}
