@@ -18,7 +18,7 @@
     "deploy:storybook": "wrangler pages deploy ./storybook-static --project-name portfolio-storybook --branch main"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.515.0",
+    "nodemailer": "^6.9.13",
     "@mdx-js/react": "^3.0.1",
     "@remix-run/node": "^2.15.3",
     "@remix-run/react": "^2.7.1",

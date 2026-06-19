@@ -14,8 +14,7 @@ import { useRef } from 'react';
 import { cssProps, msToNum, numToMs } from '~/utils/style';
 import { baseMeta } from '~/utils/meta';
 import { Form, useActionData, useNavigation } from '@remix-run/react';
-import { json } from '@remix-run/node';
-import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
+import nodemailer from 'nodemailer';
 import styles from './contact.module.css';
 
 export const meta = () => {
@@ -28,48 +27,37 @@ export const meta = () => {
 
 const MAX_EMAIL_LENGTH = 512;
 const MAX_MESSAGE_LENGTH = 4096;
+const MAX_NAME_LENGTH = 100;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function action({ request }) {
-  if (
-    !process.env.AWS_ACCESS_KEY_ID ||
-    !process.env.AWS_SECRET_ACCESS_KEY ||
-    !process.env.EMAIL ||
-    !process.env.FROM_EMAIL
-  ) {
-    return json(
-      { errors: { general: 'Server misconfiguration. Please try again later.' } },
-      { status: 500 }
-    );
-  }
-
-  const ses = new SESClient({
-    region: 'us-east-1',
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    },
-  });
-
   const formData = await request.formData();
-  const isBot = formData.get('name') ?? '';
-  const email = formData.get('email') ?? '';
-  const message = formData.get('message') ?? '';
+  const isBot = formData.get('website') ?? '';
+  const senderName = String(formData.get('name') ?? '').trim();
+  const email = String(formData.get('email') ?? '').trim();
+  const message = String(formData.get('message') ?? '').trim();
   const errors = {};
 
-  // If honeypot field is filled, assume it's a bot and return success without sending an email
-  if (isBot) return json({ success: true });
+  if (isBot) return Response.json({ success: true });
+
+  if (!senderName) {
+    errors.name = 'Please enter your name.';
+  }
+
+  if (senderName.length > MAX_NAME_LENGTH) {
+    errors.name = `Name must be shorter than ${MAX_NAME_LENGTH} characters.`;
+  }
 
   if (!email || !EMAIL_PATTERN.test(email)) {
     errors.email = 'Please enter a valid email address.';
   }
 
-  if (!message) {
-    errors.message = 'Please enter a message.';
-  }
-
   if (email.length > MAX_EMAIL_LENGTH) {
     errors.email = `Email address must be shorter than ${MAX_EMAIL_LENGTH} characters.`;
+  }
+
+  if (!message) {
+    errors.message = 'Please enter a message.';
   }
 
   if (message.length > MAX_MESSAGE_LENGTH) {
@@ -77,34 +65,37 @@ export async function action({ request }) {
   }
 
   if (Object.keys(errors).length > 0) {
-    return json({ errors });
+    return Response.json({ errors });
+  }
+
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    return Response.json(
+      { errors: { general: 'Server misconfiguration. Please try again later.' } },
+      { status: 500 }
+    );
   }
 
   try {
-    await ses.send(
-      new SendEmailCommand({
-        Destination: {
-          ToAddresses: [process.env.EMAIL],
-        },
-        Message: {
-          Body: {
-            Text: {
-              Data: `From: ${email}\n\n${message}`,
-            },
-          },
-          Subject: {
-            Data: `Portfolio message from ${email}`,
-          },
-        },
-        Source: `Portfolio <${process.env.FROM_EMAIL}>`,
-        ReplyToAddresses: [email],
-      })
-    );
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD,
+      },
+    });
 
-    return json({ success: true });
+    await transporter.sendMail({
+      from: `"Portfolio Contact" <${process.env.GMAIL_USER}>`,
+      to: 'jatinmangla123@gmail.com',
+      subject: `Portfolio message from ${senderName}`,
+      text: `Name: ${senderName}\nEmail: ${email}\n\nMessage:\n${message}`,
+      replyTo: email,
+    });
+
+    return Response.json({ success: true, name: senderName });
   } catch (err) {
-    console.error('SES send error:', err);
-    return json(
+    console.error('Email send error:', err);
+    return Response.json(
       { errors: { general: 'Failed to send message. Please try again.' } },
       { status: 500 }
     );
@@ -113,6 +104,7 @@ export async function action({ request }) {
 
 export const Contact = () => {
   const errorRef = useRef();
+  const name = useFormInput('');
   const email = useFormInput('');
   const message = useFormInput('');
   const initDelay = tokens.base.durationS;
@@ -139,12 +131,24 @@ export const Contact = () => {
               data-status={status}
               style={getDelay(tokens.base.durationXS, initDelay, 0.4)}
             />
-            {/* Hidden honeypot field to identify bots */}
+            {/* Honeypot — hidden from real users, bots fill it */}
             <Input
               className={styles.botkiller}
-              label="Name"
-              name="name"
+              label="Website"
+              name="website"
               maxLength={MAX_EMAIL_LENGTH}
+            />
+            <Input
+              required
+              className={styles.input}
+              data-status={status}
+              style={getDelay(tokens.base.durationXS, initDelay, 0.5)}
+              autoComplete="name"
+              label="Your name"
+              type="text"
+              name="name"
+              maxLength={MAX_NAME_LENGTH}
+              {...name}
             />
             <Input
               required
@@ -187,6 +191,8 @@ export const Contact = () => {
                   <div className={styles.formErrorContent} ref={errorRef}>
                     <div className={styles.formErrorMessage} role="alert">
                       <Icon className={styles.formErrorIcon} icon="error" />
+                      {actionData?.errors?.name}
+                      {actionData?.errors?.name && ' '}
                       {actionData?.errors?.email}
                       {actionData?.errors?.email && actionData?.errors?.message && ' '}
                       {actionData?.errors?.message}
@@ -230,7 +236,7 @@ export const Contact = () => {
               data-status={status}
               style={getDelay(tokens.base.durationXS)}
             >
-              I’ll get back to you within a couple days, sit tight
+              Thanks{actionData?.name ? `, ${actionData.name}` : ''}! I'll get back to you within a couple days.
             </Text>
             <Button
               secondary

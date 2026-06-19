@@ -84,8 +84,8 @@
 
     &::after {
       content: '';
-      margin-top: 1rem;
       position: absolute;
+      inset-block-end: 0;
       inset-inline-start: var(--spaceS);
       inset-inline-end: var(--spaceS);
       block-size: 4px;
