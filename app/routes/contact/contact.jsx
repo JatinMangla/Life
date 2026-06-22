@@ -14,6 +14,7 @@ import { useRef } from 'react';
 import { cssProps, msToNum, numToMs } from '~/utils/style';
 import { baseMeta } from '~/utils/meta';
 import { useFetcher } from '@remix-run/react';
+import { DisplacementSphere } from '~/routes/home/displacement-sphere';
 import styles from './contact.module.css';
 
 export const meta = () => {
@@ -41,6 +42,7 @@ export const Contact = () => {
 
   return (
     <Section className={styles.contact}>
+      <DisplacementSphere />
       <Transition unmount in={!actionData?.success} timeout={1600}>
         {({ status, nodeRef }) => (
           <fetcher.Form

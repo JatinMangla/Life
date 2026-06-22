@@ -1,6 +1,7 @@
 .contact {
   --formHeight: 530px;
 
+  position: relative;
   display: grid;
   grid-template-rows: 1fr auto;
   grid-template-columns: 100%;
@@ -9,26 +10,74 @@
   align-items: center;
   min-height: 100vh;
   width: 100%;
+  overflow: hidden;
 
   @media (--mediaMobile) {
     padding-top: 0;
   }
 }
 
+/* 3D displacement sphere sits behind the form as an ambient backdrop */
+.sphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
 .form {
+  position: relative;
+  z-index: 1;
   grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   max-width: var(--maxWidthS);
   width: 100%;
-  padding: var(--space2XL) 0;
+  margin: var(--space2XL) var(--spaceL);
+  padding: var(--space3XL) var(--space2XL);
+  border-radius: 16px;
+  border: 1px solid color-mix(in lab, var(--text) 12%, transparent);
+  background: color-mix(in lab, var(--background) 72%, transparent);
+  box-shadow: 0 24px 70px color-mix(in lab, var(--background) 60%, transparent),
+    0 0 0 1px color-mix(in lab, var(--accent) 10%, transparent),
+    inset 0 1px 0 color-mix(in lab, var(--text) 8%, transparent);
+
+  @supports (backdrop-filter: blur(1px)) {
+    backdrop-filter: blur(16px) saturate(140%);
+    background: color-mix(in lab, var(--background) 55%, transparent);
+  }
+
+  /* soft accent glow framing the card */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      color-mix(in lab, var(--accent) 50%, transparent),
+      transparent 40%,
+      transparent 60%,
+      color-mix(in lab, var(--accent) 30%, transparent)
+    );
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+  }
 
   @media (--mediaMobile) {
-    padding: var(--space5XL) 0 var(--space2XL);
-    align-self: flex-start;
+    margin: var(--space4XL) var(--spaceM) var(--space2XL);
+    padding: var(--space2XL) var(--spaceXL);
   }
 }
 
 .title {
   margin-bottom: var(--space2XL);
+  text-align: center;
   transition-property: opacity;
   transition-timing-function: var(--bezierFastoutSlowin);
   transition-duration: var(--durationXL);
@@ -96,6 +145,7 @@
 }
 
 .input {
+  width: 100%;
   transition-property: opacity;
   transition-timing-function: var(--bezierFastoutSlowin);
   transition-duration: var(--durationXL);
@@ -148,7 +198,7 @@
   transition-delay: var(--delay);
   transition-duration: var(--durationXL);
   opacity: 0;
-  justify-self: flex-start;
+  align-self: center;
 
   &[data-status='exiting'],
   &[data-status='exited'] {
@@ -202,6 +252,8 @@
 }
 
 .complete {
+  position: relative;
+  z-index: 1;
   grid-area: 1 / 1;
   display: flex;
   flex-direction: column;
@@ -306,6 +358,8 @@
 }
 
 .footer {
+  position: relative;
+  z-index: 1;
   opacity: 0;
 
   &:global {
