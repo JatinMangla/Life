@@ -14,7 +14,7 @@ import { useRef } from 'react';
 import { cssProps, msToNum, numToMs } from '~/utils/style';
 import { baseMeta } from '~/utils/meta';
 import { useFetcher } from '@remix-run/react';
-import { DisplacementSphere } from '~/routes/home/displacement-sphere';
+import { ContactEarth } from './earth';
 import styles from './contact.module.css';
 
 export const meta = () => {
@@ -24,6 +24,24 @@ export const meta = () => {
       'Send me a message if you want to discuss a project, collaboration, or just want to connect',
   });
 };
+
+// Prefetch the draco decoder so the 3D globe model decodes without delay
+export const links = () => [
+  {
+    rel: 'prefetch',
+    href: '/draco/draco_wasm_wrapper.js',
+    as: 'script',
+    type: 'text/javascript',
+    importance: 'low',
+  },
+  {
+    rel: 'prefetch',
+    href: '/draco/draco_decoder.wasm',
+    as: 'fetch',
+    type: 'application/wasm',
+    importance: 'low',
+  },
+];
 
 const MAX_EMAIL_LENGTH = 512;
 const MAX_MESSAGE_LENGTH = 4096;
@@ -42,7 +60,7 @@ export const Contact = () => {
 
   return (
     <Section className={styles.contact}>
-      <DisplacementSphere />
+      <ContactEarth />
       <Transition unmount in={!actionData?.success} timeout={1600}>
         {({ status, nodeRef }) => (
           <fetcher.Form
