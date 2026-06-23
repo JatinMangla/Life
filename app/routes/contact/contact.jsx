@@ -60,7 +60,6 @@ export const Contact = () => {
 
   return (
     <Section className={styles.contact}>
-      <ContactEarth />
       <Transition unmount in={!actionData?.success} timeout={1600}>
         {({ status, nodeRef }) => (
           <fetcher.Form
@@ -205,6 +204,9 @@ export const Contact = () => {
           </div>
         )}
       </Transition>
+      <div className={styles.earthColumn} aria-hidden>
+        <ContactEarth />
+      </div>
       <Footer className={styles.footer} />
     </Section>
   );

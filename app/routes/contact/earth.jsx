@@ -14,20 +14,15 @@ import {
   Scene,
   WebGLRenderer,
 } from 'three';
-import { media } from '~/utils/style';
 import { cleanRenderer, cleanScene, modelLoader, removeLights, textureLoader } from '~/utils/three';
 import styles from './earth.module.css';
 
 // Slow ambient spin (radians per frame) — gentle enough to read as "alive"
-// without distracting from the contact form floating over it.
+// without distracting from the contact form beside it.
 const ROTATION_SPEED = 0.0014;
 
-// Pull the camera back on smaller screens so the globe never crowds the card.
-const cameraDistance = width => {
-  if (width <= media.mobile) return 3.4;
-  if (width <= media.tablet) return 3;
-  return 2.6;
-};
+// How far back the camera sits — larger value = smaller globe within its box.
+const CAMERA_DISTANCE = 2.8;
 
 export const ContactEarth = props => {
   const canvasRef = useRef();
@@ -41,9 +36,15 @@ export const ContactEarth = props => {
   const isInViewport = useInViewport(canvasRef);
   const windowSize = useWindowSize();
 
+  // Measure the canvas's own (CSS-driven) box so the globe sizes to its column.
+  const getSize = () => {
+    const el = canvasRef.current;
+    return { width: el?.clientWidth || 1, height: el?.clientHeight || 1 };
+  };
+
   // Set up renderer, camera, scene, and lights once.
   useEffect(() => {
-    const { innerWidth, innerHeight } = window;
+    const { width, height } = getSize();
 
     try {
       renderer.current = new WebGLRenderer({
@@ -58,13 +59,14 @@ export const ContactEarth = props => {
       return;
     }
 
-    renderer.current.setSize(innerWidth, innerHeight);
     renderer.current.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // updateStyle = false: CSS controls the display size, we only set the buffer.
+    renderer.current.setSize(width, height, false);
     renderer.current.outputColorSpace = SRGBColorSpace;
     renderer.current.toneMapping = ACESFilmicToneMapping;
 
-    camera.current = new PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 100);
-    camera.current.position.z = cameraDistance(innerWidth);
+    camera.current = new PerspectiveCamera(45, width / height, 0.1, 100);
+    camera.current.position.z = CAMERA_DISTANCE;
     camera.current.lookAt(0, 0, 0);
 
     scene.current = new Scene();
@@ -121,15 +123,15 @@ export const ContactEarth = props => {
     };
   }, []);
 
-  // Keep the renderer and camera in sync with the viewport size.
+  // Keep the renderer and camera in sync with the container size on resize.
   useEffect(() => {
     if (!renderer.current) return;
-    const { width, height } = windowSize;
-    renderer.current.setSize(width, height);
+    const { width, height } = getSize();
+    renderer.current.setSize(width, height, false);
     camera.current.aspect = width / height;
-    camera.current.position.z = cameraDistance(width);
     camera.current.updateProjectionMatrix();
     renderer.current.render(scene.current, camera.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [windowSize]);
 
   // Animation loop — spin while visible, otherwise render a single still frame.

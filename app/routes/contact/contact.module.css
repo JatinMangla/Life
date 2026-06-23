@@ -3,37 +3,62 @@
 
   position: relative;
   display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
   grid-template-rows: 1fr auto;
-  grid-template-columns: 100%;
-  justify-items: center;
-  justify-content: center;
+  grid-template-areas:
+    'form earth'
+    'footer footer';
   align-items: center;
+  column-gap: var(--space3XL);
+  max-width: var(--maxWidthL);
+  margin: 0 auto;
   min-height: 100vh;
   width: 100%;
-  overflow: hidden;
+  padding: 0 var(--spaceL);
 
-  @media (--mediaMobile) {
-    padding-top: 0;
+  /* Stack into a single column on tablet and below */
+  @media (--mediaTablet) {
+    grid-template-columns: 100%;
+    grid-template-areas:
+      'form'
+      'earth'
+      'footer';
+    justify-items: center;
+    column-gap: 0;
   }
 }
 
-/* 3D displacement sphere sits behind the form as an ambient backdrop */
-.sphere {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
+/* 3D globe lives in the right column as an eye-catching companion */
+.earthColumn {
+  grid-area: earth;
+  position: relative;
+  justify-self: center;
+  align-self: center;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 1 / 1;
+
+  @media (--mediaTablet) {
+    max-width: 320px;
+    margin-bottom: var(--space3XL);
+  }
+
+  @media (--mediaMobile) {
+    max-width: 240px;
+  }
 }
 
 .form {
   position: relative;
   z-index: 1;
-  grid-area: 1 / 1;
+  grid-area: form;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-self: center;
   max-width: var(--maxWidthS);
   width: 100%;
-  margin: var(--space2XL) var(--spaceL);
+  margin: var(--space2XL) 0;
   padding: var(--space3XL) var(--space2XL);
   border-radius: 16px;
   border: 1px solid color-mix(in lab, var(--text) 12%, transparent);
@@ -254,7 +279,7 @@
 .complete {
   position: relative;
   z-index: 1;
-  grid-area: 1 / 1;
+  grid-area: form;
   display: flex;
   flex-direction: column;
   align-items: center;
