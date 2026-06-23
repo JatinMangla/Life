@@ -42,7 +42,7 @@ export const meta = () => {
   return baseMeta({ title, description, prefix: 'Projects' });
 };
 
-export function VolkiharKnight() {
+export function ScreenCoach() {
   return (
     <Fragment>
       <ProjectContainer>

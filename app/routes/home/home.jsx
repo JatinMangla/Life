@@ -105,7 +105,7 @@ export const Home = () => {
         title="Mera Monitor — Employee Productivity Platform"
         description="Lead front-end development for a fintech SaaS product with 3,500+ active users, featuring real-time monitoring, Redux state management, and SSO authentication."
         buttonText="View project"
-        buttonLink="/projects/smart-sparrow"
+        buttonLink="/projects/mera-monitor"
         model={{
           type: 'laptop',
           alt: 'Mera Monitor dashboard showing employee productivity metrics',
@@ -126,7 +126,7 @@ export const Home = () => {
         title="Screen Coach — Screen Time Monitoring"
         description="Developed responsive UI and RESTful APIs for a screen-time monitoring tool optimized for low-memory devices using Node.js and MongoDB."
         buttonText="View project"
-        buttonLink="/projects/volkihar-knight"
+        buttonLink="/projects/screen-coach"
         model={{
           type: 'phone',
           alt: 'Screen Coach app showing screen time analytics',
@@ -150,7 +150,7 @@ export const Home = () => {
         title="UI Integration — Messaging Automation"
         description="Built unified dashboards for WhatsApp, Telegram, and SMS automation — enabling bulk campaigns, scheduled messaging, and real-time delivery analytics from a single cross-browser interface."
         buttonText="View project"
-        buttonLink="/projects/slice"
+        buttonLink="/projects/messaging-automation"
         model={{
           type: 'laptop',
           alt: 'WhatsApp, Telegram and SMS automation dashboard interface',

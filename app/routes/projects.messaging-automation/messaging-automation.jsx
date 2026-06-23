@@ -32,7 +32,7 @@ import {
 import { Fragment } from 'react';
 import { media } from '~/utils/style';
 import { baseMeta } from '~/utils/meta';
-import styles from './slice.module.css';
+import styles from './messaging-automation.module.css';
 
 const title = 'UI Integration — Messaging Automation';
 const description =
@@ -50,7 +50,7 @@ export const meta = () => {
   return baseMeta({ title, description, prefix: 'Projects' });
 };
 
-export const Slice = () => {
+export const MessagingAutomation = () => {
   return (
     <Fragment>
       <ProjectContainer className={styles.slice}>

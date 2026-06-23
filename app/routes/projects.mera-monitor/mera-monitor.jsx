@@ -46,7 +46,7 @@ export const meta = () => {
   return baseMeta({ title, description, prefix: 'Projects' });
 };
 
-export const SmartSparrow = () => {
+export const MeraMonitor = () => {
   return (
     <>
       <ProjectContainer>

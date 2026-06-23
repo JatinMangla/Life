@@ -22,7 +22,7 @@ const ProfileText = ({ visible, titleId }) => (
       <DecoderText text="Hi there" start={visible} delay={500} />
     </Heading>
     <Text className={styles.description} data-visible={visible} size="s" as="p">
-      I'm Jatin Mangla, a Frontend Developer with 3.5+ years of experience specializing in React.js, TypeScript, and JavaScript. I build high-performance, scalable fintech and technology web applications at AAPNA Infotech Pvt. Ltd, where I lead front-end development.
+      I'm Jatin Mangla, a Frontend Developer with 3.5+ years of experience specializing in React.js, TypeScript, and JavaScript. At AAPNA Infotech Pvt. Ltd I own the front-end architecture for fintech and SaaS products — driving component design, performance, and code quality for applications used by thousands of people.
     </Text>
     <Text className={styles.description} data-visible={visible} size="s" as="p">
       I've worked on live products with 3,500+ active users, implementing Redux (Thunk/Saga) for state management, lazy loading and code splitting for performance, and integrated Microsoft MSAL and Google OAuth for secure SSO authentication. I also contribute to Node.js/MongoDB backends to deliver full-stack features.
@@ -84,7 +84,7 @@ export const Profile = ({ id, visible, sectionRef }) => {
                   width={960}
                   height={1100}
                   sizes={`(max-width: ${media.mobile}px) 100vw, 480px`}
-                  alt="Me smiling like a goofball at the Qwilr office in Sydney"
+                  alt="Portrait of Jatin Mangla, Frontend Developer"
                 />
                 <svg className={styles.svg} data-visible={visible} viewBox="0 0 200 900">
                   <use href={`${jatin}#katakana-profile`} />
