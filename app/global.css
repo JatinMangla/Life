@@ -3,6 +3,9 @@
 @custom-media --mediaTablet (max-width: 1040px);
 @custom-media --mediaMobile (max-width: 696px);
 @custom-media --mediaMobileLS (max-height: 696px);
+/* Real phones in landscape: short AND narrow, so wide desktop windows that
+   happen to be short don't trigger the mobile nav. */
+@custom-media --mediaMobileLandscape (max-height: 500px) and (max-width: 900px);
 @custom-media --mediaMobileS (max-width: 400px);
 @custom-media --mediaUseMotion (prefers-reduced-motion: no-preference);
 @custom-media --mediaReduceMotion (prefers-reduced-motion: reduce);
