@@ -3,13 +3,13 @@
 
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
   grid-template-rows: 1fr auto;
   grid-template-areas:
     'form earth'
     'footer footer';
   align-items: center;
-  column-gap: var(--space3XL);
+  column-gap: var(--spaceL);
   margin: 0;
   min-height: 100vh;
   width: 100%;
@@ -76,7 +76,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-self: center;
+  justify-self: end;
   max-width: var(--maxWidthS);
   width: 100%;
   margin: var(--space5XL) 0 var(--space2XL);
@@ -113,6 +113,10 @@
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
     pointer-events: none;
+  }
+
+  @media (--mediaTablet) {
+    justify-self: center;
   }
 
   @media (--mediaMobile) {
