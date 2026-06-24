@@ -50,7 +50,9 @@
     /* max-width: var(--space2XL); */
 
     @media (--mediaMobile), (--mediaMobileLandscape) {
-      display: none;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
     }
   }
 
@@ -64,6 +66,11 @@
     flex-direction: row-reverse;
     position: relative;
     writing-mode: vertical-lr; */
+
+    @media (--mediaMobile), (--mediaMobileLandscape) {
+      padding-left: 0;
+      background: transparent;
+    }
   }
 
   .navLink {
@@ -109,6 +116,11 @@
       transform: scaleY(1) translateZ(0);
       transform-origin: top;
     }
+
+    @media (--mediaMobile), (--mediaMobileLandscape) {
+      font-size: calc((14 / 16) * 1rem);
+      padding: var(--spaceS) var(--spaceXS);
+    }
   }
 
   .navIcons {
@@ -120,10 +132,7 @@
     z-index: var(--zIndex2);
 
     @media (--mediaMobile), (--mediaMobileLandscape) {
-      flex-direction: row;
-      position: absolute;
-      bottom: var(--spaceXL);
-      left: var(--spaceXL);
+      display: none;
     }
 
     @media (max-width: 820px) and (max-height: 420px) {
@@ -173,8 +182,9 @@
     -webkit-backdrop-filter: var(--backdrop);
     backdrop-filter: var(--backdrop);
 
+    /* Fullscreen mobile menu removed in favour of inline nav links */
     @media (--mediaMobile), (--mediaMobileLandscape) {
-      display: flex;
+      display: none;
     }
 
     @media (--mediaUseMotion) {

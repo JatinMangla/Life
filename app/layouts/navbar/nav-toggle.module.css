@@ -7,11 +7,8 @@
     top: var(--inset);
     right: var(--inset);
     z-index: var(--zIndex4);
+    /* Hamburger hidden everywhere — mobile uses inline nav links instead */
     display: none;
-
-    @media (--mediaMobile), (--mediaMobileLandscape) {
-      display: flex;
-    }
   }
 
   .inner {
