@@ -7,7 +7,6 @@ import { useScrollToHash, useWindowSize } from '~/hooks';
 import { Link as RouterLink, useLocation } from '@remix-run/react';
 import { useEffect, useRef, useState } from 'react';
 import { cssProps, media, msToNum, numToMs } from '~/utils/style';
-import { NavToggle } from './nav-toggle';
 import { ThemeToggle } from './theme-toggle';
 import { navLinks, socialLinks } from './nav-data';
 import config from '~/config.json';
@@ -158,8 +157,6 @@ export const Navbar = () => {
         <Monogram highlight />
       </RouterLink>
      {/* nav */}
-      <NavToggle onClick={() => setMenuOpen(!menuOpen)} menuOpen={menuOpen} />
-        
       <nav className={styles.nav}>
         <div className={styles.navList}>
           {navLinks.map(({ label, pathname }) => (
