@@ -205,7 +205,9 @@ export const Contact = () => {
         )}
       </Transition>
       <div className={styles.earthColumn} aria-hidden>
-        <ContactEarth />
+        <div className={styles.globe}>
+          <ContactEarth />
+        </div>
       </div>
       <Footer className={styles.footer} />
     </Section>

@@ -15,6 +15,7 @@
   min-height: 100vh;
   width: 100%;
   padding: 0 var(--spaceL);
+  overflow: hidden; /* clips the off-screen (right) half of the globe */
 
   /* Stack into a single column on tablet and below */
   @media (--mediaTablet) {
@@ -28,23 +29,44 @@
   }
 }
 
-/* 3D globe lives in the right column as an eye-catching companion */
+/* 3D globe lives in the right column, filling the full viewport height */
 .earthColumn {
   grid-area: earth;
   position: relative;
-  justify-self: center;
-  align-self: center;
+  align-self: stretch;
   width: 100%;
-  max-width: 520px;
-  aspect-ratio: 1 / 1;
+  min-height: 0;
 
   @media (--mediaTablet) {
-    max-width: 400px;
+    align-self: center;
+    justify-self: center;
     margin-bottom: var(--space3XL);
+  }
+}
+
+/* Square globe pinned so its centre sits on the column's right edge — the left
+   hemisphere shows (~50%), the right half is clipped by the section. */
+.globe {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  transform: translateX(-50%);
+
+  /* On stacked layouts, show the whole globe centred instead */
+  @media (--mediaTablet) {
+    position: relative;
+    left: auto;
+    transform: none;
+    width: 100%;
+    max-width: 360px;
+    height: auto;
+    margin: 0 auto;
   }
 
   @media (--mediaMobile) {
-    max-width: 300px;
+    max-width: 280px;
   }
 }
 

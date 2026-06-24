@@ -22,7 +22,7 @@ import styles from './earth.module.css';
 const ROTATION_SPEED = 0.0014;
 
 // How far back the camera sits — larger value = smaller globe within its box.
-const CAMERA_DISTANCE = 2.4;
+const CAMERA_DISTANCE = 2.5;
 
 export const ContactEarth = props => {
   const canvasRef = useRef();
