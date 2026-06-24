@@ -26,6 +26,10 @@
     justify-items: center;
     column-gap: 0;
   }
+
+  @media (--mediaMobile) {
+    padding: 0 var(--spaceL);
+  }
 }
 
 /* 3D globe lives in the right column, filling the full viewport height */

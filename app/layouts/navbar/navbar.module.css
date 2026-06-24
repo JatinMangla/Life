@@ -16,8 +16,13 @@
     z-index: var(--zIndex4);
     isolation: isolate;
 
+    @media (--mediaTablet) {
+      padding: 0 var(--space2XL);
+    }
+
     @media (--mediaMobile) {
       --headerNavFontSize: calc((22 / 16) * 1rem);
+      padding: 0 var(--spaceL);
     }
 
     @media (--mediaMobile), (--mediaMobileLandscape) {
