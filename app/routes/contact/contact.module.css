@@ -35,16 +35,16 @@
   justify-self: center;
   align-self: center;
   width: 100%;
-  max-width: 420px;
+  max-width: 520px;
   aspect-ratio: 1 / 1;
 
   @media (--mediaTablet) {
-    max-width: 320px;
+    max-width: 400px;
     margin-bottom: var(--space3XL);
   }
 
   @media (--mediaMobile) {
-    max-width: 240px;
+    max-width: 300px;
   }
 }
 
@@ -58,7 +58,7 @@
   justify-self: center;
   max-width: var(--maxWidthS);
   width: 100%;
-  margin: var(--space2XL) 0;
+  margin: var(--space5XL) 0 var(--space2XL);
   padding: var(--space3XL) var(--space2XL);
   border-radius: 16px;
   border: 1px solid color-mix(in lab, var(--text) 12%, transparent);
