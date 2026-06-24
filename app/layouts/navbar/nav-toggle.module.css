@@ -9,7 +9,7 @@
     z-index: var(--zIndex4);
     display: none;
 
-    @media (--mediaMobile), (--mediaMobileLS) {
+    @media (--mediaMobile) {
       display: flex;
     }
   }

@@ -20,8 +20,7 @@
       --headerNavFontSize: calc((22 / 16) * 1rem);
     }
 
-    @media (--mediaMobile),
-    (--mediaMobileLS) {
+    @media (--mediaMobile) {
       bottom: auto;
     }
   }
@@ -45,8 +44,7 @@
     flex: 1 1 auto;
     /* max-width: var(--space2XL); */
 
-    @media (--mediaMobile),
-    (--mediaMobileLS) {
+    @media (--mediaMobile) {
       display: none;
     }
   }
@@ -116,8 +114,7 @@
     position: relative;
     z-index: var(--zIndex2);
 
-    @media (--mediaMobile),
-    (--mediaMobileLS) {
+    @media (--mediaMobile) {
       flex-direction: row;
       position: absolute;
       bottom: var(--spaceXL);
@@ -171,8 +168,7 @@
     -webkit-backdrop-filter: var(--backdrop);
     backdrop-filter: var(--backdrop);
 
-    @media (--mediaMobile),
-    (--mediaMobileLS) {
+    @media (--mediaMobile) {
       display: flex;
     }
 
