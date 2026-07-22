@@ -31,11 +31,6 @@ export const socialLinks = [
   //   icon: 'figma',
   // },
   {
-    label: 'Resume',
-    url: `${config.resume}`,
-    icon: 'resume',
-  },
-  {
     label: 'Linkedin',
     url: `https://www.linkedin.com/in/${config.linkedin}`,
     icon: 'linkedin',
