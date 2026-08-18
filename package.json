@@ -13,6 +13,7 @@
     "vercel-build": "remix vite:build",
     "start": "remix-serve build",
     "lint": "eslint app .storybook --max-warnings=0",
+    "typecheck": "tsc --noEmit",
     "postinstall": "node ./scripts/draco.cjs",
     "deploy": "npm run build && vercel --prod",
     "dev:storybook": "storybook dev -p 6006",
@@ -44,9 +45,16 @@
     "@storybook/react": "^7.6.17",
     "@storybook/react-vite": "^7.6.17",
     "@storybook/test": "^7.6.17",
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@types/three": "^0.185.4",
+    "@typescript-eslint/eslint-plugin": "^8.67.0",
+    "@typescript-eslint/parser": "^8.67.0",
     "@vercel/remix": "^2.15.3",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-react": "^7.33.2",
@@ -59,9 +67,10 @@
     "remark-mdx-frontmatter": "^4.0.0",
     "sharp": "^0.35.3",
     "storybook": "^7.6.17",
+    "typescript": "^5.9.3",
     "vercel": "^54.12.2",
     "vite": "^5.1.0",
-    "vite-jsconfig-paths": "^2.0.1"
+    "vite-tsconfig-paths": "^6.1.1"
   },
   "engines": {
     "node": "20.x"

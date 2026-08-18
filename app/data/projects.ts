@@ -1,0 +1,70 @@
+import { metrics } from './experience';
+
+export type DeviceType = 'laptop' | 'phone';
+
+export interface ProjectTexture {
+  readonly srcSet: string;
+  readonly placeholder: string;
+}
+
+export interface ProjectModel {
+  readonly type: DeviceType;
+  readonly alt: string;
+  readonly textures: readonly ProjectTexture[];
+}
+
+export interface Project {
+  readonly slug: string;
+  /** Full title, used as the case-study heading and meta title. */
+  readonly title: string;
+  /** One-sentence summary shown on the home page and in meta descriptions. */
+  readonly description: string;
+  /** What I was actually responsible for. */
+  readonly roles: readonly string[];
+  readonly liveUrl?: string;
+  readonly model: ProjectModel;
+}
+
+export const projectPath = (slug: string) => `/projects/${slug}`;
+
+/**
+ * Home-page ordering is the order of this array; `alternate` layout is derived
+ * from the index rather than hardcoded per card.
+ */
+export const projects = [
+  {
+    slug: 'mera-monitor',
+    title: 'Mera Monitor — Employee Productivity Platform',
+    description: `Lead front-end development for a SaaS product with ${metrics.activeUsers.value} active users, featuring real-time monitoring, Redux state management, and SSO authentication.`,
+    roles: [
+      'Lead Frontend Development',
+      'React.js & Redux',
+      'SSO Authentication (MSAL/OAuth)',
+      'Real-time Features (SignalR)',
+    ],
+    liveUrl: 'https://meramonitor.com',
+  },
+  {
+    slug: 'screen-coach',
+    title: 'Screen Coach — Screen Time Monitoring',
+    description:
+      'Developed responsive UI and RESTful APIs for a screen-time monitoring tool optimized for low-memory devices using Node.js and MongoDB.',
+    roles: [
+      'Frontend Development',
+      'Node.js & MongoDB APIs',
+      'Performance Optimization',
+      'Real-time Data',
+    ],
+    liveUrl: 'https://www.myscreencoach.com',
+  },
+] as const satisfies readonly Omit<Project, 'model'>[];
+
+export type ProjectSlug = (typeof projects)[number]['slug'];
+
+export function getProject(slug: ProjectSlug) {
+  const project = projects.find(entry => entry.slug === slug);
+
+  if (!project) throw new Error(`Unknown project slug: ${slug}`);
+
+  return project;
+}

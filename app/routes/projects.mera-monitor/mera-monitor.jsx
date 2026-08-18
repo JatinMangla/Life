@@ -39,20 +39,18 @@ import {
 } from '~/layouts/project';
 import { baseMeta } from '~/utils/meta';
 import { media } from '~/utils/style';
+import { getProject, projectPath } from '~/data/projects';
+import { metrics } from '~/data/experience';
 
-const title = 'Mera Monitor — Employee Productivity Platform';
-const description =
-  'Lead front-end development for a flagship SaaS product with 3,500+ active users. Built a comprehensive employee monitoring and productivity platform using React.js, TypeScript, Redux, and SCSS with real-time data streaming.';
-const roles = [
-  'Lead Frontend Development',
-  'React.js & TypeScript',
-  'Redux State Management',
-  'SSO Authentication (MSAL/OAuth)',
-  'Real-time Features (SignalR)',
-];
+const { title, description, roles, liveUrl } = getProject('mera-monitor');
 
 export const meta = () => {
-  return baseMeta({ title, description, prefix: 'Projects', path: '/projects/mera-monitor' });
+  return baseMeta({
+    title,
+    description,
+    prefix: 'Projects',
+    path: projectPath('mera-monitor'),
+  });
 };
 
 export const MeraMonitor = () => {
@@ -68,7 +66,7 @@ export const MeraMonitor = () => {
         <ProjectHeader
           title={title}
           description={description}
-          url="https://meramonitor.com"
+          url={liveUrl}
           roles={roles}
         />
         <ProjectSection padding="top">
@@ -88,7 +86,7 @@ export const MeraMonitor = () => {
           <ProjectTextRow>
             <ProjectSectionHeading>The Challenge</ProjectSectionHeading>
             <ProjectSectionText>
-              Mera Monitor needed a complete frontend overhaul to support 3,500+ active
+              Mera Monitor needed a complete frontend overhaul to support 10,500+ active
               users with real-time employee productivity tracking. The existing system
               lacked performance optimization, proper state management, and secure
               authentication. The goals were to build a scalable React.js application
@@ -136,7 +134,7 @@ export const MeraMonitor = () => {
                 Implemented real-time screen monitoring with periodic screenshot capture
                 and activity tracking. Built an intuitive interface for managers to view
                 live employee screens, track application usage, and monitor productivity
-                levels. The system handles concurrent streams from 3,500+ active users
+                levels. The system handles concurrent streams from 10,500+ active users
                 with optimized WebSocket connections via SignalR.
               </ProjectSectionText>
             </ProjectTextRow>
@@ -179,7 +177,7 @@ export const MeraMonitor = () => {
               <ProjectSectionText>
                 Built comprehensive web application monitoring that tracks visited URLs,
                 time spent on each site, and categorizes websites by productivity level.
-                Implemented with React.js, TypeScript for type safety, and SCSS modules
+                Implemented with React.js and SCSS modules
                 for scoped styling with Webpack for optimized builds.
               </ProjectSectionText>
             </ProjectTextRow>
@@ -192,7 +190,7 @@ export const MeraMonitor = () => {
               Implemented Microsoft MSAL and Google OAuth for enterprise SSO
               authentication, supporting multi-tenant access. Built JWT-based
               session management with secure token refresh flows, ensuring
-              data protection for 3,500+ daily active users.
+              data protection for 10,500+ active users.
             </ProjectSectionText>
           </ProjectTextRow>
         </ProjectSection>
@@ -310,13 +308,12 @@ export const MeraMonitor = () => {
             <ProjectTextRow center centerMobile noMargin>
               <ProjectSectionHeading>Project Outcomes</ProjectSectionHeading>
               <ProjectSectionText>
-                Mera Monitor has grown to serve 3,500+ daily active users across
-                multiple enterprise clients. The platform successfully reduced
-                page load times by 40% through performance optimizations, achieved
-                99.9% uptime with robust error handling, and streamlined team
-                productivity tracking for organizations worldwide. Visit{' '}
-                <Link href="https://meramonitor.com">meramonitor.com</Link>{' '}
-                to learn more.
+                Mera Monitor now serves {metrics.activeUsers.value} active users
+                across multiple enterprise clients. Lazy loading, route-level code
+                splitting and bundle trimming cut initial load time by{' '}
+                {metrics.loadTimeReduction.value} —{' '}
+                {metrics.loadTimeReduction.method}. Visit{' '}
+                <Link href={liveUrl}>meramonitor.com</Link> to learn more.
               </ProjectSectionText>
             </ProjectTextRow>
           </ProjectSectionContent>

@@ -14,6 +14,7 @@ import {
   ProjectSectionHeading,
 } from '~/layouts/project';
 import { baseMeta } from '~/utils/meta';
+import { marqueeTags, stackSummary } from '~/data/skills';
 import styles from './uses.module.css';
 
 export const meta = () => {
@@ -26,23 +27,6 @@ export const meta = () => {
 };
 
 const springConfig = { stiffness: 220, damping: 18, mass: 0.6 };
-
-// Floating tech badges that scroll in an infinite marquee
-const marqueeTags = [
-  'React.js',
-  'TypeScript',
-  'Node.js',
-  'GraphQL',
-  'Redux',
-  'MongoDB',
-  'PostgreSQL',
-  'Vite',
-  'Express.js',
-  'Firebase',
-  'Tailwind CSS',
-  'React Query',
-  'Jest',
-];
 
 const categories = [
   {
@@ -131,16 +115,6 @@ const categories = [
   },
 ];
 
-const stackSummary = [
-  ['Languages', 'JavaScript, TypeScript, HTML5, CSS3, SCSS'],
-  ['Frameworks', 'React.js, Redux, React Router, Express.js'],
-  ['Databases', 'MongoDB, PostgreSQL, Firebase'],
-  ['Build Tools', 'Vite, Webpack, Babel, ESLint, Prettier'],
-  ['APIs', 'GraphQL, REST, SignalR, WebSockets'],
-  ['Auth', 'Microsoft MSAL, Google OAuth, JWT'],
-  ['Testing', 'Jest, Storybook, SonarQube'],
-  ['Methodology', 'Agile/Scrum, Lean'],
-];
 
 export const Uses = () => {
   return (
@@ -183,10 +157,10 @@ export const Uses = () => {
               <div className={styles.tableWrap}>
                 <Table>
                   <TableBody>
-                    {stackSummary.map(([label, value]) => (
+                    {stackSummary.map(({ label, items }) => (
                       <TableRow key={label}>
                         <TableHeadCell>{label}</TableHeadCell>
-                        <TableCell>{value}</TableCell>
+                        <TableCell>{items}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

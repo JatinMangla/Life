@@ -1,9 +1,3 @@
-/**
- * This is intended to be a basic starting point for linting in your app.
- * It relies on recommended configs out of the box for simplicity, but you can
- * and should modify this configuration to best suit your team's needs.
- */
-
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
   root: true,
@@ -21,7 +15,6 @@ module.exports = {
     es6: true,
   },
 
-  // Base config
   extends: ['eslint:recommended', 'plugin:storybook/recommended'],
 
   rules: {
@@ -43,6 +36,7 @@ module.exports = {
         'plugin:jsx-a11y/recommended',
       ],
       rules: {
+        // Prop shapes are enforced by TypeScript, not PropTypes.
         'react/prop-types': 'off',
         'react/display-name': 'off',
         'react-hooks/exhaustive-deps': 'error',
@@ -57,8 +51,40 @@ module.exports = {
           { name: 'NavLink', linkAttribute: 'to' },
         ],
         'import/resolver': {
-          typescript: {},
+          typescript: {
+            project: './tsconfig.json',
+          },
         },
+      },
+    },
+
+    // TypeScript
+    {
+      files: ['**/*.{ts,tsx}'],
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint'],
+      extends: ['plugin:@typescript-eslint/recommended'],
+      rules: {
+        // The TS-aware version understands type-only imports and enums.
+        'no-unused-vars': 'off',
+        '@typescript-eslint/no-unused-vars': [
+          'warn',
+          { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+        ],
+        '@typescript-eslint/no-explicit-any': 'error',
+        '@typescript-eslint/consistent-type-imports': [
+          'warn',
+          { prefer: 'type-imports', fixStyle: 'inline-type-imports' },
+        ],
+      },
+    },
+
+    // Node scripts and config files
+    {
+      files: ['scripts/**/*.cjs', '*.cjs', '*.config.js'],
+      env: { node: true },
+      rules: {
+        'no-console': 'off',
       },
     },
   ],

@@ -35,19 +35,17 @@ import {
 import { Fragment } from 'react';
 import { media } from '~/utils/style';
 import { baseMeta } from '~/utils/meta';
+import { getProject, projectPath } from '~/data/projects';
 
-const title = 'Screen Coach — Screen Time Monitoring';
-const description =
-  'Developed a responsive UI and RESTful APIs for a screen-time monitoring tool optimized for low-memory set-top devices. Built with JavaScript, Node.js, and MongoDB for real-time data handling and smooth frontend-backend integration.';
-const roles = [
-  'Frontend Development',
-  'Node.js & MongoDB APIs',
-  'Performance Optimization',
-  'Real-time Data',
-];
+const { title, description, roles, liveUrl } = getProject('screen-coach');
 
 export const meta = () => {
-  return baseMeta({ title, description, prefix: 'Projects', path: '/projects/screen-coach' });
+  return baseMeta({
+    title,
+    description,
+    prefix: 'Projects',
+    path: projectPath('screen-coach'),
+  });
 };
 
 export function ScreenCoach() {
@@ -63,7 +61,7 @@ export function ScreenCoach() {
         <ProjectHeader
           title={title}
           description={description}
-          url="https://www.myscreencoach.com"
+          url={liveUrl}
           roles={roles}
         />
         <ProjectSection padding="top">

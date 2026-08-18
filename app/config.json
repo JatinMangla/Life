@@ -1,10 +1,8 @@
 {
   "name": "Jatin Mangla",
   "role": "Frontend Developer",
-  "disciplines": ["React.js", "TypeScript", "Redux", "SCSS", "Node.js", "GraphQL", "WebSockets"],
   "url": "https://life-puce-kappa.vercel.app",
   "linkedin": "jatin-mangla-22435060",
-  "resume": "https://drive.google.com/file/d/1xspHweYhpY1iWz4CCS1h6L5mM-2_w9dZ/view?usp=drive_link",
   "github": "JatinMangla",
   "repo": "https://github.com/JatinMangla/Life",
   "ascii": "__  __  __\n\\ \\ \\ \\ \\/\n \\ \\/\\ \\\n  \\/  \\/\n"
