@@ -1,40 +1,29 @@
-__  __  __
-\ \ \ \ \/
- \ \/\ \
-  \/  \/
-
-The humans.txt file explains the team, technology,
-and graphic assets behind this site humanstxt.org.
+The humans.txt file explains the people, technology,
+and assets behind this site. humanstxt.org
 
 _______________________________________________________________________________
 
-DESIGNER | デザイナー
+DEVELOPER
 
 Jatin Mangla
-Frontend Developer | React.js & TypeScript
-
-Development tools:
-VS Code
-React DevTools
-Chrome DevTools
-Figma
+Frontend Developer
 
 linkedin.com/in/jatin-mangla-22435060
 github.com/JatinMangla
 
 _______________________________________________________________________________
 
-TECHNOLOGY | テクノロジー
+TECHNOLOGY
 
 React
 Remix
 Three.js
 Framer Motion
+CSS Modules
 
 _______________________________________________________________________________
 
-FONTS | フォント
+CREDITS
 
-Gotham
-IPA Gothic Regular
-Hiragino Kaku Gothic W8
+The visual design of this site started from Hamish Williams' open-source
+portfolio (github.com/HamishMW/portfolio) and was rebuilt from there.

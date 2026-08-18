@@ -1,12 +1,8 @@
-import phoneTexture2Large from '~/assets/gamestack-list-large.jpg';
-import phoneTexture2Placeholder from '~/assets/gamestack-list-placeholder.jpg';
-import phoneTexture2 from '~/assets/gamestack-list.jpg';
-import phoneTextureLarge from '~/assets/gamestack-login-large.jpg';
-import phoneTexturePlaceholder from '~/assets/gamestack-login-placeholder.jpg';
-import phoneTexture from '~/assets/gamestack-login.jpg';
-import laptopTexture from '~/assets/spr-lesson-builder-dark-large.jpg';
-import laptopTextureLarge from '~/assets/spr-lesson-builder-dark-large.jpg';
-import laptopTexturePlaceholder from '~/assets/spr-lesson-builder-dark-placeholder.jpg';
+import phoneTexture from '~/assets/sc-phone-dashboard.jpg';
+import phoneTexturePlaceholder from '~/assets/sc-phone-dashboard-placeholder.jpg';
+import phoneTexture2 from '~/assets/sc-phone-rewards.jpg';
+import phoneTexture2Placeholder from '~/assets/sc-phone-rewards-placeholder.jpg';
+import laptopTexture from '~/assets/mm-analytics-dashboard.png';
 import { Model } from '~/components/model';
 import { StoryContainer } from '../../../.storybook/story-container';
 import { deviceModels } from './device-models';
@@ -28,7 +24,7 @@ export const Phone = () => (
           ...deviceModels.phone,
           position: { x: -0.6, y: 0.8, z: 0.1 },
           texture: {
-            srcSet: `${phoneTexture} 375w, ${phoneTextureLarge} 750w`,
+            srcSet: `${phoneTexture} 750w`,
             placeholder: phoneTexturePlaceholder,
           },
         },
@@ -36,7 +32,7 @@ export const Phone = () => (
           ...deviceModels.phone,
           position: { x: 0.6, y: -0.8, z: 0.4 },
           texture: {
-            srcSet: `${phoneTexture2} 375w, ${phoneTexture2Large} 750w`,
+            srcSet: `${phoneTexture2} 750w`,
             placeholder: phoneTexture2Placeholder,
           },
         },
@@ -56,8 +52,8 @@ export const Laptop = () => (
           ...deviceModels.laptop,
           position: { x: 0, y: 0, z: 0 },
           texture: {
-            srcSet: `${laptopTexture} 800w, ${laptopTextureLarge} 1920w`,
-            placeholder: laptopTexturePlaceholder,
+            srcSet: `${laptopTexture} 1280w`,
+            placeholder: laptopTexture,
           },
         },
       ]}

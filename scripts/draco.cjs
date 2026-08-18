@@ -1,13 +1,20 @@
-const fs = require('fs-extra');
+const fs = require('node:fs');
+const path = require('node:path');
 
-const src = 'node_modules/three/examples/jsm/libs/draco/gltf';
-const output = 'public/draco';
+// Copy the Draco decoder out of three.js so GLB models can be decompressed at
+// runtime. Uses node:fs directly so postinstall doesn't depend on a package
+// that isn't declared in this project's own dependencies.
+const src = path.join('node_modules', 'three', 'examples', 'jsm', 'libs', 'draco', 'gltf');
+const output = path.join('public', 'draco');
+const files = ['draco_decoder.wasm', 'draco_wasm_wrapper.js'];
 
-// Copy draco decoder from three.js into the public directory
-fs.copy(`${src}/draco_decoder.wasm`, `${output}/draco_decoder.wasm`, err => {
-  if (err) return console.error(err);
-});
+try {
+  fs.mkdirSync(output, { recursive: true });
 
-fs.copy(`${src}/draco_wasm_wrapper.js`, `${output}/draco_wasm_wrapper.js`, err => {
-  if (err) return console.error(err);
-});
+  for (const file of files) {
+    fs.copyFileSync(path.join(src, file), path.join(output, file));
+  }
+} catch (error) {
+  console.error(`[draco] failed to copy decoder: ${error.message}`);
+  process.exitCode = 1;
+}

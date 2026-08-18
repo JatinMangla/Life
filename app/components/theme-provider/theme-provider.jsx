@@ -67,7 +67,7 @@ export function createThemeProperties(theme) {
  * Transform theme tokens into a React CSSProperties object
  */
 export function createThemeStyleObject(theme) {
-  let style = {};
+  const style = {};
 
   for (const key of Object.keys(theme)) {
     style[`--${key}`] = theme[key];

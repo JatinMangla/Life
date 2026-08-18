@@ -1,6 +1,3 @@
-import backgroundSprLarge from '~/assets/spr-background-large.jpg';
-import backgroundSprPlaceholder from '~/assets/spr-background-placeholder.jpg';
-import backgroundSpr from '~/assets/spr-background.jpg';
 import mmAnalyticsDashboard from '~/assets/mm-analytics-dashboard.png';
 import mmScreenMonitoring from '~/assets/mm-screen-monitoring.png';
 import mmProductivity from '~/assets/mm-productivity.png';
@@ -51,10 +48,10 @@ export const MeraMonitor = () => {
     <>
       <ProjectContainer>
         <ProjectBackground
-          opacity={0.5}
-          src={backgroundSpr}
-          srcSet={`${backgroundSpr} 1080w, ${backgroundSprLarge} 2160w`}
-          placeholder={backgroundSprPlaceholder}
+          opacity={0.4}
+          src={mmAnalyticsDashboard}
+          srcSet={`${mmAnalyticsDashboard} 1280w`}
+          placeholder={mmAnalyticsDashboard}
         />
         <ProjectHeader
           title={title}

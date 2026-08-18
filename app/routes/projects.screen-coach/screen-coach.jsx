@@ -7,7 +7,6 @@ import scNagFree from '~/assets/sc-nag-free.png';
 import scFunFilled from '~/assets/sc-fun-filled.png';
 import scReport from '~/assets/sc-report.png';
 import scTeen from '~/assets/sc-teen.png';
-import scLogo from '~/assets/sc-logo.png';
 import { Button } from '~/components/button';
 import { Footer } from '~/components/footer';
 import { Image } from '~/components/image';

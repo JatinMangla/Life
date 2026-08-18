@@ -188,7 +188,7 @@ export const Contact = () => {
               data-status={status}
               style={getDelay(tokens.base.durationXS)}
             >
-              Thanks{actionData?.name ? `, ${actionData.name}` : ''}! I'll get back to you within a couple days.
+              Thanks{actionData?.name ? `, ${actionData.name}` : ''}! I&rsquo;ll get back to you within a couple days.
             </Text>
             <Button
               secondary

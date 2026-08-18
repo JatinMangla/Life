@@ -14,7 +14,7 @@ import { getSession, commitSession } from '~/utils/session.server';
 import { ThemeProvider, themeStyles } from '~/components/theme-provider';
 import GothamBook from '~/assets/fonts/gotham-book.woff2';
 import GothamMedium from '~/assets/fonts/gotham-medium.woff2';
-import { useEffect } from 'react';
+
 import { Error } from '~/layouts/error';
 import { VisuallyHidden } from '~/components/visually-hidden';
 import { Navbar } from '~/layouts/navbar';
@@ -71,13 +71,15 @@ export const loader = async ({ request }) => {
 };
 
 export default function App() {
-  let { canonicalUrl, theme } = useLoaderData();
+  const { canonicalUrl, theme: sessionTheme } = useLoaderData();
   const fetcher = useFetcher();
   const { state } = useNavigation();
 
-  if (fetcher.formData?.has('theme')) {
-    theme = fetcher.formData.get('theme');
-  }
+  // Read the pending theme straight off the in-flight submission so the toggle
+  // updates optimistically instead of waiting for the round trip.
+  const theme = fetcher.formData?.has('theme')
+    ? fetcher.formData.get('theme')
+    : sessionTheme;
 
   function toggleTheme(newTheme) {
     fetcher.submit(
@@ -85,13 +87,6 @@ export default function App() {
       { action: '/api/set-theme', method: 'post' }
     );
   }
-
-  useEffect(() => {
-    console.info(
-      `${config.ascii}\n`,
-      `Taking a peek huh? Check out the source code: ${config.repo}\n\n`
-    );
-  }, []);
 
   return (
     <html lang="en">

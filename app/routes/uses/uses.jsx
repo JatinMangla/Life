@@ -18,7 +18,7 @@ import styles from './uses.module.css';
 
 export const meta = () => {
   return baseMeta({
-    title: 'Uses',
+    title: 'Tech Stack',
     description:
       'A list of tools, frameworks, and technologies I use to build modern web applications',
   });
@@ -151,7 +151,7 @@ export const Uses = () => {
           opacity={0.7}
         />
         <ProjectHeader
-          title="Uses"
+          title="Tech Stack"
           description="The tools, frameworks, and technologies I reach for every day to build high-performance, delightful web applications — from React on the frontend to Node.js and databases on the backend."
         />
 

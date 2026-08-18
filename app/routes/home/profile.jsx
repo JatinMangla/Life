@@ -6,13 +6,11 @@ import { DecoderText } from '~/components/decoder-text';
 import { Divider } from '~/components/divider';
 import { Heading } from '~/components/heading';
 import { Image } from '~/components/image';
-import { Link } from '~/components/link';
 import { Section } from '~/components/section';
 import { Text } from '~/components/text';
 import { Transition } from '~/components/transition';
 import { Fragment, useState } from 'react';
 import { media } from '~/utils/style';
-import katakana from './katakana.svg';
 import jatin from './jatin.svg';
 import styles from './profile.module.css';
 
@@ -22,10 +20,10 @@ const ProfileText = ({ visible, titleId }) => (
       <DecoderText text="Hi there" start={visible} delay={500} />
     </Heading>
     <Text className={styles.description} data-visible={visible} size="s" as="p">
-      I'm Jatin Mangla, a Frontend Developer with 4.5+ years of experience specializing in React.js, TypeScript, and JavaScript. At AAPNA Infotech Pvt. Ltd I own the front-end architecture for fintech and SaaS products — driving component design, performance, and code quality for applications used by thousands of people.
+      I&rsquo;m Jatin Mangla, a Frontend Developer with 4.5+ years of experience specializing in React.js, TypeScript, and JavaScript. At AAPNA Infotech Pvt. Ltd I own the front-end architecture for fintech and SaaS products — driving component design, performance, and code quality for applications used by thousands of people.
     </Text>
     <Text className={styles.description} data-visible={visible} size="s" as="p">
-      I've worked on live products with 3,500+ active users, implementing Redux (Thunk/Saga) for state management, lazy loading and code splitting for performance, and integrated Microsoft MSAL and Google OAuth for secure SSO authentication. I also contribute to Node.js/MongoDB backends to deliver full-stack features.
+      I&rsquo;ve worked on live products with 3,500+ active users, implementing Redux (Thunk/Saga) for state management, lazy loading and code splitting for performance, and integrated Microsoft MSAL and Google OAuth for secure SSO authentication. I also contribute to Node.js/MongoDB backends to deliver full-stack features.
     </Text>
     <Text className={styles.description} data-visible={visible} size="s" as="p">
       With expertise in SCSS, Webpack, React Query, and real-time technologies like SignalR and WebSockets, I deliver responsive, SEO-optimized interfaces. I thrive in Agile/Scrum environments, consistently shipping high-quality, performant solutions.

@@ -47,7 +47,7 @@ export const rgbToThreeColor = rgb =>
  * Optionally pass a second param for normal styles
  */
 export function cssProps(props, style = {}) {
-  let result = {};
+  const result = {};
 
   const keys = Object.keys(props);
 
