@@ -2,16 +2,27 @@ import { useReducedMotion } from 'framer-motion';
 import { useLocation, useNavigate } from '@remix-run/react';
 import { useCallback, useRef } from 'react';
 
-export function useScrollToHash() {
-  const scrollTimeout = useRef();
+export type ScrollToHash = (hash: string, onDone?: () => void) => (() => void) | undefined;
+
+/**
+ * Smooth-scroll to an in-page anchor, then update the URL once scrolling has
+ * settled — so the hash doesn't fight the animation.
+ */
+export function useScrollToHash(): ScrollToHash {
+  const scrollTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const location = useLocation();
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
 
-  const scrollToHash = useCallback(
+  return useCallback(
     (hash, onDone) => {
       const id = hash.split('#')[1];
+
+      if (!id) return;
+
       const targetElement = document.getElementById(id);
+
+      if (!targetElement) return;
 
       targetElement.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
 
@@ -23,7 +34,7 @@ export function useScrollToHash() {
 
           if (window.location.pathname === location.pathname) {
             onDone?.();
-            navigate(`${location.pathname}#${id}`, { scroll: false });
+            navigate(`${location.pathname}#${id}`, { preventScrollReset: true });
           }
         }, 50);
       };
@@ -37,6 +48,4 @@ export function useScrollToHash() {
     },
     [navigate, reduceMotion, location.pathname]
   );
-
-  return scrollToHash;
 }

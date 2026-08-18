@@ -1,14 +1,19 @@
 import { useCallback, useEffect, useState } from 'react';
 
+export interface WindowSize {
+  width: number;
+  height: number;
+}
+
 // Zero on the server and on the very first client render, so consumers can
 // distinguish "not measured yet" from a real viewport width. Guarding on
 // `width > 0` is what keeps SSR markup from committing to a breakpoint it
 // can't know, rather than silently rendering the desktop layout.
-const INITIAL_SIZE = { width: 0, height: 0 };
+const INITIAL_SIZE: WindowSize = { width: 0, height: 0 };
 
 // iOS Safari reports an innerHeight that includes the collapsing URL bar. A
 // fixed 100vh element measures what the page can actually use.
-function measureViewportHeight() {
+function measureViewportHeight(): number {
   const ruler = document.createElement('div');
 
   ruler.style.position = 'fixed';
@@ -23,10 +28,10 @@ function measureViewportHeight() {
   return height;
 }
 
-export function useWindowSize() {
-  const [windowSize, setWindowSize] = useState(INITIAL_SIZE);
+export function useWindowSize(): WindowSize {
+  const [windowSize, setWindowSize] = useState<WindowSize>(INITIAL_SIZE);
 
-  const getSize = useCallback(() => {
+  const getSize = useCallback((): WindowSize => {
     const isIOS = /iphone|ipod|ipad/i.test(navigator.userAgent);
 
     return {

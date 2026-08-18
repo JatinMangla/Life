@@ -9,13 +9,24 @@ const defaultOgImage = `${url}/social-image.png`;
  * `path` matters: without it every page advertises the site root as its
  * canonical social URL, so a shared project link previews as the homepage.
  */
+export interface BaseMetaOptions {
+  /** Page-specific part of the title. */
+  title: string;
+  description: string;
+  /** Leading segment of the title; defaults to my name. */
+  prefix?: string;
+  ogImage?: string;
+  /** Route path, so og:url points at this page rather than the site root. */
+  path?: string;
+}
+
 export function baseMeta({
   title,
   description,
   prefix = name,
   ogImage = defaultOgImage,
   path = '/',
-}) {
+}: BaseMetaOptions) {
   const titleText = [prefix, title].filter(Boolean).join(' | ');
   const pageUrl = new URL(path, url).href;
 

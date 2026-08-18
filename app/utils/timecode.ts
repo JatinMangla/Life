@@ -1,7 +1,5 @@
-/**
- * Format a timecode intro a hours:minutes:seconds:centiseconds string
- */
-export function formatTimecode(time) {
+/** Format a duration in ms as hours:minutes:seconds:centiseconds. */
+export function formatTimecode(time: number): string {
   const hours = time / 1000 / 60 / 60;
 
   const h = Math.floor(hours);
@@ -12,16 +10,15 @@ export function formatTimecode(time) {
   return `${zeroPrefix(h)}:${zeroPrefix(m)}:${zeroPrefix(s)}:${zeroPrefix(c)}`;
 }
 
-/**
- * Prefix a number with zero as a string if less than 10
- */
-export function zeroPrefix(value) {
+/** Left-pad a number below 10 with a zero. */
+export function zeroPrefix(value: number): string {
   return value < 10 ? `0${value}` : `${value}`;
 }
 
-export function readingTime(text) {
-  const wpm = 225;
+/** Rough reading time for a body of text, in milliseconds. */
+export function readingTime(text: string): number {
+  const wordsPerMinute = 225;
   const words = text.trim().split(/\s+/).length;
-  const time = words / wpm;
-  return time * 1000 * 60;
+
+  return (words / wordsPerMinute) * 1000 * 60;
 }

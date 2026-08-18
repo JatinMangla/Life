@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
+import type { RefObject } from 'react';
 
 export function useInViewport(
-  elementRef,
-  unobserveOnIntersect,
-  options = {},
+  elementRef: RefObject<Element | null> | undefined,
+  unobserveOnIntersect = false,
+  options: IntersectionObserverInit = {},
   shouldObserve = true
-) {
+): boolean {
   const [intersect, setIntersect] = useState(false);
   const [isUnobserved, setIsUnobserved] = useState(false);
 
@@ -16,16 +17,18 @@ export function useInViewport(
   const { root = null, rootMargin, threshold } = options;
 
   useEffect(() => {
-    if (!elementRef?.current) return;
+    const element = elementRef?.current;
+
+    if (!element) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        const { isIntersecting, target } = entry;
+        if (!entry) return;
 
-        setIntersect(isIntersecting);
+        setIntersect(entry.isIntersecting);
 
-        if (isIntersecting && unobserveOnIntersect) {
-          observer.unobserve(target);
+        if (entry.isIntersecting && unobserveOnIntersect) {
+          observer.unobserve(entry.target);
           setIsUnobserved(true);
         }
       },
@@ -33,7 +36,7 @@ export function useInViewport(
     );
 
     if (!isUnobserved && shouldObserve) {
-      observer.observe(elementRef.current);
+      observer.observe(element);
     }
 
     return () => observer.disconnect();
