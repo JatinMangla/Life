@@ -4,18 +4,18 @@ import type { MutableRefObject, ReactNode, RefObject } from 'react';
 
 export type TransitionStatus = 'entering' | 'entered' | 'exiting' | 'exited';
 
-export interface TransitionState {
+export interface TransitionState<T extends Element = HTMLElement> {
   /** True while the element should be in its visible state. */
   visible: boolean;
   status: TransitionStatus;
   /** Attach to the animating element so reflows can be forced on it. */
-  nodeRef: RefObject<HTMLElement>;
+  nodeRef: RefObject<T>;
 }
 
 export type TransitionTimeout = number | { enter: number; exit: number };
 
-interface TransitionOwnProps {
-  children: (state: TransitionState) => ReactNode;
+interface TransitionOwnProps<T extends Element = HTMLElement> {
+  children: (state: TransitionState<T>) => ReactNode;
   /** Whether the content should be shown. */
   in?: boolean;
   /** Remove the content from the DOM once it has exited. */
@@ -23,7 +23,7 @@ interface TransitionOwnProps {
   /** Start from the exited state on first mount. */
   initial?: boolean;
   timeout?: TransitionTimeout;
-  nodeRef?: RefObject<HTMLElement>;
+  nodeRef?: RefObject<T>;
   onEnter?: () => void;
   onEntered?: () => void;
   onExit?: () => void;
@@ -36,13 +36,13 @@ type Timer = ReturnType<typeof setTimeout> | undefined;
  * A lightweight Framer Motion `AnimatePresence` implementation of
  * `react-transition-group`, for driving plain CSS transitions.
  */
-export const Transition = ({
+export const Transition = <T extends Element = HTMLElement>({
   children,
   in: show,
   unmount,
   initial = true,
   ...props
-}: TransitionOwnProps) => {
+}: TransitionOwnProps<T>) => {
   const enterTimeout = useRef<Timer>(undefined);
   const exitTimeout = useRef<Timer>(undefined);
 
@@ -71,12 +71,13 @@ export const Transition = ({
   );
 };
 
-interface TransitionContentProps extends Omit<TransitionOwnProps, 'unmount'> {
+interface TransitionContentProps<T extends Element = HTMLElement>
+  extends Omit<TransitionOwnProps<T>, 'unmount'> {
   enterTimeout: MutableRefObject<Timer>;
   exitTimeout: MutableRefObject<Timer>;
 }
 
-const TransitionContent = ({
+const TransitionContent = <T extends Element = HTMLElement>({
   children,
   timeout = 0,
   enterTimeout,
@@ -88,11 +89,11 @@ const TransitionContent = ({
   initial,
   nodeRef: defaultNodeRef,
   in: show,
-}: TransitionContentProps) => {
+}: TransitionContentProps<T>) => {
   const [status, setStatus] = useState<TransitionStatus>(initial ? 'exited' : 'entered');
   const [isPresent, safeToRemove] = usePresence();
   const [hasEntered, setHasEntered] = useState(!initial);
-  const internalNodeRef = useRef<HTMLElement>(null);
+  const internalNodeRef = useRef<T>(null);
   const nodeRef = defaultNodeRef ?? internalNodeRef;
   const visible = hasEntered && show ? isPresent : false;
 
@@ -110,7 +111,7 @@ const TransitionContent = ({
 
     // Force a reflow so the browser doesn't batch the class change with the
     // initial paint and skip the transition entirely.
-    void nodeRef.current?.offsetHeight;
+    void (nodeRef.current as HTMLElement | null)?.offsetHeight;
 
     enterTimeout.current = setTimeout(() => {
       setStatus('entered');
@@ -130,7 +131,7 @@ const TransitionContent = ({
     setStatus('exiting');
     onExit?.();
 
-    void nodeRef.current?.offsetHeight;
+    void (nodeRef.current as HTMLElement | null)?.offsetHeight;
 
     exitTimeout.current = setTimeout(() => {
       setStatus('exited');

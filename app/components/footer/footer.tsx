@@ -3,11 +3,17 @@ import { Link } from '~/components/link';
 import { Text } from '~/components/text';
 import { classes } from '~/utils/style';
 import config from '~/config.json';
+import type { RootLoaderData } from '~/root';
 import styles from './footer.module.css';
 
-export const Footer = ({ className }) => {
-  // Comes from the root loader, so server and client always agree (see root.jsx).
-  const year = useRouteLoaderData('root')?.year;
+export interface FooterProps {
+  className?: string;
+}
+
+export const Footer = ({ className }: FooterProps) => {
+  // Comes from the root loader, so server and client always agree on the year
+  // even across midnight on New Year's Eve (see root.jsx).
+  const year = useRouteLoaderData<RootLoaderData>('root')?.year;
 
   return (
     <footer className={classes(styles.footer, className)}>

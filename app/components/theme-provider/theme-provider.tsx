@@ -6,10 +6,28 @@ import GothamMediumItalic from '~/assets/fonts/gotham-medium-italic.woff2';
 import GothamMedium from '~/assets/fonts/gotham-medium.woff2';
 import IPAGothic from '~/assets/fonts/ipa-gothic.woff2';
 import { createContext, useContext } from 'react';
+import type { CSSProperties, ElementType, ReactNode } from 'react';
 import { classes, media } from '~/utils/style';
 import { themes, tokens } from './theme';
 
-export const ThemeContext = createContext({});
+export type ThemeId = 'dark' | 'light';
+
+export interface ThemeContextValue {
+  theme?: ThemeId;
+  toggleTheme?: (theme?: ThemeId) => void;
+}
+
+export const ThemeContext = createContext<ThemeContextValue>({});
+
+export interface ThemeProviderProps {
+  theme?: ThemeId;
+  children?: ReactNode;
+  className?: string;
+  /** Element used to scope tokens when this provider is nested. */
+  as?: ElementType;
+  toggleTheme?: (theme?: ThemeId) => void;
+  [key: string]: unknown;
+}
 
 export const ThemeProvider = ({
   theme = 'dark',
@@ -18,7 +36,7 @@ export const ThemeProvider = ({
   as: Component = 'div',
   toggleTheme,
   ...rest
-}) => {
+}: ThemeProviderProps) => {
   const parentTheme = useTheme();
   const isRootProvider = !parentTheme.theme;
 
@@ -48,14 +66,14 @@ export function useTheme() {
 /**
  * Squeeze out spaces and newlines
  */
-export function squish(styles) {
+export function squish(styles: string): string {
   return styles.replace(/\s\s+/g, ' ');
 }
 
 /**
  * Transform theme token objects into CSS custom property strings
  */
-export function createThemeProperties(theme) {
+export function createThemeProperties(theme: Record<string, string | number>): string {
   return squish(
     Object.keys(theme)
       .map(key => `--${key}: ${theme[key]};`)
@@ -66,27 +84,29 @@ export function createThemeProperties(theme) {
 /**
  * Transform theme tokens into a React CSSProperties object
  */
-export function createThemeStyleObject(theme) {
-  const style = {};
+export function createThemeStyleObject(
+  theme: Record<string, string | number>
+): CSSProperties {
+  const style: Record<string, string | number> = {};
 
   for (const key of Object.keys(theme)) {
-    style[`--${key}`] = theme[key];
+    style[`--${key}`] = theme[key]!;
   }
 
-  return style;
+  return style as CSSProperties;
 }
 
 /**
  * Generate media queries for tokens
  */
-export function createMediaTokenProperties() {
+export function createMediaTokenProperties(): string {
   return squish(
     Object.keys(media)
       .map(key => {
         return `
-        @media (max-width: ${media[key]}px) {
+        @media (max-width: ${media[key as keyof typeof media]}px) {
           :root {
-            ${createThemeProperties(tokens[key])}
+            ${createThemeProperties(tokens[key as keyof typeof tokens])}
           }
         }
       `;

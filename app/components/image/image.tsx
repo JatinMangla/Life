@@ -4,9 +4,39 @@ import { useTheme } from '~/components/theme-provider';
 import { useReducedMotion } from 'framer-motion';
 import { useHasMounted, useInViewport } from '~/hooks';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
+import type { CSSProperties, MouseEvent, ReactNode } from 'react';
 import { resolveSrcFromSrcSet } from '~/utils/image';
 import { classes, cssProps, numToMs } from '~/utils/style';
 import styles from './image.module.css';
+
+function getIsVideo(src?: string): boolean {
+  return typeof src === 'string' && src.includes('.mp4');
+}
+
+export interface ImageProps {
+  className?: string;
+  style?: CSSProperties;
+  /** Animate in when the image scrolls into view. */
+  reveal?: boolean;
+  /** Reveal delay in ms. */
+  delay?: number;
+  raised?: boolean;
+  src?: string;
+  srcSet?: string;
+  /** Low-resolution stand-in cross-faded out once the real image loads. */
+  placeholder?: string;
+  alt?: string;
+  sizes?: string;
+  width?: number;
+  height?: number;
+  cover?: boolean;
+  /** Video only: whether the clip should be playing. */
+  play?: boolean;
+  restartOnPause?: boolean;
+  noPauseButton?: boolean;
+  children?: ReactNode;
+  [key: string]: unknown;
+}
 
 export const Image = ({
   className,
@@ -18,16 +48,16 @@ export const Image = ({
   srcSet,
   placeholder,
   ...rest
-}) => {
+}: ImageProps) => {
   const [loaded, setLoaded] = useState(false);
   const { theme } = useTheme();
-  const containerRef = useRef();
-  const src = baseSrc || srcSet.split(' ')[0];
+  const containerRef = useRef<HTMLDivElement>(null);
+  const src = baseSrc ?? srcSet?.split(' ')[0];
+  // Videos keep observing so they can pause when scrolled out of view;
+  // images stop once they've been seen.
   const inViewport = useInViewport(containerRef, !getIsVideo(src));
 
-  const onLoad = useCallback(() => {
-    setLoaded(true);
-  }, []);
+  const onLoad = useCallback(() => setLoaded(true), []);
 
   return (
     <div
@@ -54,13 +84,19 @@ export const Image = ({
   );
 };
 
+interface ImageElementsProps extends ImageProps {
+  onLoad: () => void;
+  loaded: boolean;
+  inViewport: boolean;
+}
+
 const ImageElements = ({
   onLoad,
   loaded,
   inViewport,
   srcSet,
   placeholder,
-  delay,
+  delay = 0,
   src,
   alt,
   play = true,
@@ -72,72 +108,76 @@ const ImageElements = ({
   noPauseButton,
   cover,
   ...rest
-}) => {
+}: ImageElementsProps) => {
   const reduceMotion = useReducedMotion();
   const [showPlaceholder, setShowPlaceholder] = useState(true);
   const [playing, setPlaying] = useState(!reduceMotion);
-  const [videoSrc, setVideoSrc] = useState();
+  const [videoSrc, setVideoSrc] = useState<string>();
   const [videoInteracted, setVideoInteracted] = useState(false);
-  const placeholderRef = useRef();
-  const videoRef = useRef();
+  const placeholderRef = useRef<HTMLImageElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const isVideo = getIsVideo(src);
   const showFullRes = inViewport;
   const hasMounted = useHasMounted();
 
   useEffect(() => {
-    const resolveVideoSrc = async () => {
-      const resolvedVideoSrc = await resolveSrcFromSrcSet({ srcSet, sizes });
-      setVideoSrc(resolvedVideoSrc);
-    };
+    if (!isVideo) return;
 
-    if (isVideo && srcSet) {
-      resolveVideoSrc();
-    } else if (isVideo) {
+    if (srcSet) {
+      resolveSrcFromSrcSet({ srcSet, sizes }).then(setVideoSrc).catch(() => {});
+    } else {
       setVideoSrc(src);
     }
   }, [isVideo, sizes, src, srcSet]);
 
   useEffect(() => {
-    if (!videoRef.current || !videoSrc) return;
+    const video = videoRef.current;
+
+    if (!video || !videoSrc) return;
 
     const playVideo = () => {
       setPlaying(true);
-      videoRef.current.play();
+      void video.play().catch(() => {});
     };
 
     const pauseVideo = () => {
       setPlaying(false);
-      videoRef.current.pause();
+      video.pause();
     };
 
     if (!play) {
       pauseVideo();
 
       if (restartOnPause) {
-        videoRef.current.currentTime = 0;
+        video.currentTime = 0;
       }
     }
 
+    // Once someone has hit the pause button, stop overriding their choice.
     if (videoInteracted) return;
 
     if (!inViewport) {
       pauseVideo();
-    } else if (inViewport && !reduceMotion && play) {
+    } else if (!reduceMotion && play) {
       playVideo();
     }
   }, [inViewport, play, reduceMotion, restartOnPause, videoInteracted, videoSrc]);
 
-  const togglePlaying = event => {
+  const togglePlaying = (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
+
+    const video = videoRef.current;
+
+    if (!video) return;
 
     setVideoInteracted(true);
 
-    if (videoRef.current.paused) {
+    if (video.paused) {
       setPlaying(true);
-      videoRef.current.play();
+      void video.play().catch(() => {});
     } else {
       setPlaying(false);
-      videoRef.current.pause();
+      video.pause();
     }
   };
 
@@ -165,7 +205,11 @@ const ImageElements = ({
             {...rest}
           />
           {!noPauseButton && (
-            <Button className={styles.button} onClick={togglePlaying} aria-pressed={playing}>
+            <Button
+              className={styles.button}
+              onClick={togglePlaying}
+              aria-pressed={playing}
+            >
               <Icon icon={playing ? 'pause' : 'play'} />
               {playing ? 'Pause' : 'Play'}
             </Button>
@@ -209,7 +253,3 @@ const ImageElements = ({
     </div>
   );
 };
-
-function getIsVideo(src) {
-  return typeof src === 'string' && src.includes('.mp4');
-}

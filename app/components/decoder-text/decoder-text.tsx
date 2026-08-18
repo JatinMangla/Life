@@ -1,6 +1,7 @@
 import { VisuallyHidden } from '~/components/visually-hidden';
 import { useReducedMotion, useSpring } from 'framer-motion';
 import { memo, useEffect, useRef } from 'react';
+import type { HTMLAttributes } from 'react';
 import { delay } from '~/utils/delay';
 import { classes } from '~/utils/style';
 import styles from './decoder-text.module.css';
@@ -27,9 +28,16 @@ const glyphs = [
 const CharType = {
   Glyph: 'glyph',
   Value: 'value',
-};
+} as const;
 
-function shuffle(content, output, position) {
+type CharTypeValue = (typeof CharType)[keyof typeof CharType];
+
+interface Char {
+  type: CharTypeValue;
+  value: string;
+}
+
+function shuffle(content: string[], output: Char[], position: number): Char[] {
   return content.map((value, index) => {
     if (index < position) {
       return { type: CharType.Value, value };
@@ -37,31 +45,39 @@ function shuffle(content, output, position) {
 
     if (position % 1 < 0.5) {
       const rand = Math.floor(Math.random() * glyphs.length);
-      return { type: CharType.Glyph, value: glyphs[rand] };
+      return { type: CharType.Glyph, value: glyphs[rand] ?? '' };
     }
 
-    return { type: CharType.Glyph, value: output[index].value };
+    return { type: CharType.Glyph, value: output[index]?.value ?? value };
   });
 }
 
+export interface DecoderTextProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'children'> {
+  /** The final, decoded text. Also what screen readers get, immediately. */
+  text: string;
+  /** Begin the decode animation. */
+  start?: boolean;
+  /** Delay before the animation starts, in ms. */
+  delay?: number;
+}
+
 export const DecoderText = memo(
-  ({ text, start = true, delay: startDelay = 0, className, ...rest }) => {
-    const output = useRef([{ type: CharType.Glyph, value: '' }]);
-    const container = useRef();
+  ({ text, start = true, delay: startDelay = 0, className, ...rest }: DecoderTextProps) => {
+    const output = useRef<Char[]>([{ type: CharType.Glyph, value: '' }]);
+    const container = useRef<HTMLSpanElement>(null);
     const reduceMotion = useReducedMotion();
     const decoderSpring = useSpring(0, { stiffness: 8, damping: 5 });
 
     useEffect(() => {
       const containerInstance = container.current;
       const content = text.split('');
-      let animation;
 
       const renderOutput = () => {
         const characterMap = output.current.map(item => {
           return `<span class="${styles[item.type]}">${item.value}</span>`;
         });
 
-        containerInstance.innerHTML = characterMap.join('');
+        if (containerInstance) containerInstance.innerHTML = characterMap.join('');
       };
 
       const unsubscribeSpring = decoderSpring.on('change', value => {
@@ -74,15 +90,12 @@ export const DecoderText = memo(
         decoderSpring.set(content.length);
       };
 
-      if (start && !animation && !reduceMotion) {
-        startSpring();
+      if (start && !reduceMotion) {
+        void startSpring();
       }
 
       if (reduceMotion) {
-        output.current = content.map((value, index) => ({
-          type: CharType.Value,
-          value: content[index],
-        }));
+        output.current = content.map(value => ({ type: CharType.Value, value }));
         renderOutput();
       }
 

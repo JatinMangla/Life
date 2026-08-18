@@ -1,12 +1,8 @@
 import { animate, useReducedMotion, useSpring } from 'framer-motion';
+import type { AnimationPlaybackControls } from 'framer-motion';
 import { useInViewport } from '~/hooks';
-import {
-  startTransition,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { startTransition, useCallback, useEffect, useRef, useState } from 'react';
+import type { CSSProperties, MutableRefObject } from 'react';
 import {
   AmbientLight,
   Color,
@@ -26,6 +22,13 @@ import {
   WebGLRenderTarget,
   WebGLRenderer,
 } from 'three';
+import type {
+  BufferGeometry,
+  Light,
+  MeshStandardMaterial,
+  Object3D,
+  Texture,
+} from 'three';
 import { HorizontalBlurShader, VerticalBlurShader } from 'three-stdlib';
 import { resolveSrcFromSrcSet } from '~/utils/image';
 import { classes, cssProps, numToMs } from '~/utils/style';
@@ -37,6 +40,7 @@ import {
   textureLoader,
 } from '~/utils/three';
 import { ModelAnimationType } from './device-models';
+import type { DeviceModel } from './device-models';
 import { throttle } from '~/utils/throttle';
 import styles from './model.module.css';
 
@@ -44,7 +48,20 @@ const MeshType = {
   Frame: 'Frame',
   Logo: 'Logo',
   Screen: 'Screen',
-};
+} as const;
+
+/** A mesh from the GLB whose material we recolour or texture. */
+type ScreenMesh = Mesh<BufferGeometry, MeshStandardMaterial>;
+
+function isScreenMesh(node: Object3D): node is ScreenMesh {
+  return (node as Partial<ScreenMesh>).material !== undefined;
+}
+
+/** What loading a device hands back to the caller. */
+interface DeviceHandles {
+  loadFullResTexture?: () => Promise<void>;
+  playAnimation?: () => AnimationPlaybackControls | undefined;
+}
 
 const rotationSpringConfig = {
   stiffness: 40,
@@ -52,6 +69,37 @@ const rotationSpringConfig = {
   mass: 1.4,
   restSpeed: 0.001,
 };
+
+export interface ModelPosition {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export interface ModelTexture {
+  srcSet: string;
+  placeholder: string;
+  sizes?: string;
+}
+
+/** One device instance rendered into the shared scene. */
+export interface ModelInstance extends DeviceModel {
+  texture: ModelTexture;
+}
+
+export interface ModelProps {
+  models: ModelInstance[];
+  /** Load and animate the models in. Kept false until scrolled into view. */
+  show?: boolean;
+  showDelay?: number;
+  cameraPosition?: ModelPosition;
+  style?: CSSProperties;
+  className?: string;
+  onLoad?: () => void;
+  /** Describes the rendered scene; the canvas itself is not accessible. */
+  alt: string;
+  [key: string]: unknown;
+}
 
 export const Model = ({
   models,
@@ -63,46 +111,46 @@ export const Model = ({
   onLoad,
   alt,
   ...rest
-}) => {
+}: ModelProps) => {
   const [loaded, setLoaded] = useState(false);
-  const container = useRef();
-  const canvas = useRef();
-  const camera = useRef();
-  const modelGroup = useRef();
-  const scene = useRef();
-  const renderer = useRef();
-  const shadowGroup = useRef();
-  const renderTarget = useRef();
-  const renderTargetBlur = useRef();
-  const shadowCamera = useRef();
-  const depthMaterial = useRef();
-  const horizontalBlurMaterial = useRef();
-  const verticalBlurMaterial = useRef();
-  const plane = useRef();
-  const lights = useRef();
-  const blurPlane = useRef();
-  const fillPlane = useRef();
+  const container = useRef<HTMLDivElement>(null!);
+  const canvas = useRef<HTMLCanvasElement>(null!);
+  const camera = useRef<PerspectiveCamera>(null!);
+  const modelGroup = useRef<Group>(null!);
+  const scene = useRef<Scene>(null!);
+  const renderer = useRef<WebGLRenderer>(null!);
+  const shadowGroup = useRef<Group>(null!);
+  const renderTarget = useRef<WebGLRenderTarget>(null!);
+  const renderTargetBlur = useRef<WebGLRenderTarget>(null!);
+  const shadowCamera = useRef<OrthographicCamera>(null!);
+  const depthMaterial = useRef<MeshDepthMaterial>(null!);
+  const horizontalBlurMaterial = useRef<ShaderMaterial>(null!);
+  const verticalBlurMaterial = useRef<ShaderMaterial>(null!);
+  const plane = useRef<Mesh>(null!);
+  const lights = useRef<Light[]>(null!);
+  const blurPlane = useRef<Mesh>(null!);
+  const fillPlane = useRef<Mesh>(null!);
   const isInViewport = useInViewport(container, false, { threshold: 0.2 });
   const reduceMotion = useReducedMotion();
   const rotationX = useSpring(0, rotationSpringConfig);
   const rotationY = useSpring(0, rotationSpringConfig);
-  const renderFrameRef = useRef();
+  const renderFrameRef = useRef<() => void>(null!);
 
-  const blurShadow = useCallback(amount => {
+  const blurShadow = useCallback((amount: number) => {
     blurPlane.current.visible = true;
 
     // Blur horizontally and draw in the renderTargetBlur
     blurPlane.current.material = horizontalBlurMaterial.current;
-    blurPlane.current.material.uniforms.tDiffuse.value = renderTarget.current.texture;
-    horizontalBlurMaterial.current.uniforms.h.value = amount * (1 / 256);
+    horizontalBlurMaterial.current.uniforms.tDiffuse!.value = renderTarget.current.texture;
+    horizontalBlurMaterial.current.uniforms.h!.value = amount * (1 / 256);
 
     renderer.current.setRenderTarget(renderTargetBlur.current);
     renderer.current.render(blurPlane.current, shadowCamera.current);
 
     // Blur vertically and draw in the main renderTarget
     blurPlane.current.material = verticalBlurMaterial.current;
-    blurPlane.current.material.uniforms.tDiffuse.value = renderTargetBlur.current.texture;
-    verticalBlurMaterial.current.uniforms.v.value = amount * (1 / 256);
+    verticalBlurMaterial.current.uniforms.tDiffuse!.value = renderTargetBlur.current.texture;
+    verticalBlurMaterial.current.uniforms.v!.value = amount * (1 / 256);
 
     renderer.current.setRenderTarget(renderTarget.current);
     renderer.current.render(blurPlane.current, shadowCamera.current);
@@ -284,7 +332,7 @@ export const Model = ({
 
   // Handle mouse move animation
   useEffect(() => {
-    const onMouseMove = throttle(event => {
+    const onMouseMove = throttle((event: MouseEvent) => {
       const { innerWidth, innerHeight } = window;
 
       const position = {
@@ -356,6 +404,22 @@ export const Model = ({
   );
 };
 
+interface DeviceProps {
+  renderer: MutableRefObject<WebGLRenderer>;
+  model: ModelInstance;
+  modelGroup: MutableRefObject<Group>;
+  renderFrame: () => void;
+  index: number;
+  showDelay: number;
+  setLoaded: (loaded: boolean) => void;
+  onLoad?: () => void;
+  show: boolean;
+}
+
+/**
+ * Loads one device model into the shared scene. Renders nothing itself — all
+ * of its output goes through the parent's canvas.
+ */
 const Device = ({
   renderer,
   model,
@@ -366,13 +430,13 @@ const Device = ({
   setLoaded,
   onLoad,
   show,
-}) => {
-  const [loadDevice, setLoadDevice] = useState();
+}: DeviceProps): null => {
+  const [loadDevice, setLoadDevice] = useState<{ start: () => Promise<DeviceHandles> }>();
   const reduceMotion = useReducedMotion();
-  const placeholderScreen = useRef();
+  const placeholderScreen = useRef<Mesh<BufferGeometry, MeshStandardMaterial>>();
 
   useEffect(() => {
-    const applyScreenTexture = async (texture, node) => {
+    const applyScreenTexture = async (texture: Texture, node: ScreenMesh) => {
       texture.colorSpace = SRGBColorSpace;
       texture.flipY = false;
       texture.anisotropy = renderer.current.capabilities.getMaxAnisotropy();
@@ -389,8 +453,8 @@ const Device = ({
     // Generate promises to await when ready
     const load = async () => {
       const { texture, position, url } = model;
-      let loadFullResTexture;
-      let playAnimation;
+      let loadFullResTexture: (() => Promise<void>) | undefined;
+      let playAnimation: (() => AnimationPlaybackControls | undefined) | undefined;
 
       const [placeholder, gltf] = await Promise.all([
         await textureLoader.loadAsync(texture.placeholder),
@@ -400,26 +464,28 @@ const Device = ({
       modelGroup.current.add(gltf.scene);
 
       // Collect nodes synchronously before any async work
-      const screenNodes = [];
-      gltf.scene.traverse(node => {
-        if (node.material) {
+      const screenNodes: ScreenMesh[] = [];
+      gltf.scene.traverse((node: Object3D) => {
+        if (isScreenMesh(node)) {
           node.material.color = new Color(0x1f2025);
-        }
-        if (node.name === MeshType.Screen) {
-          screenNodes.push(node);
+
+          if (node.name === MeshType.Screen) {
+            screenNodes.push(node);
+          }
         }
       });
 
       for (const node of screenNodes) {
         // Create a copy of the screen mesh so we can fade it out
         // over the full resolution screen texture
-        placeholderScreen.current = node.clone();
-        placeholderScreen.current.material = node.material.clone();
-        node.parent.add(placeholderScreen.current);
-        placeholderScreen.current.material.opacity = 1;
-        placeholderScreen.current.position.z += 0.001;
+        const screenClone = node.clone() as ScreenMesh;
+        screenClone.material = node.material.clone();
+        node.parent?.add(screenClone);
+        screenClone.material.opacity = 1;
+        screenClone.position.z += 0.001;
+        placeholderScreen.current = screenClone;
 
-        await applyScreenTexture(placeholder, placeholderScreen.current);
+        await applyScreenTexture(placeholder, screenClone);
 
         loadFullResTexture = async () => {
           const image = await resolveSrcFromSrcSet(texture);
@@ -428,7 +494,7 @@ const Device = ({
 
           animate(1, 0, {
             onUpdate: value => {
-              placeholderScreen.current.material.opacity = value;
+              screenClone.material.opacity = value;
               renderFrame();
             },
           });
@@ -452,7 +518,10 @@ const Device = ({
 
           gltf.scene.position.set(...startPosition.toArray());
 
-          animate(startPosition.y, targetPosition.y, {
+          // Returned so the effect's cleanup can stop it; the laptop-open
+          // branch below already did, this one silently kept animating after
+          // unmount.
+          return animate(startPosition.y, targetPosition.y, {
             type: 'spring',
             delay: (300 * index + showDelay) / 1000,
             stiffness: 60,
@@ -474,6 +543,8 @@ const Device = ({
           const frameNode = gltf.scene.children.find(
             node => node.name === MeshType.Frame
           );
+
+          if (!frameNode) throw new Error('Laptop model has no Frame node');
           const startRotation = new Vector3(MathUtils.degToRad(90), 0, 0);
           const endRotation = new Vector3(0, 0, 0);
 
@@ -505,7 +576,7 @@ const Device = ({
 
   useEffect(() => {
     if (!loadDevice || !show) return;
-    let animation;
+    let animation: AnimationPlaybackControls | undefined;
 
     const onModelLoad = async () => {
       const { loadFullResTexture, playAnimation } = await loadDevice.start();
@@ -514,10 +585,10 @@ const Device = ({
       onLoad?.();
 
       if (!reduceMotion) {
-        animation = playAnimation();
+        animation = playAnimation?.();
       }
 
-      await loadFullResTexture();
+      await loadFullResTexture?.();
 
       if (reduceMotion) {
         renderFrame();
@@ -533,6 +604,8 @@ const Device = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadDevice, show]);
+
+  return null;
 };
 
 export default Model;

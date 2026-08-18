@@ -6,8 +6,8 @@ export function Progress() {
   const [animationComplete, setAnimationComplete] = useState(false);
   const [visible, setVisible] = useState(false);
   const { state } = useNavigation();
-  const progressRef = useRef();
-  const timeout = useRef(0);
+  const progressRef = useRef<HTMLDivElement>(null);
+  const timeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     clearTimeout(timeout.current);

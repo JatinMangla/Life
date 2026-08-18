@@ -10,6 +10,8 @@ import {
   useRouteError,
 } from '@remix-run/react';
 import { json } from '@remix-run/node';
+import type { LoaderFunctionArgs } from '@remix-run/node';
+import type { ThemeId } from '~/components/theme-provider';
 import { getSession, commitSession } from '~/utils/session.server';
 import { ThemeProvider, themeStyles } from '~/components/theme-provider';
 import GothamBook from '~/assets/fonts/gotham-book.woff2';
@@ -47,20 +49,27 @@ export const links = () => [
   { rel: 'author', href: '/humans.txt', type: 'text/plain' },
 ];
 
-export const loader = async ({ request }) => {
+export interface RootLoaderData {
+  canonicalUrl: string;
+  theme: ThemeId;
+  /** Resolved server-side so the footer year can't cause a hydration mismatch. */
+  year: number;
+}
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { url } = request;
   const { pathname } = new URL(url);
   const pathnameSliced = pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
   const canonicalUrl = `${config.url}${pathnameSliced}`;
 
   const session = await getSession(request.headers.get('Cookie'));
-  const theme = session.get('theme') || 'dark';
+  const theme: ThemeId = session.get('theme') === 'light' ? 'light' : 'dark';
 
   // Resolved on the server so the footer year can't produce a hydration
   // mismatch when server and client sit either side of midnight on Dec 31.
   const year = new Date().getFullYear();
 
-  return json(
+  return json<RootLoaderData>(
     { canonicalUrl, theme, year },
     {
       headers: {
@@ -71,17 +80,17 @@ export const loader = async ({ request }) => {
 };
 
 export default function App() {
-  const { canonicalUrl, theme: sessionTheme } = useLoaderData();
+  const { canonicalUrl, theme: sessionTheme } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
   const { state } = useNavigation();
 
   // Read the pending theme straight off the in-flight submission so the toggle
   // updates optimistically instead of waiting for the round trip.
-  const theme = fetcher.formData?.has('theme')
-    ? fetcher.formData.get('theme')
-    : sessionTheme;
+  const theme = (
+    fetcher.formData?.has('theme') ? fetcher.formData.get('theme') : sessionTheme
+  ) as ThemeId;
 
-  function toggleTheme(newTheme) {
+  function toggleTheme(newTheme?: ThemeId) {
     fetcher.submit(
       { theme: newTheme ? newTheme : theme === 'dark' ? 'light' : 'dark' },
       { action: '/api/set-theme', method: 'post' }

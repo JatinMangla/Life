@@ -4,18 +4,24 @@ import { Text } from '~/components/text';
 import { useTheme } from '~/components/theme-provider';
 import { Transition } from '~/components/transition';
 import { useRef, useState } from 'react';
+import type { HTMLAttributes } from 'react';
 import styles from './code.module.css';
 
-export const Code = props => {
+export interface CodeProps extends HTMLAttributes<HTMLPreElement> {
+  /** rehype-prism sets this to `language-<lang>`. */
+  className?: string;
+}
+
+export const Code = (props: CodeProps) => {
   const [copied, setCopied] = useState(false);
   const { theme } = useTheme();
-  const elementRef = useRef();
-  const copyTimeout = useRef();
+  const elementRef = useRef<HTMLPreElement>(null);
+  const copyTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const lang = props.className?.split('-')[1];
 
   const handleCopy = () => {
     clearTimeout(copyTimeout.current);
-    navigator.clipboard.writeText(elementRef.current.textContent).catch(() => {});
+    navigator.clipboard.writeText(elementRef.current?.textContent ?? '').catch(() => {});
 
     setCopied(true);
 
@@ -38,12 +44,12 @@ export const Code = props => {
         </span>
         <Button iconOnly onClick={handleCopy} aria-label={copied ? 'Copied' : 'Copy'}>
           <span className={styles.copyIcon}>
-            <Transition in={!copied}>
+            <Transition<SVGSVGElement> in={!copied}>
               {({ visible, nodeRef }) => (
                 <Icon ref={nodeRef} icon="copy" data-visible={visible} />
               )}
             </Transition>
-            <Transition in={copied}>
+            <Transition<SVGSVGElement> in={copied}>
               {({ visible, nodeRef }) => (
                 <Icon ref={nodeRef} icon="check" data-visible={visible} />
               )}
