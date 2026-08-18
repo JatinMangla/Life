@@ -22,3 +22,14 @@
     display: inline-flex;
   }
 }
+
+@layer components {
+  .colophon {
+    flex-basis: 100%;
+    max-width: 60ch;
+    margin-top: var(--spaceS);
+    text-align: center;
+    color: var(--textLight);
+    opacity: 0.8;
+  }
+}

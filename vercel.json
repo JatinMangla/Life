@@ -1,4 +1,9 @@
 {
+  "redirects": [
+    { "source": "/projects/messaging-automation", "destination": "/", "permanent": true },
+    { "source": "/articles", "destination": "/", "permanent": true },
+    { "source": "/articles/:slug", "destination": "/", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/(.*)",

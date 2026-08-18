@@ -2,11 +2,7 @@ import scPhoneDashboard from '~/assets/sc-phone-dashboard.jpg';
 import scPhoneDashboardPlaceholder from '~/assets/sc-phone-dashboard-placeholder.jpg';
 import scPhoneRewards from '~/assets/sc-phone-rewards.jpg';
 import scPhoneRewardsPlaceholder from '~/assets/sc-phone-rewards-placeholder.jpg';
-import msgDashboard from '~/assets/msg-dashboard-800.jpg';
-import msgDashboardLarge from '~/assets/msg-dashboard-1920.jpg';
-import msgDashboardPlaceholder from '~/assets/msg-dashboard-placeholder.jpg';
 import mmDashboardImage from '~/assets/mm-analytics-dashboard.png';
-import mmScreenMonitoring from '~/assets/mm-screen-monitoring.png';
 import { Footer } from '~/components/footer';
 import { baseMeta } from '~/utils/meta';
 import { Intro } from './intro';
@@ -49,12 +45,11 @@ export const Home = () => {
   const intro = useRef();
   const projectOne = useRef();
   const projectTwo = useRef();
-  const projectThree = useRef();
   const details = useRef();
   const observedSections = useRef(new Set());
 
   useEffect(() => {
-    const sections = [intro, projectOne, projectTwo, projectThree, details];
+    const sections = [intro, projectOne, projectTwo, details];
 
     const sectionObserver = new IntersectionObserver(
       (entries, observer) => {
@@ -138,26 +133,6 @@ export const Home = () => {
             {
               srcSet: `${scPhoneRewards} 750w`,
               placeholder: scPhoneRewardsPlaceholder,
-            },
-          ],
-        }}
-      />
-      <ProjectSummary
-        id="project-3"
-        sectionRef={projectThree}
-        visible={visibleSections.includes(projectThree.current)}
-        index={3}
-        title="UI Integration — Messaging Automation"
-        description="Built unified dashboards for WhatsApp, Telegram, and SMS automation — enabling bulk campaigns, scheduled messaging, and real-time delivery analytics from a single cross-browser interface."
-        buttonText="View project"
-        buttonLink="/projects/messaging-automation"
-        model={{
-          type: 'laptop',
-          alt: 'WhatsApp, Telegram and SMS automation dashboard interface',
-          textures: [
-            {
-              srcSet: `${msgDashboardLarge} 1920w, ${msgDashboard} 800w`,
-              placeholder: msgDashboardPlaceholder,
             },
           ],
         }}

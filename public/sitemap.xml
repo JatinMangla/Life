@@ -1,26 +1,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://life-jatinmanglas-projects.vercel.app/</loc>
+    <loc>https://life-puce-kappa.vercel.app/</loc>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://life-jatinmanglas-projects.vercel.app/contact/</loc>
+    <loc>https://life-puce-kappa.vercel.app/contact/</loc>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://life-jatinmanglas-projects.vercel.app/uses/</loc>
+    <loc>https://life-puce-kappa.vercel.app/uses/</loc>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://life-jatinmanglas-projects.vercel.app/projects/mera-monitor/</loc>
+    <loc>https://life-puce-kappa.vercel.app/projects/mera-monitor/</loc>
     <changefreq>monthly</changefreq>
   </url>
   <url>
-    <loc>https://life-jatinmanglas-projects.vercel.app/projects/screen-coach/</loc>
-    <changefreq>monthly</changefreq>
-  </url>
-  <url>
-    <loc>https://life-jatinmanglas-projects.vercel.app/projects/messaging-automation/</loc>
+    <loc>https://life-puce-kappa.vercel.app/projects/screen-coach/</loc>
     <changefreq>monthly</changefreq>
   </url>
 </urlset>

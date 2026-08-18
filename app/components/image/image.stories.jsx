@@ -1,4 +1,6 @@
 import { Image } from '~/components/image';
+import scPhoneDashboard from '~/assets/sc-phone-dashboard.jpg';
+import scPhoneDashboardPlaceholder from '~/assets/sc-phone-dashboard-placeholder.jpg';
 import { StoryContainer } from '../../../.storybook/story-container';
 
 export default {
@@ -6,17 +8,17 @@ export default {
 };
 
 const imageData = {
-  alt: 'An abstract purple and pink neon thing',
-  src: '/static/modern-styling-in-react-banner.jpg',
-  width: 960,
-  height: 540,
-  placeholder: '/static/modern-styling-in-react-banner-placeholder.jpg',
+  alt: 'Screen Coach dashboard showing screen time analytics',
+  src: scPhoneDashboard,
+  width: 750,
+  height: 1500,
+  placeholder: scPhoneDashboardPlaceholder,
 };
 
 const Story = args => (
   <StoryContainer>
-    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0px, 960px)' }}>
-      <Image alt="An abstract purple and pink neon thing" {...imageData} {...args} />
+    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0px, 480px)' }}>
+      <Image {...imageData} {...args} />
     </div>
   </StoryContainer>
 );

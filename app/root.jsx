@@ -56,8 +56,12 @@ export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get('Cookie'));
   const theme = session.get('theme') || 'dark';
 
+  // Resolved on the server so the footer year can't produce a hydration
+  // mismatch when server and client sit either side of midnight on Dec 31.
+  const year = new Date().getFullYear();
+
   return json(
-    { canonicalUrl, theme },
+    { canonicalUrl, theme, year },
     {
       headers: {
         'Set-Cookie': await commitSession(session),

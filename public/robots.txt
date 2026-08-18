@@ -1,1 +1,4 @@
 User-agent: *
+Allow: /
+
+Sitemap: https://life-puce-kappa.vercel.app/sitemap.xml
