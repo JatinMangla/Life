@@ -6,6 +6,7 @@ import { Transition } from '~/components/transition';
 import { useScrollToHash, useWindowSize } from '~/hooks';
 import { Link as RouterLink, useLocation } from '@remix-run/react';
 import { useEffect, useRef, useState } from 'react';
+import type { MouseEvent } from 'react';
 import { cssProps, media, msToNum, numToMs } from '~/utils/style';
 import { ThemeToggle } from './theme-toggle';
 import { navLinks, socialLinks } from './nav-data';
@@ -13,13 +14,13 @@ import config from '~/config.json';
 import styles from './navbar.module.css';
 
 export const Navbar = () => {
-  const [current, setCurrent] = useState();
+  const [current, setCurrent] = useState<string>();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [target, setTarget] = useState();
+  const [target, setTarget] = useState<string>();
   const { theme } = useTheme();
   const location = useLocation();
   const windowSize = useWindowSize();
-  const headerRef = useRef();
+  const headerRef = useRef<HTMLElement>(null);
   // Match the CSS nav breakpoints: mobile width, or a genuinely small
   // (short AND narrow) window — not just any short desktop window.
   // width is 0 until useWindowSize measures on the client; don't claim mobile
@@ -39,19 +40,25 @@ export const Navbar = () => {
   useEffect(() => {
     if (!target || location.pathname !== '/') return;
     setCurrent(`${location.pathname}${target}`);
-    scrollToHash(target, () => setTarget(null));
+    scrollToHash(target, () => setTarget(undefined));
   }, [location.pathname, scrollToHash, target]);
 
   // Handle swapping the theme when intersecting with inverse themed elements
   useEffect(() => {
-    const navItems = document.querySelectorAll('[data-navbar-item]');
+    const navItems = document.querySelectorAll<HTMLElement>('[data-navbar-item]');
     const inverseTheme = theme === 'dark' ? 'light' : 'dark';
     const { innerHeight } = window;
 
-    let inverseMeasurements = [];
-    let navItemMeasurements = [];
+    interface Measurement {
+      element: HTMLElement;
+      top: number;
+      bottom: number;
+    }
 
-    const isOverlap = (rect1, rect2, scrollY) => {
+    let inverseMeasurements: Measurement[] = [];
+    let navItemMeasurements: Measurement[] = [];
+
+    const isOverlap = (rect1: Measurement, rect2: Measurement, scrollY: number) => {
       return !(rect1.bottom - scrollY < rect2.top || rect1.top - scrollY > rect2.bottom);
     };
 
@@ -62,7 +69,7 @@ export const Navbar = () => {
     };
 
     const handleInversion = () => {
-      const invertedElements = document.querySelectorAll(
+      const invertedElements = document.querySelectorAll<HTMLElement>(
         `[data-theme='${inverseTheme}'][data-invert]`
       );
 
@@ -119,20 +126,16 @@ export const Navbar = () => {
   }, [theme, windowSize, location.key]);
 
   // Check if a nav item should be active
-  const getCurrent = (url = '') => {
-    const nonTrailing = current?.endsWith('/') ? current?.slice(0, -1) : current;
+  const getCurrent = (url = ''): 'page' | undefined => {
+    const nonTrailing = current?.endsWith('/') ? current.slice(0, -1) : current;
 
-    if (url === nonTrailing) {
-      return 'page';
-    }
-
-    return '';
+    return url === nonTrailing ? 'page' : undefined;
   };
 
   // Store the current hash to scroll to
-  const handleNavItemClick = event => {
+  const handleNavItemClick = (event: MouseEvent<HTMLAnchorElement>) => {
     const hash = event.currentTarget.href.split('#')[1];
-    setTarget(null);
+    setTarget(undefined);
 
     if (hash && location.pathname === '/') {
       setTarget(`#${hash}`);
@@ -140,7 +143,7 @@ export const Navbar = () => {
     }
   };
 
-  const handleMobileNavClick = event => {
+  const handleMobileNavClick = (event: MouseEvent<HTMLAnchorElement>) => {
     handleNavItemClick(event);
     if (menuOpen) setMenuOpen(false);
   };
@@ -149,7 +152,6 @@ export const Navbar = () => {
     <header className={styles.navbar} ref={headerRef}>
       {/* logo */}
       <RouterLink
-        unstable_viewTransition
         prefetch="intent"
         to={location.pathname === '/' ? '/#intro' : '/'}
         data-navbar-item
@@ -164,7 +166,6 @@ export const Navbar = () => {
         <div className={styles.navList}>
           {navLinks.map(({ label, pathname }) => (
             <RouterLink
-              unstable_viewTransition
               prefetch="intent"
               to={pathname}
               key={label}
@@ -186,7 +187,6 @@ export const Navbar = () => {
           <nav className={styles.mobileNav} data-visible={visible} ref={nodeRef}>
             {navLinks.map(({ label, pathname }, index) => (
               <RouterLink
-                unstable_viewTransition
                 prefetch="intent"
                 to={pathname}
                 key={label}
@@ -214,7 +214,7 @@ export const Navbar = () => {
   );
 };
 
-const NavbarIcons = ({ desktop }) => (
+const NavbarIcons = ({ desktop }: { desktop?: boolean }) => (
   <div className={styles.navIcons}>
     {socialLinks.map(({ label, url, icon }) => (
       <a

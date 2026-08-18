@@ -1,16 +1,30 @@
 import { Button } from '~/components/button';
 import { Heading } from '~/components/heading';
+import type { HeadingLevel } from '~/components/heading/heading';
 import { Image } from '~/components/image';
+import type { ImageProps } from '~/components/image/image';
 import { Section } from '~/components/section';
 import { Text } from '~/components/text';
 import { tokens } from '~/components/theme-provider/theme';
 import { Transition } from '~/components/transition';
 import { useParallax } from '~/hooks';
 import { forwardRef, useRef } from 'react';
+import type { ElementType, HTMLAttributes, ReactNode, Ref } from 'react';
 import { classes, cssProps, msToNum, numToMs } from '~/utils/style';
 import styles from './project.module.css';
 
 const initDelay = 300;
+
+export interface ProjectHeaderProps {
+  title: string;
+  description: string;
+  linkLabel?: string;
+  /** Live site, if there is a public one. */
+  url?: string;
+  /** What I was responsible for, listed alongside the summary. */
+  roles?: readonly string[];
+  className?: string;
+}
 
 export function ProjectHeader({
   title,
@@ -19,7 +33,7 @@ export function ProjectHeader({
   url,
   roles,
   className,
-}) {
+}: ProjectHeaderProps) {
   return (
     <Section className={classes(styles.header, className)} as="section">
       <div
@@ -47,7 +61,7 @@ export function ProjectHeader({
         </div>
         {!!roles?.length && (
           <ul className={styles.meta}>
-            {roles?.map((role, index) => (
+            {roles.map((role, index) => (
               <li
                 className={styles.metaItem}
                 style={cssProps({ delay: numToMs(initDelay + 300 + index * 140) })}
@@ -63,11 +77,24 @@ export function ProjectHeader({
   );
 }
 
-export const ProjectContainer = ({ className, ...rest }) => (
+export const ProjectContainer = ({
+  className,
+  ...rest
+}: HTMLAttributes<HTMLElement>) => (
   <article className={classes(styles.project, className)} {...rest} />
 );
 
-export const ProjectSection = forwardRef(
+export interface ProjectSectionProps extends HTMLAttributes<HTMLElement> {
+  light?: boolean;
+  /** Which edges get vertical padding. */
+  padding?: 'both' | 'top' | 'bottom' | 'none';
+  fullHeight?: boolean;
+  backgroundOverlayOpacity?: number;
+  backgroundElement?: ReactNode;
+  children?: ReactNode;
+}
+
+export const ProjectSection = forwardRef<HTMLElement, ProjectSectionProps>(
   (
     {
       className,
@@ -103,12 +130,22 @@ export const ProjectSection = forwardRef(
   )
 );
 
-export const ProjectBackground = ({ opacity = 0.7, className, ...rest }) => {
-  const imageRef = useRef();
+ProjectSection.displayName = 'ProjectSection';
+
+export interface ProjectBackgroundProps extends ImageProps {
+  /** Opacity of the scrim drawn over the image. */
+  opacity?: number;
+}
+
+export const ProjectBackground = ({
+  opacity = 0.7,
+  className,
+  ...rest
+}: ProjectBackgroundProps) => {
+  const imageRef = useRef<HTMLDivElement>(null);
 
   useParallax(0.6, value => {
-    if (!imageRef.current) return;
-    imageRef.current.style.setProperty('--offset', `${value}px`);
+    imageRef.current?.style.setProperty('--offset', `${value}px`);
   });
 
   return (
@@ -117,7 +154,7 @@ export const ProjectBackground = ({ opacity = 0.7, className, ...rest }) => {
         <div
           className={classes(styles.backgroundImage, className)}
           data-visible={visible}
-          ref={nodeRef}
+          ref={nodeRef as Ref<HTMLDivElement>}
         >
           <div className={styles.backgroundImageElement} ref={imageRef}>
             <Image cover alt="" role="presentation" {...rest} />
@@ -129,21 +166,35 @@ export const ProjectBackground = ({ opacity = 0.7, className, ...rest }) => {
   );
 };
 
-export const ProjectImage = ({ className, alt, ...rest }) => (
+export const ProjectImage = ({ className, alt, ...rest }: ImageProps) => (
   <div className={classes(styles.image, className)}>
     <Image reveal alt={alt} delay={300} {...rest} />
   </div>
 );
 
-export const ProjectSectionContent = ({ className, width = 'l', ...rest }) => (
-  <div
-    className={classes(styles.sectionContent, className)}
-    data-width={width}
-    {...rest}
-  />
+export interface ProjectSectionContentProps extends HTMLAttributes<HTMLDivElement> {
+  width?: 's' | 'm' | 'l' | 'xl' | 'full';
+}
+
+export const ProjectSectionContent = ({
+  className,
+  width = 'l',
+  ...rest
+}: ProjectSectionContentProps) => (
+  <div className={classes(styles.sectionContent, className)} data-width={width} {...rest} />
 );
 
-export const ProjectSectionHeading = ({ className, level = 3, as = 'h2', ...rest }) => (
+export interface ProjectSectionHeadingProps extends HTMLAttributes<HTMLHeadingElement> {
+  level?: HeadingLevel;
+  as?: ElementType;
+}
+
+export const ProjectSectionHeading = ({
+  className,
+  level = 3,
+  as = 'h2',
+  ...rest
+}: ProjectSectionHeadingProps) => (
   <Heading
     className={classes(styles.sectionHeading, className)}
     as={as}
@@ -153,9 +204,19 @@ export const ProjectSectionHeading = ({ className, level = 3, as = 'h2', ...rest
   />
 );
 
-export const ProjectSectionText = ({ className, ...rest }) => (
+export const ProjectSectionText = ({ className, ...rest }: HTMLAttributes<HTMLElement>) => (
   <Text className={classes(styles.sectionText, className)} size="l" as="p" {...rest} />
 );
+
+export interface ProjectTextRowProps extends HTMLAttributes<HTMLDivElement> {
+  center?: boolean;
+  stretch?: boolean;
+  justify?: 'start' | 'center' | 'end';
+  width?: 's' | 'm' | 'l' | 'xl' | 'full';
+  noMargin?: boolean;
+  /** Centre only at mobile widths. */
+  centerMobile?: boolean;
+}
 
 export const ProjectTextRow = ({
   center,
@@ -166,7 +227,7 @@ export const ProjectTextRow = ({
   className,
   centerMobile,
   ...rest
-}) => (
+}: ProjectTextRowProps) => (
   <div
     className={classes(styles.textRow, className)}
     data-center={center}
@@ -179,7 +240,15 @@ export const ProjectTextRow = ({
   />
 );
 
-export const ProjectSectionColumns = ({ className, centered, ...rest }) => (
+export interface ProjectSectionColumnsProps extends ProjectSectionContentProps {
+  centered?: boolean;
+}
+
+export const ProjectSectionColumns = ({
+  className,
+  centered,
+  ...rest
+}: ProjectSectionColumnsProps) => (
   <ProjectSectionContent
     className={classes(styles.sectionColumns, className)}
     data-centered={centered}

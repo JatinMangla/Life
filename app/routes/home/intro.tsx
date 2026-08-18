@@ -8,6 +8,7 @@ import { VisuallyHidden } from '~/components/visually-hidden';
 import { Link as RouterLink } from '@remix-run/react';
 import { useInterval, usePrevious, useScrollToHash } from '~/hooks';
 import { Suspense, lazy, useEffect, useState } from 'react';
+import type { MouseEvent, Ref } from 'react';
 import { cssProps } from '~/utils/style';
 import config from '~/config.json';
 import { disciplines } from '~/data/skills';
@@ -18,7 +19,14 @@ const DisplacementSphere = lazy(() =>
   import('./displacement-sphere').then(module => ({ default: module.DisplacementSphere }))
 );
 
-export function Intro({ id, sectionRef, scrollIndicatorHidden, ...rest }) {
+export interface IntroProps {
+  id: string;
+  sectionRef: Ref<HTMLElement>;
+  /** Hide the scroll cue once the hero is out of view. */
+  scrollIndicatorHidden?: boolean;
+}
+
+export function Intro({ id, sectionRef, scrollIndicatorHidden, ...rest }: IntroProps) {
   const { theme } = useTheme();
   const [disciplineIndex, setDisciplineIndex] = useState(0);
   const prevTheme = usePrevious(theme);
@@ -45,7 +53,7 @@ export function Intro({ id, sectionRef, scrollIndicatorHidden, ...rest }) {
     }
   }, [theme, prevTheme]);
 
-  const handleScrollClick = event => {
+  const handleScrollClick = (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
     scrollToHash(event.currentTarget.href);
   };

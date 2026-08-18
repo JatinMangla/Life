@@ -1,5 +1,6 @@
 import { useRouteError } from '@remix-run/react';
 import { Error } from '~/layouts/error';
+import type { RouteErrorLike } from '~/layouts/error/error';
 
 export async function loader() {
   throw new Response(null, { status: 404, statusText: 'Not found' });
@@ -12,5 +13,5 @@ export const meta = () => {
 export function ErrorBoundary() {
   const error = useRouteError();
 
-  return <Error error={error} />;
+  return <Error error={error as RouteErrorLike} />;
 }

@@ -1,9 +1,15 @@
 import { useId } from 'react';
+import type { ButtonProps } from '~/components/button/button';
 import { Button } from '~/components/button';
 import { useTheme } from '~/components/theme-provider';
 import styles from './theme-toggle.module.css';
 
-export const ThemeToggle = ({ isMobile, ...rest }) => {
+export interface ThemeToggleProps extends Omit<ButtonProps, 'children'> {
+  /** Styles the control for the mobile nav sheet. */
+  isMobile?: boolean;
+}
+
+export const ThemeToggle = ({ isMobile, ...rest }: ThemeToggleProps) => {
   const id = useId();
   const { toggleTheme } = useTheme();
   const maskId = `${id}theme-toggle-mask`;
@@ -14,7 +20,7 @@ export const ThemeToggle = ({ isMobile, ...rest }) => {
       className={styles.toggle}
       data-mobile={isMobile}
       aria-label="Toggle theme"
-      onClick={() => toggleTheme()}
+      onClick={() => toggleTheme?.()}
       {...rest}
     >
       <svg aria-hidden className={styles.svg} width="38" height="38" viewBox="0 0 38 38">

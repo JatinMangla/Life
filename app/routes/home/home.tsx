@@ -42,9 +42,9 @@ export const Home = () => {
   // `ref.current` during render to decide what's visible.
   const [visibleSections, setVisibleSections] = useState(() => new Set());
   const [scrollIndicatorHidden, setScrollIndicatorHidden] = useState(false);
-  const intro = useRef();
-  const details = useRef();
-  const projectRefs = useRef([]);
+  const intro = useRef<HTMLElement>(null);
+  const details = useRef<HTMLElement>(null);
+  const projectRefs = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
     const sectionObserver = new IntersectionObserver(
@@ -61,7 +61,7 @@ export const Home = () => {
 
     const indicatorObserver = new IntersectionObserver(
       ([entry]) => {
-        setScrollIndicatorHidden(!entry.isIntersecting);
+        setScrollIndicatorHidden(!entry?.isIntersecting);
       },
       { rootMargin: '-100% 0px 0px 0px' }
     );
@@ -94,7 +94,7 @@ export const Home = () => {
           <ProjectSummary
             key={project.slug}
             id={id}
-            sectionRef={element => {
+            sectionRef={(element: HTMLElement | null) => {
               projectRefs.current[index] = element;
             }}
             visible={visibleSections.has(id)}

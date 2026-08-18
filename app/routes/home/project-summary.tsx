@@ -8,6 +8,8 @@ import { useTheme } from '~/components/theme-provider';
 import { Transition } from '~/components/transition';
 import { Loader } from '~/components/loader';
 import { Suspense, lazy, useState } from 'react';
+import type { Ref } from 'react';
+import type { ProjectModel } from '~/data/projects';
 import { cssProps, media } from '~/utils/style';
 import { useHydrated } from '~/hooks/useHydrated';
 import katakana from './katakana.svg';
@@ -16,6 +18,22 @@ import styles from './project-summary.module.css';
 const Model = lazy(() =>
   import('~/components/model').then(module => ({ default: module.Model }))
 );
+
+export interface ProjectSummaryProps {
+  id: string;
+  /** Whether the section has scrolled into view. */
+  visible?: boolean;
+  sectionRef: Ref<HTMLElement>;
+  /** 1-based position, rendered as the large index number. */
+  index: number;
+  title: string;
+  description: string;
+  model: ProjectModel;
+  buttonText: string;
+  buttonLink: string;
+  /** Mirror the layout, putting the preview on the left. */
+  alternate?: boolean;
+}
 
 export function ProjectSummary({
   id,
@@ -29,7 +47,7 @@ export function ProjectSummary({
   buttonLink,
   alternate,
   ...rest
-}) {
+}: ProjectSummaryProps) {
   const [focused, setFocused] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
   const { theme } = useTheme();
@@ -44,7 +62,7 @@ export function ProjectSummary({
     setModelLoaded(true);
   }
 
-  function renderKatakana(device, visible) {
+  function renderKatakana(device: string, visible: boolean) {
     return (
       <svg
         aria-hidden="true"
@@ -61,7 +79,7 @@ export function ProjectSummary({
     );
   }
 
-  function renderDetails(visible) {
+  function renderDetails(visible: boolean) {
     return (
       <div className={styles.details}>
         <div aria-hidden className={styles.index}>
@@ -96,7 +114,7 @@ export function ProjectSummary({
     );
   }
 
-  function renderPreview(visible) {
+  function renderPreview(visible: boolean) {
     return (
       <div className={styles.preview}>
         {model.type === 'laptop' && (
@@ -118,7 +136,7 @@ export function ProjectSummary({
                       {
                         ...deviceModels.laptop,
                         texture: {
-                          ...model.textures[0],
+                          ...model.textures[0]!,
                           sizes: laptopSizes,
                         },
                       },
@@ -149,7 +167,7 @@ export function ProjectSummary({
                         ...deviceModels.phone,
                         position: { x: -0.6, y: 1.1, z: 0 },
                         texture: {
-                          ...model.textures[0],
+                          ...model.textures[0]!,
                           sizes: phoneSizes,
                         },
                       },
@@ -157,7 +175,7 @@ export function ProjectSummary({
                         ...deviceModels.phone,
                         position: { x: 0.6, y: -0.5, z: 0.3 },
                         texture: {
-                          ...model.textures[1],
+                          ...model.textures[1]!,
                           sizes: phoneSizes,
                         },
                       },

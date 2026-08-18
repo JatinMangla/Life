@@ -1,7 +1,8 @@
 import { json } from '@remix-run/node';
+import type { ActionFunctionArgs } from '@remix-run/node';
 import { getSession, commitSession } from '~/utils/session.server';
 
-export async function action({ request }) {
+export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const theme = formData.get('theme');
 

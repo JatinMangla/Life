@@ -18,6 +18,7 @@ import GothamBook from '~/assets/fonts/gotham-book.woff2';
 import GothamMedium from '~/assets/fonts/gotham-medium.woff2';
 
 import { Error } from '~/layouts/error';
+import type { RouteErrorLike } from '~/layouts/error/error';
 import { VisuallyHidden } from '~/components/visually-hidden';
 import { Navbar } from '~/layouts/navbar';
 import { Progress } from '~/components/progress';
@@ -148,7 +149,7 @@ export function ErrorBoundary() {
         <Links />
       </head>
       <body data-theme="dark">
-        <Error error={error} />
+        <Error error={error as RouteErrorLike} />
         <ScrollRestoration />
         <Scripts />
       </body>

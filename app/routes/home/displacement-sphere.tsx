@@ -3,6 +3,8 @@ import { Transition } from '~/components/transition';
 import { useReducedMotion, useSpring } from 'framer-motion';
 import { useInViewport, useWindowSize } from '~/hooks';
 import { startTransition, useEffect, useRef } from 'react';
+import type { HTMLAttributes } from 'react';
+import type { IUniform, Light } from 'three';
 import {
   AmbientLight,
   DirectionalLight,
@@ -29,19 +31,23 @@ const springConfig = {
   mass: 2,
 };
 
-export const DisplacementSphere = props => {
+export type DisplacementSphereProps = HTMLAttributes<HTMLCanvasElement>;
+
+export const DisplacementSphere = (props: DisplacementSphereProps) => {
   const { theme } = useTheme();
   const start = useRef(Date.now());
-  const canvasRef = useRef();
-  const mouse = useRef();
-  const renderer = useRef();
-  const camera = useRef();
-  const scene = useRef();
-  const lights = useRef();
-  const uniforms = useRef();
-  const material = useRef();
-  const geometry = useRef();
-  const sphere = useRef();
+  // Populated in the setup effect before anything reads them, so they're
+  // typed non-null rather than null-checking every imperative three.js line.
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouse = useRef<Vector2>(null!);
+  const renderer = useRef<WebGLRenderer>(null!);
+  const camera = useRef<PerspectiveCamera>(null!);
+  const scene = useRef<Scene>(null!);
+  const lights = useRef<Light[]>(null!);
+  const uniforms = useRef<Record<string, IUniform>>(null!);
+  const material = useRef<MeshPhongMaterial>(null!);
+  const geometry = useRef<SphereGeometry>(null!);
+  const sphere = useRef<Mesh>(null!);
   const reduceMotion = useReducedMotion();
   const isInViewport = useInViewport(canvasRef);
   const windowSize = useWindowSize();
@@ -52,7 +58,7 @@ export const DisplacementSphere = props => {
     const { innerWidth, innerHeight } = window;
     mouse.current = new Vector2(0.8, 0.5);
     renderer.current = new WebGLRenderer({
-      canvas: canvasRef.current,
+      canvas: canvasRef.current!,
       antialias: false,
       alpha: true,
       powerPreference: 'high-performance',
@@ -71,7 +77,7 @@ export const DisplacementSphere = props => {
     material.current.onBeforeCompile = shader => {
       uniforms.current = UniformsUtils.merge([
         shader.uniforms,
-        { time: { type: 'f', value: 0 } },
+        { time: { value: 0 } },
       ]);
 
       shader.uniforms = uniforms.current;
@@ -83,7 +89,8 @@ export const DisplacementSphere = props => {
       geometry.current = new SphereGeometry(32, 128, 128);
       sphere.current = new Mesh(geometry.current, material.current);
       sphere.current.position.z = 0;
-      sphere.current.modifier = Math.random();
+      // Per-instance seed read by the vertex shader.
+      sphere.current.userData.modifier = Math.random();
       scene.current.add(sphere.current);
     });
 
@@ -139,7 +146,7 @@ export const DisplacementSphere = props => {
   }, [reduceMotion, windowSize]);
 
   useEffect(() => {
-    const onMouseMove = throttle(event => {
+    const onMouseMove = throttle((event: MouseEvent) => {
       const position = {
         x: event.clientX / window.innerWidth,
         y: event.clientY / window.innerHeight,
@@ -159,13 +166,13 @@ export const DisplacementSphere = props => {
   }, [isInViewport, reduceMotion, rotationX, rotationY]);
 
   useEffect(() => {
-    let animation;
+    let animation: number;
 
     const animate = () => {
       animation = requestAnimationFrame(animate);
 
       if (uniforms.current !== undefined) {
-        uniforms.current.time.value = 0.00005 * (Date.now() - start.current);
+        uniforms.current.time!.value = 0.00005 * (Date.now() - start.current);
       }
 
       sphere.current.rotation.z += 0.001;

@@ -10,12 +10,18 @@ import { Section } from '~/components/section';
 import { Text } from '~/components/text';
 import { Transition } from '~/components/transition';
 import { Fragment, useState } from 'react';
+import type { Ref } from 'react';
 import { media } from '~/utils/style';
 import jatin from './jatin.svg';
 import { bio } from '~/data/bio';
 import styles from './profile.module.css';
 
-const ProfileText = ({ visible, titleId }) => (
+interface ProfileTextProps {
+  visible: boolean;
+  titleId: string;
+}
+
+const ProfileText = ({ visible, titleId }: ProfileTextProps) => (
   <Fragment>
     <Heading className={styles.title} data-visible={visible} level={3} id={titleId}>
       <DecoderText text="Hi there" start={visible} delay={500} />
@@ -34,7 +40,13 @@ const ProfileText = ({ visible, titleId }) => (
   </Fragment>
 );
 
-export const Profile = ({ id, visible, sectionRef }) => {
+export interface ProfileProps {
+  id: string;
+  visible: boolean;
+  sectionRef: Ref<HTMLElement>;
+}
+
+export const Profile = ({ id, visible, sectionRef }: ProfileProps) => {
   const [focused, setFocused] = useState(false);
   const titleId = `${id}-title`;
 
@@ -49,7 +61,7 @@ export const Profile = ({ id, visible, sectionRef }) => {
       aria-labelledby={titleId}
       tabIndex={-1}
     >
-      <Transition in={visible || focused} timeout={0}>
+      <Transition<HTMLDivElement> in={visible || focused} timeout={0}>
         {({ visible, nodeRef }) => (
           <div className={styles.content} ref={nodeRef}>
             <div className={styles.column}>

@@ -15,6 +15,7 @@ import { Suspense, lazy, useRef } from 'react';
 import { cssProps, msToNum, numToMs } from '~/utils/style';
 import { baseMeta } from '~/utils/meta';
 import { useFetcher } from '@remix-run/react';
+import type { ContactActionData } from '~/routes/api.contact/route';
 import styles from './contact.module.css';
 
 // Purely decorative and aria-hidden, so keep three.js and the ~1MB globe
@@ -55,23 +56,22 @@ const MAX_MESSAGE_LENGTH = 4096;
 const MAX_NAME_LENGTH = 100;
 
 export const Contact = () => {
-  const errorRef = useRef();
+  const errorRef = useRef<HTMLDivElement>(null);
   const isHydrated = useHydrated();
   const name = useFormInput('');
   const email = useFormInput('');
   const message = useFormInput('');
   const initDelay = tokens.base.durationS;
   // Email sending lives in the /api/contact resource route (server-only).
-  const fetcher = useFetcher();
+  const fetcher = useFetcher<ContactActionData>();
   const actionData = fetcher.data;
   const sending = fetcher.state === 'submitting';
 
   return (
     <Section className={styles.contact}>
-      <Transition unmount in={!actionData?.success} timeout={1600}>
+      <Transition<HTMLFormElement> unmount in={!actionData?.success} timeout={1600}>
         {({ status, nodeRef }) => (
           <fetcher.Form
-            unstable_viewTransition
             className={styles.form}
             method="post"
             action="/api/contact"
@@ -134,9 +134,9 @@ export const Contact = () => {
               maxLength={MAX_MESSAGE_LENGTH}
               {...message}
             />
-            <Transition
+            <Transition<HTMLDivElement>
               unmount
-              in={!sending && actionData?.errors}
+              in={!sending && !!actionData?.errors}
               timeout={msToNum(tokens.base.durationM)}
             >
               {({ status: errorStatus, nodeRef }) => (
@@ -178,7 +178,7 @@ export const Contact = () => {
           </fetcher.Form>
         )}
       </Transition>
-      <Transition unmount in={actionData?.success}>
+      <Transition<HTMLDivElement> unmount in={actionData?.success}>
         {({ status, nodeRef }) => (
           <div className={styles.complete} aria-live="polite" ref={nodeRef}>
             <Heading
@@ -226,7 +226,7 @@ export const Contact = () => {
   );
 };
 
-function getDelay(delayMs, offset = numToMs(0), multiplier = 1) {
+function getDelay(delayMs: string, offset: string = numToMs(0), multiplier = 1) {
   const numDelay = msToNum(delayMs) * multiplier;
-  return cssProps({ delay: numToMs((msToNum(offset) + numDelay).toFixed(0)) });
+  return cssProps({ delay: numToMs(Math.round(msToNum(offset) + numDelay)) });
 }

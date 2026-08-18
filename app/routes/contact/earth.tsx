@@ -4,6 +4,7 @@ import { Transition } from '~/components/transition';
 import { useReducedMotion } from 'framer-motion';
 import { useInViewport, useWindowSize } from '~/hooks';
 import { startTransition, useEffect, useRef, useState } from 'react';
+import type { HTMLAttributes } from 'react';
 import {
   ACESFilmicToneMapping,
   AmbientLight,
@@ -14,6 +15,7 @@ import {
   Scene,
   WebGLRenderer,
 } from 'three';
+import type { BufferGeometry, Group, Light, Mesh, MeshStandardMaterial } from 'three';
 import { cleanRenderer, cleanScene, modelLoader, removeLights, textureLoader } from '~/utils/three';
 import styles from './earth.module.css';
 
@@ -24,13 +26,17 @@ const ROTATION_SPEED = 0.0014;
 // How far back the camera sits — larger value = smaller globe within its box.
 const CAMERA_DISTANCE = 2.3;
 
-export const ContactEarth = props => {
-  const canvasRef = useRef();
-  const renderer = useRef();
-  const camera = useRef();
-  const scene = useRef();
-  const lights = useRef();
-  const model = useRef();
+export type ContactEarthProps = HTMLAttributes<HTMLCanvasElement>;
+
+export const ContactEarth = (props: ContactEarthProps) => {
+  // Assigned in the setup effect below; every read is guarded by the
+  // `if (!renderer.current) return` checks in the effects that follow.
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const renderer = useRef<WebGLRenderer>(null!);
+  const camera = useRef<PerspectiveCamera>(null!);
+  const scene = useRef<Scene>(null!);
+  const lights = useRef<Light[]>(null!);
+  const model = useRef<Group>(null!);
   const [loaded, setLoaded] = useState(false);
   const reduceMotion = useReducedMotion();
   const isInViewport = useInViewport(canvasRef);
@@ -48,7 +54,7 @@ export const ContactEarth = props => {
 
     try {
       renderer.current = new WebGLRenderer({
-        canvas: canvasRef.current,
+        canvas: canvasRef.current!,
         antialias: true,
         alpha: true,
         powerPreference: 'high-performance',
@@ -104,10 +110,14 @@ export const ContactEarth = props => {
       model.current = gltf.scene;
       model.current.traverse(child => {
         // The atmosphere shell reads its glow from its own colour map.
-        if (child.name === 'Atmosphere' && child.material) {
-          child.material.alphaMap = child.material.map;
-          child.material.transparent = true;
-        }
+        if (child.name !== 'Atmosphere') return;
+
+        const mesh = child as Mesh<BufferGeometry, MeshStandardMaterial>;
+
+        if (!mesh.material) return;
+
+        mesh.material.alphaMap = mesh.material.map;
+        mesh.material.transparent = true;
       });
       scene.current.add(model.current);
 
@@ -137,7 +147,7 @@ export const ContactEarth = props => {
   // Animation loop — spin while visible, otherwise render a single still frame.
   useEffect(() => {
     if (!renderer.current || !loaded) return;
-    let animation;
+    let animation: number;
 
     const animate = () => {
       animation = requestAnimationFrame(animate);

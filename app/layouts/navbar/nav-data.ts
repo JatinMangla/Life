@@ -1,6 +1,19 @@
 import config from '~/config.json';
+import type { IconName } from '~/components/icon';
 
-export const navLinks = [
+export interface NavLink {
+  label: string;
+  /** Path, optionally with a hash for an in-page section. */
+  pathname: string;
+}
+
+export interface SocialLink {
+  label: string;
+  url: string;
+  icon: IconName;
+}
+
+export const navLinks: NavLink[] = [
   {
     label: 'Projects',
     pathname: '/#project-1',
@@ -19,7 +32,7 @@ export const navLinks = [
   },
 ];
 
-export const socialLinks = [
+export const socialLinks: SocialLink[] = [
   {
     label: 'Linkedin',
     url: `https://www.linkedin.com/in/${config.linkedin}`,

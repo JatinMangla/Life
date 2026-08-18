@@ -1,5 +1,6 @@
 import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'framer-motion';
 import { useRef } from 'react';
+import type { ComponentType, CSSProperties, MouseEvent, ReactNode } from 'react';
 import usesBackgroundPlaceholder from '~/assets/uses-background-placeholder.jpg';
 import usesBackground from '~/assets/uses-background.mp4';
 import { Footer } from '~/components/footer';
@@ -28,7 +29,17 @@ export const meta = () => {
 
 const springConfig = { stiffness: 220, damping: 18, mass: 0.6 };
 
-const categories = [
+interface Category {
+  id: string;
+  label: string;
+  /** OKLCH hue, fed to the card as a CSS custom property. */
+  accent: string;
+  icon: ComponentType;
+  intro: string;
+  items: ReactNode[];
+}
+
+const categories: Category[] = [
   {
     id: 'frontend',
     label: 'Frontend',
@@ -175,9 +186,14 @@ export const Uses = () => {
   );
 };
 
-function TiltCard({ category, index }) {
+interface TiltCardProps {
+  category: Category;
+  index: number;
+}
+
+function TiltCard({ category, index }: TiltCardProps) {
   const { label, accent, intro, items, icon: Icon } = category;
-  const ref = useRef(null);
+  const ref = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
 
   const px = useMotionValue(0.5);
@@ -185,7 +201,7 @@ function TiltCard({ category, index }) {
   const rotateX = useSpring(useTransform(py, [0, 1], [9, -9]), springConfig);
   const rotateY = useSpring(useTransform(px, [0, 1], [-9, 9]), springConfig);
 
-  const handleMove = event => {
+  const handleMove = (event: MouseEvent<HTMLElement>) => {
     if (reduceMotion || !ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     const nx = (event.clientX - rect.left) / rect.width;
@@ -205,11 +221,13 @@ function TiltCard({ category, index }) {
     <motion.article
       ref={ref}
       className={styles.card}
-      style={{
-        '--accent': accent,
-        rotateX: reduceMotion ? 0 : rotateX,
-        rotateY: reduceMotion ? 0 : rotateY,
-      }}
+      style={
+        {
+          '--accent': accent,
+          rotateX: reduceMotion ? 0 : rotateX,
+          rotateY: reduceMotion ? 0 : rotateY,
+        } as CSSProperties
+      }
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
       initial={{ opacity: 0, y: 48 }}
@@ -230,8 +248,8 @@ function TiltCard({ category, index }) {
         <h3 className={styles.cardTitle}>{label}</h3>
         <p className={styles.cardIntro}>{intro}</p>
         <ul className={styles.cardList}>
-          {items.map((item, i) => (
-            <li className={styles.cardItem} key={i}>
+          {items.map((item, itemIndex) => (
+            <li className={styles.cardItem} key={itemIndex}>
               {item}
             </li>
           ))}
@@ -241,7 +259,11 @@ function TiltCard({ category, index }) {
   );
 }
 
-function Marquee({ tags }) {
+interface MarqueeProps {
+  tags: readonly string[];
+}
+
+function Marquee({ tags }: MarqueeProps) {
   const reduceMotion = useReducedMotion();
   const row = [...tags, ...tags];
 

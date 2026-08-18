@@ -1,4 +1,6 @@
 import nodemailer from 'nodemailer';
+import type { ActionFunctionArgs } from '@remix-run/node';
+import type { Transporter } from 'nodemailer';
 
 // Resource route: handles contact-form submissions on the server only.
 // It has no default (component) export, so Remix never builds a client bundle
@@ -10,12 +12,12 @@ const MAX_NAME_LENGTH = 100;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Strip CR/LF so user input can never inject extra email headers.
-const stripNewlines = value => value.replace(/[\r\n]+/g, ' ').trim();
+const stripNewlines = (value: string): string => value.replace(/[\r\n]+/g, ' ').trim();
 
 // Reuse a single pooled SMTP transport across (warm) invocations instead of
 // opening a fresh connection on every submission.
-let transporter;
-function getTransporter() {
+let transporter: Transporter | undefined;
+function getTransporter(): Transporter {
   if (!transporter) {
     transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -35,9 +37,9 @@ function getTransporter() {
 // For a hard global limit, back this with a shared store (e.g. Upstash Redis).
 const RATE_LIMIT_MAX = 5; // submissions
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000; // per 10 minutes
-const rateLimitHits = new Map();
+const rateLimitHits = new Map<string, number[]>();
 
-function isRateLimited(key) {
+function isRateLimited(key: string): boolean {
   const now = Date.now();
   const hits = (rateLimitHits.get(key) ?? []).filter(t => now - t < RATE_LIMIT_WINDOW_MS);
   if (hits.length >= RATE_LIMIT_MAX) {
@@ -55,15 +57,15 @@ function isRateLimited(key) {
   return false;
 }
 
-function getClientIp(request) {
+function getClientIp(request: Request): string {
   const forwarded = request.headers.get('x-forwarded-for');
-  if (forwarded) return forwarded.split(',')[0].trim();
+  if (forwarded) return forwarded.split(',')[0]!.trim();
   return request.headers.get('x-real-ip') ?? 'unknown';
 }
 
 // Reject cross-site POSTs: a legitimate submission always carries an Origin
 // (or at least a Referer) matching this deployment's host.
-function isSameOrigin(request) {
+function isSameOrigin(request: Request): boolean {
   const host = request.headers.get('host');
   if (!host) return false;
   const source = request.headers.get('origin') ?? request.headers.get('referer');
@@ -75,7 +77,22 @@ function isSameOrigin(request) {
   }
 }
 
-export async function action({ request }) {
+/** Field-level validation messages, plus a catch-all for transport failures. */
+export interface ContactErrors {
+  general?: string;
+  name?: string;
+  email?: string;
+  message?: string;
+}
+
+export interface ContactActionData {
+  success?: boolean;
+  /** Echoed back so the success message can greet the sender by name. */
+  name?: string;
+  errors?: ContactErrors;
+}
+
+export async function action({ request }: ActionFunctionArgs) {
   if (!isSameOrigin(request)) {
     return Response.json({ errors: { general: 'Invalid request origin.' } }, { status: 403 });
   }
@@ -92,7 +109,7 @@ export async function action({ request }) {
   const senderName = stripNewlines(String(formData.get('name') ?? ''));
   const email = stripNewlines(String(formData.get('email') ?? ''));
   const message = String(formData.get('message') ?? '').trim();
-  const errors = {};
+  const errors: ContactErrors = {};
 
   // Honeypot — silently succeed for bots
   if (isBot) return Response.json({ success: true });

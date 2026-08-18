@@ -8,27 +8,38 @@ import { tokens } from '~/components/theme-provider/theme';
 import { Transition } from '~/components/transition';
 import { useParallax, useScrollToHash } from '~/hooks';
 import { useRef, useState, useEffect } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { clamp } from '~/utils/clamp';
 import { formatDate } from '~/utils/date';
 import { cssProps, msToNum, numToMs } from '~/utils/style';
 import styles from './post.module.css';
 import { Link as RouterLink } from '@remix-run/react';
 
-export const Post = ({ children, title, date, banner, timecode }) => {
+export interface PostProps {
+  children?: ReactNode;
+  title: string;
+  /** ISO date from the MDX frontmatter. */
+  date: string;
+  /** Banner image path, resolved from /public. */
+  banner?: string;
+  /** Pre-computed reading time, formatted as a timecode. */
+  timecode?: string;
+}
+
+export const Post = ({ children, title, date, banner, timecode }: PostProps) => {
   const scrollToHash = useScrollToHash();
-  const imageRef = useRef();
-  const [dateTime, setDateTime] = useState(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const [dateTime, setDateTime] = useState<string>();
 
   useEffect(() => {
     setDateTime(formatDate(date));
   }, [date, dateTime]);
 
   useParallax(0.004, value => {
-    if (!imageRef.current) return;
-    imageRef.current.style.setProperty('--blurOpacity', clamp(value, 0, 1));
+    imageRef.current?.style.setProperty('--blurOpacity', String(clamp(value, 0, 1)));
   });
 
-  const handleScrollIndicatorClick = event => {
+  const handleScrollIndicatorClick = (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
     scrollToHash(event.currentTarget.href);
   };
@@ -55,7 +66,7 @@ export const Post = ({ children, title, date, banner, timecode }) => {
         )}
         <header className={styles.header}>
           <div className={styles.headerText}>
-            <Transition in timeout={msToNum(tokens.base.durationM)}>
+            <Transition<HTMLDivElement> in timeout={msToNum(tokens.base.durationM)}>
               {({ visible, nodeRef }) => (
                 <div className={styles.date} ref={nodeRef}>
                   <Divider notchWidth="64px" notchHeight="8px" collapsed={!visible} />

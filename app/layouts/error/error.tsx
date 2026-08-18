@@ -5,9 +5,16 @@ import { Text } from '~/components/text';
 import { Transition } from '~/components/transition';
 import styles from './error.module.css';
 
+/** Either a thrown Response (has a status) or an unexpected Error. */
+export interface RouteErrorLike {
+  status?: number;
+  statusText?: string;
+  data?: string;
+}
+
 // Route errors carry a numeric `status`; thrown JS errors do not. Anything
 // without one is an unexpected failure rather than a known HTTP response.
-function getMessage(error) {
+function getMessage(error?: RouteErrorLike) {
   switch (error?.status) {
     case 404:
       return {
@@ -34,7 +41,7 @@ function getMessage(error) {
   }
 }
 
-export function Error({ error }) {
+export function Error({ error }: { error?: RouteErrorLike }) {
   const { code, summary, message } = getMessage(error);
 
   return (
