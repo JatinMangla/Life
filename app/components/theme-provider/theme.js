@@ -123,7 +123,10 @@ const light = {
   background: 'oklch(96.12% 0 0)',
   backgroundLight: 'var(--white)',
   primary: 'var(--black)',
-  accent: 'oklch(84.42% 0.19 202.24)',
+  // Same hue and chroma as the dark theme's accent, dropped to L=47% so it
+  // clears WCAG AA on the light background. The dark-theme lightness (84.42%)
+  // measures 1.28:1 here — effectively invisible on #f2f2f2.
+  accent: 'oklch(47% 0.19 202.24)',
   error: 'oklch(63.17% 0.259 25.41)',
   text: 'var(--black)',
   textTitle: 'color-mix(in lab, var(--text) 90%, transparent)',

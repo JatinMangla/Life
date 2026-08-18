@@ -22,9 +22,12 @@ export const Navbar = () => {
   const headerRef = useRef();
   // Match the CSS nav breakpoints: mobile width, or a genuinely small
   // (short AND narrow) window — not just any short desktop window.
+  // width is 0 until useWindowSize measures on the client; don't claim mobile
+  // before then, or the first paint disagrees with the server render.
   const isMobile =
-    windowSize.width <= media.mobile ||
-    (windowSize.width <= 900 && windowSize.height <= 500);
+    windowSize.width > 0 &&
+    (windowSize.width <= media.mobile ||
+      (windowSize.width <= 900 && windowSize.height <= 500));
   const scrollToHash = useScrollToHash();
 
   useEffect(() => {

@@ -1,59 +1,47 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+
+// Zero on the server and on the very first client render, so consumers can
+// distinguish "not measured yet" from a real viewport width. Guarding on
+// `width > 0` is what keeps SSR markup from committing to a breakpoint it
+// can't know, rather than silently rendering the desktop layout.
+const INITIAL_SIZE = { width: 0, height: 0 };
+
+// iOS Safari reports an innerHeight that includes the collapsing URL bar. A
+// fixed 100vh element measures what the page can actually use.
+function measureViewportHeight() {
+  const ruler = document.createElement('div');
+
+  ruler.style.position = 'fixed';
+  ruler.style.top = '0';
+  ruler.style.width = '0';
+  ruler.style.height = '100vh';
+
+  document.documentElement.appendChild(ruler);
+  const height = ruler.offsetHeight;
+  document.documentElement.removeChild(ruler);
+
+  return height;
+}
 
 export function useWindowSize() {
-  const dimensions = useRef(() => ({ w: 1280, h: 800 }));
-
-  const createRuler = useCallback(() => {
-    let ruler = document.createElement('div');
-
-    ruler.style.position = 'fixed';
-    ruler.style.height = '100vh';
-    ruler.style.width = 0;
-    ruler.style.top = 0;
-
-    document.documentElement.appendChild(ruler);
-
-    // Set cache conscientious of device orientation
-    dimensions.current.w = window.innerWidth;
-    dimensions.current.h = ruler.offsetHeight;
-
-    // Clean up after ourselves
-    document.documentElement.removeChild(ruler);
-    ruler = null;
-  }, []);
-
-  // Get the actual height on iOS Safari
-  const getHeight = useCallback(() => {
-    const isIOS = navigator?.userAgent.match(/iphone|ipod|ipad/i);
-
-    if (isIOS) {
-      createRuler();
-      return dimensions.current.h;
-    }
-
-    return window.innerHeight;
-  }, [createRuler]);
+  const [windowSize, setWindowSize] = useState(INITIAL_SIZE);
 
   const getSize = useCallback(() => {
+    const isIOS = /iphone|ipod|ipad/i.test(navigator.userAgent);
+
     return {
       width: window.innerWidth,
-      height: getHeight(),
+      height: isIOS ? measureViewportHeight() : window.innerHeight,
     };
-  }, [getHeight]);
-
-  const [windowSize, setWindowSize] = useState(dimensions.current);
+  }, []);
 
   useEffect(() => {
-    const handleResize = () => {
-      setWindowSize(getSize());
-    };
+    const handleResize = () => setWindowSize(getSize());
 
-    window.addEventListener('resize', handleResize);
     handleResize();
+    window.addEventListener('resize', handleResize);
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+    return () => window.removeEventListener('resize', handleResize);
   }, [getSize]);
 
   return windowSize;

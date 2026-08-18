@@ -60,9 +60,10 @@ const ButtonContent = forwardRef(
         data-secondary={secondary}
         data-icon={icon}
         href={href}
-        rel={rel || isExternal ? 'noopener noreferrer' : undefined}
-        target={target || isExternal ? '_blank' : undefined}
-        disabled={disabled}
+        rel={rel ?? (isExternal ? 'noopener noreferrer' : undefined)}
+        target={target ?? (isExternal ? '_blank' : undefined)}
+        disabled={Component === 'button' ? disabled : undefined}
+        aria-disabled={Component === 'button' ? undefined : disabled || undefined}
         ref={ref}
         {...rest}
       >

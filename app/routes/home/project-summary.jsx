@@ -7,7 +7,6 @@ import { Text } from '~/components/text';
 import { useTheme } from '~/components/theme-provider';
 import { Transition } from '~/components/transition';
 import { Loader } from '~/components/loader';
-import { useWindowSize } from '~/hooks';
 import { Suspense, lazy, useState } from 'react';
 import { cssProps, media } from '~/utils/style';
 import { useHydrated } from '~/hooks/useHydrated';
@@ -34,10 +33,8 @@ export function ProjectSummary({
   const [focused, setFocused] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
   const { theme } = useTheme();
-  const { width } = useWindowSize();
   const isHydrated = useHydrated();
   const titleId = `${id}-title`;
-  const isMobile = width <= media.tablet;
   const svgOpacity = theme === 'light' ? 0.7 : 1;
   const indexText = index < 10 ? `0${index}` : index;
   const phoneSizes = `(max-width: ${media.tablet}px) 30vw, 20vw`;
@@ -193,18 +190,12 @@ export function ProjectSummary({
         <Transition in={sectionVisible || focused}>
           {({ visible }) => (
             <>
-              {!alternate && !isMobile && (
-                <>
-                  {renderDetails(visible)}
-                  {renderPreview(visible)}
-                </>
-              )}
-              {(alternate || isMobile) && (
-                <>
-                  {renderPreview(visible)}
-                  {renderDetails(visible)}
-                </>
-              )}
+              {/* DOM order is fixed and the alternate/mobile layouts are
+                  expressed as grid placement in CSS. Swapping the order here
+                  instead would remount the whole Three.js model every time the
+                  breakpoint changed. */}
+              {renderDetails(visible)}
+              {renderPreview(visible)}
             </>
           )}
         </Transition>

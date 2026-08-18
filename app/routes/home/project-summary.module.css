@@ -62,9 +62,17 @@
   }
 }
 
+/* DOM order is always details-then-preview (see project-summary.jsx). Grid
+   placement is what produces the alternate and stacked layouts. */
 .details {
   z-index: var(--zIndex1);
   position: relative;
+  grid-row: 1;
+  grid-column: 1;
+
+  .summary[data-alternate='true'] & {
+    grid-column: 2;
+  }
 
   @media (--mediaTablet) {
     flex: 0 0 auto;
@@ -72,6 +80,11 @@
     grid-row: 2;
     grid-column: 1;
     justify-self: center;
+
+    .summary[data-alternate='true'] & {
+      grid-row: 2;
+      grid-column: 1;
+    }
   }
 }
 
@@ -83,6 +96,22 @@
   justify-content: center;
   height: 100%;
   width: 100%;
+  grid-row: 1;
+  grid-column: 2;
+
+  .summary[data-alternate='true'] & {
+    grid-column: 1;
+  }
+
+  @media (--mediaTablet) {
+    grid-row: 1;
+    grid-column: 1;
+
+    .summary[data-alternate='true'] & {
+      grid-row: 1;
+      grid-column: 1;
+    }
+  }
 }
 
 .model {

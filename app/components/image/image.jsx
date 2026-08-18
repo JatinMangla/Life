@@ -179,6 +179,7 @@ const ImageElements = ({
           data-cover={cover}
           onLoad={onLoad}
           decoding="async"
+          loading="lazy"
           src={showFullRes ? src : undefined}
           srcSet={showFullRes ? srcSet : undefined}
           width={width}
@@ -201,7 +202,6 @@ const ImageElements = ({
           height={height}
           onTransitionEnd={() => setShowPlaceholder(false)}
           decoding="async"
-          loading="lazy"
           alt=""
           role="presentation"
         />

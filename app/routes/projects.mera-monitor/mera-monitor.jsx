@@ -1,3 +1,15 @@
+import mmAnalyticsDashboardPlaceholder from '~/assets/mm-analytics-dashboard-placeholder.jpg';
+import mmHomeFeaturedPlaceholder from '~/assets/mm-home-featured-placeholder.jpg';
+import mmScreenMonitoringPlaceholder from '~/assets/mm-screen-monitoring-placeholder.jpg';
+import mmProductivityPlaceholder from '~/assets/mm-productivity-placeholder.jpg';
+import mmWebAppsPlaceholder from '~/assets/mm-web-apps-placeholder.jpg';
+import mmAttendancePlaceholder from '~/assets/mm-attendance-placeholder.jpg';
+import mmPrivateModePlaceholder from '~/assets/mm-private-mode-placeholder.jpg';
+import mmEfficiencyPlaceholder from '~/assets/mm-efficiency-placeholder.jpg';
+import mmVisibilityPlaceholder from '~/assets/mm-visibility-placeholder.jpg';
+import mmTimeClaimPlaceholder from '~/assets/mm-time-claim-placeholder.jpg';
+import mmHoursSavedPlaceholder from '~/assets/mm-hours-saved-placeholder.jpg';
+import mmTeamSupportPlaceholder from '~/assets/mm-team-support-placeholder.jpg';
 import mmAnalyticsDashboard from '~/assets/mm-analytics-dashboard.png';
 import mmScreenMonitoring from '~/assets/mm-screen-monitoring.png';
 import mmProductivity from '~/assets/mm-productivity.png';
@@ -9,7 +21,7 @@ import mmVisibility from '~/assets/mm-visibility.png';
 import mmHoursSaved from '~/assets/mm-hours-saved.png';
 import mmPrivateMode from '~/assets/mm-private-mode.png';
 import mmTimeClaim from '~/assets/mm-time-claim.png';
-import mmHomeFeatured from '~/assets/mm-home-featured.gif';
+import mmHomeFeatured from '~/assets/mm-home-featured.webp';
 import { Footer } from '~/components/footer';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
@@ -40,7 +52,7 @@ const roles = [
 ];
 
 export const meta = () => {
-  return baseMeta({ title, description, prefix: 'Projects' });
+  return baseMeta({ title, description, prefix: 'Projects', path: '/projects/mera-monitor' });
 };
 
 export const MeraMonitor = () => {
@@ -51,7 +63,7 @@ export const MeraMonitor = () => {
           opacity={0.4}
           src={mmAnalyticsDashboard}
           srcSet={`${mmAnalyticsDashboard} 1280w`}
-          placeholder={mmAnalyticsDashboard}
+          placeholder={mmAnalyticsDashboardPlaceholder}
         />
         <ProjectHeader
           title={title}
@@ -66,7 +78,7 @@ export const MeraMonitor = () => {
               srcSet={`${mmHomeFeatured} 1280w`}
               width={1280}
               height={800}
-              placeholder={mmHomeFeatured}
+              placeholder={mmHomeFeaturedPlaceholder}
               sizes={`(max-width: ${media.mobile}px) 100vw, (max-width: ${media.tablet}px) 800px, 1000px`}
               alt="Mera Monitor dashboard showing employee productivity analytics and real-time monitoring."
             />
@@ -91,7 +103,7 @@ export const MeraMonitor = () => {
               srcSet={`${mmAnalyticsDashboard} 1024w`}
               width={1024}
               height={800}
-              placeholder={mmAnalyticsDashboard}
+              placeholder={mmAnalyticsDashboardPlaceholder}
               alt="Mera Monitor analytics dashboard with real-time productivity metrics and team performance data"
               sizes="100vw"
             />
@@ -114,7 +126,7 @@ export const MeraMonitor = () => {
               srcSet={`${mmScreenMonitoring} 1280w`}
               width={1280}
               height={800}
-              placeholder={mmScreenMonitoring}
+              placeholder={mmScreenMonitoringPlaceholder}
               alt="Mera Monitor screen monitoring showing live employee activity tracking"
               sizes="100vw"
             />
@@ -137,7 +149,7 @@ export const MeraMonitor = () => {
               srcSet={`${mmProductivity} 1280w`}
               width={1280}
               height={800}
-              placeholder={mmProductivity}
+              placeholder={mmProductivityPlaceholder}
               alt="Mera Monitor productivity and unproductivity tracking interface"
               sizes="100vw"
             />
@@ -158,7 +170,7 @@ export const MeraMonitor = () => {
               srcSet={`${mmWebApps} 1024w`}
               width={1024}
               height={800}
-              placeholder={mmWebApps}
+              placeholder={mmWebAppsPlaceholder}
               alt="Mera Monitor web applications monitoring dashboard"
               sizes="100vw"
             />
@@ -191,7 +203,7 @@ export const MeraMonitor = () => {
               srcSet={`${mmAttendance} 1280w`}
               width={1280}
               height={800}
-              placeholder={mmAttendance}
+              placeholder={mmAttendancePlaceholder}
               alt="Mera Monitor attendance tracking and time management interface"
               sizes={`(max-width: ${media.mobile}px) 100vw, 80vw`}
             />
@@ -204,7 +216,7 @@ export const MeraMonitor = () => {
               srcSet={`${mmPrivateMode} 1280w`}
               width={1280}
               height={800}
-              placeholder={mmPrivateMode}
+              placeholder={mmPrivateModePlaceholder}
               alt="Mera Monitor private mode and time claim management"
               sizes={`(max-width: ${media.mobile}px) 100vw, 80vw`}
             />
@@ -238,7 +250,7 @@ export const MeraMonitor = () => {
                 srcSet={`${mmEfficiency} 400w`}
                 width={400}
                 height={300}
-                placeholder={mmEfficiency}
+                placeholder={mmEfficiencyPlaceholder}
                 alt="Increased efficiency metrics from Mera Monitor"
                 sizes={`(max-width: ${media.mobile}px) 50vw, 25vw`}
               />
@@ -247,7 +259,7 @@ export const MeraMonitor = () => {
                 srcSet={`${mmVisibility} 400w`}
                 width={400}
                 height={300}
-                placeholder={mmVisibility}
+                placeholder={mmVisibilityPlaceholder}
                 alt="More visibility in team operations"
                 sizes={`(max-width: ${media.mobile}px) 50vw, 25vw`}
               />
@@ -277,7 +289,7 @@ export const MeraMonitor = () => {
                 srcSet={`${mmTimeClaim} 400w`}
                 width={400}
                 height={600}
-                placeholder={mmTimeClaim}
+                placeholder={mmTimeClaimPlaceholder}
                 alt="Time claim management interface"
                 sizes={`(max-width: ${media.mobile}px) 50vw, 25vw`}
               />
@@ -286,7 +298,7 @@ export const MeraMonitor = () => {
                 srcSet={`${mmHoursSaved} 400w`}
                 width={400}
                 height={600}
-                placeholder={mmHoursSaved}
+                placeholder={mmHoursSavedPlaceholder}
                 alt="Hours saved per week through productivity insights"
                 sizes={`(max-width: ${media.mobile}px) 50vw, 25vw`}
               />
@@ -316,7 +328,7 @@ export const MeraMonitor = () => {
               srcSet={`${mmTeamSupport} 1280w`}
               width={1280}
               height={800}
-              placeholder={mmTeamSupport}
+              placeholder={mmTeamSupportPlaceholder}
               alt="Mera Monitor team support and enterprise deployment"
               sizes="100vw"
             />

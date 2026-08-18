@@ -2,6 +2,7 @@ import { Button } from '~/components/button';
 import { DecoderText } from '~/components/decoder-text';
 import { Divider } from '~/components/divider';
 import { Footer } from '~/components/footer';
+import { useHydrated } from '~/hooks/useHydrated';
 import { Heading } from '~/components/heading';
 import { Icon } from '~/components/icon';
 import { Input } from '~/components/input';
@@ -10,16 +11,22 @@ import { Text } from '~/components/text';
 import { tokens } from '~/components/theme-provider/theme';
 import { Transition } from '~/components/transition';
 import { useFormInput } from '~/hooks';
-import { useRef } from 'react';
+import { Suspense, lazy, useRef } from 'react';
 import { cssProps, msToNum, numToMs } from '~/utils/style';
 import { baseMeta } from '~/utils/meta';
 import { useFetcher } from '@remix-run/react';
-import { ContactEarth } from './earth';
 import styles from './contact.module.css';
+
+// Purely decorative and aria-hidden, so keep three.js and the ~1MB globe
+// model out of the entry chunk for a page that is three text inputs.
+const ContactEarth = lazy(() =>
+  import('./earth').then(module => ({ default: module.ContactEarth }))
+);
 
 export const meta = () => {
   return baseMeta({
     title: 'Contact',
+    path: '/contact',
     description:
       'Send me a message if you want to discuss a project, collaboration, or just want to connect',
   });
@@ -49,6 +56,7 @@ const MAX_NAME_LENGTH = 100;
 
 export const Contact = () => {
   const errorRef = useRef();
+  const isHydrated = useHydrated();
   const name = useFormInput('');
   const email = useFormInput('');
   const message = useFormInput('');
@@ -206,7 +214,11 @@ export const Contact = () => {
       </Transition>
       <div className={styles.earthColumn} aria-hidden>
         <div className={styles.globe}>
-          <ContactEarth />
+          {isHydrated && (
+            <Suspense fallback={null}>
+              <ContactEarth />
+            </Suspense>
+          )}
         </div>
       </div>
       <Footer className={styles.footer} />

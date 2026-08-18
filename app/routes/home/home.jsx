@@ -40,13 +40,14 @@ export const meta = () => {
 };
 
 export const Home = () => {
-  const [visibleSections, setVisibleSections] = useState([]);
+  // Tracked by element id rather than by ref, so nothing has to read
+  // `ref.current` during render to decide what's visible.
+  const [visibleSections, setVisibleSections] = useState(() => new Set());
   const [scrollIndicatorHidden, setScrollIndicatorHidden] = useState(false);
   const intro = useRef();
   const projectOne = useRef();
   const projectTwo = useRef();
   const details = useRef();
-  const observedSections = useRef(new Set());
 
   useEffect(() => {
     const sections = [intro, projectOne, projectTwo, details];
@@ -54,13 +55,10 @@ export const Home = () => {
     const sectionObserver = new IntersectionObserver(
       (entries, observer) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const section = entry.target;
-            observer.unobserve(section);
-            if (observedSections.current.has(section)) return;
-            observedSections.current.add(section);
-            setVisibleSections(prevSections => [...prevSections, section]);
-          }
+          if (!entry.isIntersecting) return;
+
+          observer.unobserve(entry.target);
+          setVisibleSections(previous => new Set(previous).add(entry.target.id));
         });
       },
       { rootMargin: '0px 0px -10% 0px', threshold: 0.1 }
@@ -74,10 +72,10 @@ export const Home = () => {
     );
 
     sections.forEach(section => {
-      sectionObserver.observe(section.current);
+      if (section.current) sectionObserver.observe(section.current);
     });
 
-    indicatorObserver.observe(intro.current);
+    if (intro.current) indicatorObserver.observe(intro.current);
 
     return () => {
       sectionObserver.disconnect();
@@ -95,7 +93,7 @@ export const Home = () => {
       <ProjectSummary
         id="project-1"
         sectionRef={projectOne}
-        visible={visibleSections.includes(projectOne.current)}
+        visible={visibleSections.has('project-1')}
         index={1}
         title="Mera Monitor — Employee Productivity Platform"
         description="Lead front-end development for a fintech SaaS product with 3,500+ active users, featuring real-time monitoring, Redux state management, and SSO authentication."
@@ -116,7 +114,7 @@ export const Home = () => {
         id="project-2"
         alternate
         sectionRef={projectTwo}
-        visible={visibleSections.includes(projectTwo.current)}
+        visible={visibleSections.has('project-2')}
         index={2}
         title="Screen Coach — Screen Time Monitoring"
         description="Developed responsive UI and RESTful APIs for a screen-time monitoring tool optimized for low-memory devices using Node.js and MongoDB."
@@ -139,7 +137,7 @@ export const Home = () => {
       />
       <Profile
         sectionRef={details}
-        visible={visibleSections.includes(details.current)}
+        visible={visibleSections.has('details')}
         id="details"
       />
       <Footer />

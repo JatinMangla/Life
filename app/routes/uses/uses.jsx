@@ -19,6 +19,7 @@ import styles from './uses.module.css';
 export const meta = () => {
   return baseMeta({
     title: 'Tech Stack',
+    path: '/uses',
     description:
       'A list of tools, frameworks, and technologies I use to build modern web applications',
   });

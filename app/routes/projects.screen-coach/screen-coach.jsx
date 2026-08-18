@@ -1,6 +1,15 @@
+import scAnimateBoxPlaceholder from '~/assets/sc-animate-box-placeholder.jpg';
+import scHowItWorksPlaceholder from '~/assets/sc-how-it-works-placeholder.jpg';
+import scChildDrivenPlaceholder from '~/assets/sc-child-driven-placeholder.jpg';
+import scTamperproofPlaceholder from '~/assets/sc-tamperproof-placeholder.jpg';
+import scRewardsPlaceholder from '~/assets/sc-rewards-placeholder.jpg';
+import scReportPlaceholder from '~/assets/sc-report-placeholder.jpg';
+import scNagFreePlaceholder from '~/assets/sc-nag-free-placeholder.jpg';
+import scFunFilledPlaceholder from '~/assets/sc-fun-filled-placeholder.jpg';
+import scTeenPlaceholder from '~/assets/sc-teen-placeholder.jpg';
 import scHowItWorks from '~/assets/sc-how-it-works.gif';
-import scAnimateBox from '~/assets/sc-animate-box.gif';
-import scChildDriven from '~/assets/sc-child-driven.gif';
+import scAnimateBox from '~/assets/sc-animate-box.webp';
+import scChildDriven from '~/assets/sc-child-driven.webp';
 import scTamperproof from '~/assets/sc-tamperproof.png';
 import scRewards from '~/assets/sc-rewards.png';
 import scNagFree from '~/assets/sc-nag-free.png';
@@ -38,7 +47,7 @@ const roles = [
 ];
 
 export const meta = () => {
-  return baseMeta({ title, description, prefix: 'Projects' });
+  return baseMeta({ title, description, prefix: 'Projects', path: '/projects/screen-coach' });
 };
 
 export function ScreenCoach() {
@@ -49,7 +58,7 @@ export function ScreenCoach() {
           opacity={0.5}
           src={scAnimateBox}
           srcSet={`${scAnimateBox} 800w`}
-          placeholder={scAnimateBox}
+          placeholder={scAnimateBoxPlaceholder}
         />
         <ProjectHeader
           title={title}
@@ -65,7 +74,7 @@ export function ScreenCoach() {
                 srcSet={`${scHowItWorks} 1000w`}
                 width={1000}
                 height={150}
-                placeholder={scHowItWorks}
+                placeholder={scHowItWorksPlaceholder}
                 sizes={`(max-width: ${media.mobile}px) 100vw, 1000px`}
                 alt="Screen Coach application showing how the screen time monitoring works"
                 style={{ maxWidth: '100%' }}
@@ -92,7 +101,7 @@ export function ScreenCoach() {
                 srcSet={`${scChildDriven} 950w`}
                 width={950}
                 height={1920}
-                placeholder={scChildDriven}
+                placeholder={scChildDrivenPlaceholder}
                 alt="Screen Coach child-driven screen time management interface"
                 sizes="(max-width: 600px) 95vw, 400px"
                 style={{ maxWidth: '400px', width: '100%', height: 'auto' }}
@@ -117,7 +126,7 @@ export function ScreenCoach() {
                 srcSet={`${scTamperproof} 950w`}
                 width={950}
                 height={1920}
-                placeholder={scTamperproof}
+                placeholder={scTamperproofPlaceholder}
                 alt="Screen Coach tamper-proof protection preventing children from bypassing screen time limits"
                 sizes="(max-width: 600px) 95vw, 400px"
                 style={{ maxWidth: '400px', width: '100%', height: 'auto' }}
@@ -142,7 +151,7 @@ export function ScreenCoach() {
                 srcSet={`${scRewards} 800w`}
                 width={800}
                 height={1600}
-                placeholder={scRewards}
+                placeholder={scRewardsPlaceholder}
                 alt="Screen Coach rewards system encouraging positive screen time behavior"
                 sizes="(max-width: 600px) 95vw, 400px"
                 style={{ maxWidth: '400px', width: '100%', height: 'auto' }}
@@ -166,7 +175,7 @@ export function ScreenCoach() {
                 srcSet={`${scReport} 500w`}
                 width={500}
                 height={600}
-                placeholder={scReport}
+                placeholder={scReportPlaceholder}
                 alt="Screen Coach reporting dashboard showing screen time analytics"
                 sizes="(max-width: 600px) 95vw, 500px"
                 style={{ maxWidth: '500px', width: '100%', height: 'auto' }}
@@ -203,7 +212,7 @@ export function ScreenCoach() {
                   srcSet={`${scNagFree} 800w`}
                   width={800}
                   height={1600}
-                  placeholder={scNagFree}
+                  placeholder={scNagFreePlaceholder}
                   alt="Screen Coach nag-free screen time monitoring"
                   sizes="(max-width: 600px) 45vw, 250px"
                   style={{ maxWidth: '250px', width: '100%', height: 'auto' }}
@@ -215,7 +224,7 @@ export function ScreenCoach() {
                   srcSet={`${scFunFilled} 800w`}
                   width={800}
                   height={1600}
-                  placeholder={scFunFilled}
+                  placeholder={scFunFilledPlaceholder}
                   alt="Screen Coach fun-filled experience for children"
                   sizes="(max-width: 600px) 45vw, 250px"
                   style={{ maxWidth: '250px', width: '100%', height: 'auto' }}
@@ -232,7 +241,7 @@ export function ScreenCoach() {
                 srcSet={`${scTeen} 451w`}
                 width={451}
                 height={340}
-                placeholder={scTeen}
+                placeholder={scTeenPlaceholder}
                 alt="Screen Coach teen-focused screen time monitoring and parental controls"
                 sizes="(max-width: 600px) 95vw, 600px"
                 style={{ maxWidth: '600px', width: '100%', height: 'auto' }}

@@ -112,6 +112,10 @@ export const DisplacementSphere = props => {
   useEffect(() => {
     const { width, height } = windowSize;
 
+    // useWindowSize reports 0 until it has measured on the client; sizing the
+    // renderer from that would set the camera aspect to NaN.
+    if (!width || !height) return;
+
     const adjustedHeight = height + height * 0.3;
     renderer.current.setSize(width, adjustedHeight);
     camera.current.aspect = width / adjustedHeight;
