@@ -13,16 +13,31 @@ export interface ProjectModel {
   readonly textures: readonly ProjectTexture[];
 }
 
+/** Where a project came from, so the two kinds are never conflated. */
+export type ProjectKind = 'work' | 'personal';
+
 export interface Project {
   readonly slug: string;
   /** Full title, used as the case-study heading and meta title. */
   readonly title: string;
+  /** Short name for compact surfaces like the poster and nav. */
+  readonly shortTitle: string;
   /** One-sentence summary shown on the home page and in meta descriptions. */
   readonly description: string;
   /** What I was actually responsible for. */
   readonly roles: readonly string[];
+  readonly kind: ProjectKind;
+  /** Technologies actually used, rendered as chips. */
+  readonly stack: readonly string[];
+  /**
+   * OKLCH hue for this project's accent, so each case study reads as its own
+   * thing while still using the site's colour system.
+   */
+  readonly hue: string;
   readonly liveUrl?: string;
-  readonly model: ProjectModel;
+  readonly repoUrl?: string;
+  /** Why a live link may not get a visitor very far. */
+  readonly access?: string;
 }
 
 export const projectPath = (slug: string) => `/projects/${slug}`;
@@ -38,6 +53,7 @@ export const projects = [
   {
     slug: 'mera-monitor',
     title: 'Mera Monitor — Employee Productivity Platform',
+    shortTitle: 'Mera Monitor',
     description: `Lead front-end development for a SaaS product with ${metrics.activeUsers.value} active users, featuring real-time monitoring, Redux state management, and SSO authentication.`,
     roles: [
       'Lead Frontend Development',
@@ -45,11 +61,15 @@ export const projects = [
       'SSO Authentication (MSAL/OAuth)',
       'Real-time Features (SignalR)',
     ],
+    kind: 'work',
+    stack: ['React.js', 'Redux', 'SCSS', 'ApexCharts', 'SignalR', 'MSAL'],
+    hue: '202.24',
     liveUrl: 'https://meramonitor.com',
   },
   {
     slug: 'screen-coach',
     title: 'Screen Coach — Screen Time Monitoring',
+    shortTitle: 'Screen Coach',
     description:
       'Developed responsive UI and RESTful APIs for a screen-time monitoring tool optimized for low-memory devices using Node.js and MongoDB.',
     roles: [
@@ -58,16 +78,83 @@ export const projects = [
       'Performance Optimization',
       'Real-time Data',
     ],
+    kind: 'work',
+    stack: ['JavaScript', 'Node.js', 'Express.js', 'MongoDB', 'REST'],
+    hue: '150',
     liveUrl: 'https://www.myscreencoach.com',
   },
-] as const satisfies readonly Omit<Project, 'model'>[];
+  {
+    slug: 'kundli-predict',
+    title: 'Kundli Predict — Offline-First Vedic Astrology Engine',
+    shortTitle: 'Kundli Predict',
+    description:
+      'A Vedic astrology engine that computes complete birth charts, dashas and predictions entirely on-device — no server, no internet, no AI required.',
+    roles: [
+      'Full-stack Development',
+      'Astronomical Computation Engine',
+      'Offline-first Architecture',
+      'Bilingual UI (English/Hindi)',
+    ],
+    kind: 'personal',
+    stack: [
+      'Next.js 15',
+      'TypeScript',
+      'Tailwind CSS 4',
+      'astronomy-engine',
+      'Dexie / IndexedDB',
+      'Auth.js v5',
+      'Vitest',
+    ],
+    hue: '75',
+    liveUrl: 'https://predict-five-blue.vercel.app',
+    repoUrl: 'https://github.com/JatinMangla/predict',
+    access: 'Sign-in is restricted to the owner’s account; chart data never leaves the device.',
+  },
+  {
+    slug: 'careerpilot-ai',
+    title: 'CareerPilot AI — Personal Career Copilot',
+    shortTitle: 'CareerPilot AI',
+    description:
+      'An AI career assistant that reviews resumes, analyses job matches and runs mock interviews, built on Next.js serverless functions with schema-enforced Gemini responses.',
+    roles: [
+      'Full-stack Development',
+      'LLM Integration (Gemini)',
+      'Serverless API Design',
+      'Auth & Cross-device Sync',
+    ],
+    kind: 'personal',
+    stack: [
+      'Next.js 14',
+      'TypeScript',
+      'Tailwind CSS',
+      'Google Gemini',
+      'Upstash Redis',
+      'Vercel Functions',
+    ],
+    hue: '295',
+    liveUrl: 'https://careerpilot-ai-beige-tau.vercel.app',
+    repoUrl: 'https://github.com/JatinMangla/CareerPilot-AI',
+    access: 'Single-user by design — the live link shows the sign-in screen.',
+  },
+] as const satisfies readonly Project[];
 
 export type ProjectSlug = (typeof projects)[number]['slug'];
 
-export function getProject(slug: ProjectSlug) {
-  const project = projects.find(entry => entry.slug === slug);
+/**
+ * Generic over the slug so callers get the exact record back, not a union of
+ * all four. Without it, fields only some projects carry — `repoUrl`, `access` —
+ * are invisible to the case study that actually has them.
+ */
+export function getProject<S extends ProjectSlug>(slug: S) {
+  const project = projects.find(entry => entry.slug === slug) as
+    | Extract<(typeof projects)[number], { slug: S }>
+    | undefined;
 
   if (!project) throw new Error(`Unknown project slug: ${slug}`);
 
   return project;
 }
+
+/** Projects that have a 3D device preview; the rest render a poster instead. */
+export const hasDeviceModel = (slug: ProjectSlug) =>
+  slug === 'mera-monitor' || slug === 'screen-coach';

@@ -7,6 +7,8 @@ const routes = [
   '/uses',
   '/projects/mera-monitor',
   '/projects/screen-coach',
+  '/projects/kundli-predict',
+  '/projects/careerpilot-ai',
   '/this-page-does-not-exist',
 ];
 

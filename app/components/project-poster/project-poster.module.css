@@ -1,0 +1,158 @@
+@layer components {
+  .poster {
+    --posterAccent: oklch(72% 0.17 var(--hue));
+    --posterAccentSoft: oklch(72% 0.17 var(--hue) / 12%);
+    --posterAccentLine: oklch(72% 0.17 var(--hue) / 28%);
+
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border: 1px solid var(--posterAccentLine);
+    background: color-mix(in lab, var(--background) 92%, var(--posterAccent));
+    isolation: isolate;
+
+    [data-theme='light'] & {
+      --posterAccent: oklch(48% 0.17 var(--hue));
+      --posterAccentSoft: oklch(48% 0.17 var(--hue) / 10%);
+      --posterAccentLine: oklch(48% 0.17 var(--hue) / 24%);
+    }
+
+    @media (--mediaMobile) {
+      aspect-ratio: 4 / 3;
+    }
+  }
+
+  /* Slow-drifting light behind the type. Purely decorative. */
+  .aurora {
+    position: absolute;
+    inset: -40%;
+    z-index: 0;
+    background:
+      radial-gradient(40% 40% at 25% 30%, var(--posterAccent) 0%, transparent 60%),
+      radial-gradient(35% 35% at 75% 70%, var(--posterAccent) 0%, transparent 60%);
+    opacity: 0.18;
+    filter: blur(40px);
+
+    @media (--mediaUseMotion) {
+      animation: posterDrift 18s ease-in-out infinite alternate;
+    }
+
+    .poster[data-static='true'] & {
+      animation: none;
+    }
+  }
+
+  /* Faint technical grid, echoing the site's engineering tone. */
+  .grid {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background-image:
+      linear-gradient(var(--posterAccentLine) 1px, transparent 1px),
+      linear-gradient(90deg, var(--posterAccentLine) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.25;
+    mask-image: radial-gradient(75% 75% at 50% 50%, #000 30%, transparent 100%);
+  }
+
+  .content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spaceM);
+    padding: var(--spaceXL);
+    text-align: center;
+  }
+
+  .eyebrow {
+    font-size: var(--fontSizeBodyXS);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--posterAccent);
+    opacity: 0;
+    transition: opacity var(--durationL) var(--bezierFastoutSlowin) 0.1s;
+
+    .poster[data-visible='true'] & {
+      opacity: 1;
+    }
+  }
+
+  .title {
+    font-size: var(--fontSizeH2);
+    font-weight: var(--fontWeightBold);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--textTitle);
+    text-wrap: balance;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: var(--durationXL);
+    transition-timing-function: var(--bezierFastoutSlowin);
+    transition-delay: 0.2s;
+
+    @media (--mediaUseMotion) {
+      transition-property: opacity, transform;
+      transform: translate3d(0, var(--spaceM), 0);
+    }
+
+    @media (--mediaMobile) {
+      font-size: var(--fontSizeH3);
+    }
+
+    .poster[data-visible='true'] & {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spaceXS);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-width: 460px;
+  }
+
+  .chip {
+    padding: 4px var(--spaceS);
+    font-size: var(--fontSizeBodyXS);
+    color: var(--textBody);
+    border: 1px solid var(--posterAccentLine);
+    background: var(--posterAccentSoft);
+    border-radius: 2px;
+    white-space: nowrap;
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: var(--durationL);
+    transition-timing-function: var(--bezierFastoutSlowin);
+    transition-delay: var(--delay);
+
+    @media (--mediaUseMotion) {
+      transition-property: opacity, transform;
+      transform: translate3d(0, var(--spaceS), 0);
+    }
+
+    .poster[data-visible='true'] & {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+@keyframes posterDrift {
+  from {
+    transform: translate3d(-4%, -2%, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(4%, 3%, 0) scale(1.1);
+  }
+}

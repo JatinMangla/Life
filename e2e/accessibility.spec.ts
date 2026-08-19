@@ -8,6 +8,8 @@ const pages = [
   { name: 'tech stack', path: '/uses' },
   { name: 'Mera Monitor case study', path: '/projects/mera-monitor' },
   { name: 'Screen Coach case study', path: '/projects/screen-coach' },
+  { name: 'Kundli Predict case study', path: '/projects/kundli-predict' },
+  { name: 'CareerPilot AI case study', path: '/projects/careerpilot-ai' },
   { name: '404', path: '/this-page-does-not-exist' },
 ];
 

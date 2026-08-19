@@ -12,7 +12,12 @@ import type { ProjectModel, ProjectSlug } from './projects';
  * Split out from `projects.ts` so that module stays free of asset imports and
  * can be read (or tested) without pulling images through the bundler.
  */
-export const projectModels: Record<ProjectSlug, ProjectModel> = {
+/**
+ * Only the two work projects ship device screenshots. The personal projects
+ * are auth-gated, so there is no honest screenshot to show — they render a
+ * ProjectPoster instead. See hasDeviceModel() in projects.ts.
+ */
+export const projectModels: Partial<Record<ProjectSlug, ProjectModel>> = {
   'mera-monitor': {
     type: 'laptop',
     alt: 'Mera Monitor dashboard showing employee productivity metrics',

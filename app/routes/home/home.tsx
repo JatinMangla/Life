@@ -100,11 +100,14 @@ export const Home = () => {
             visible={visibleSections.has(id)}
             index={index + 1}
             alternate={index % 2 === 1}
-            title={project.title}
+            title={project.shortTitle}
             description={project.description}
             buttonText="View project"
             buttonLink={projectPath(project.slug)}
             model={projectModels[project.slug]}
+            stack={project.stack}
+            hue={project.hue}
+            eyebrow={project.kind === 'personal' ? 'Personal project' : 'Client work'}
           />
         );
       })}

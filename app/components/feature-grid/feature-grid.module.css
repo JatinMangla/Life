@@ -1,0 +1,50 @@
+@layer components {
+  .grid {
+    --featureAccent: oklch(72% 0.17 var(--hue));
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--spaceXL) var(--space2XL);
+    width: 100%;
+    margin: var(--space2XL) 0 0;
+    padding: 0;
+    list-style: none;
+
+    [data-theme='light'] & {
+      --featureAccent: oklch(48% 0.17 var(--hue));
+    }
+
+    @media (--mediaMobile) {
+      gap: var(--spaceL);
+    }
+  }
+
+  .item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spaceXS);
+    min-width: 0;
+  }
+
+  .rule {
+    width: 40px;
+    height: 2px;
+    margin-bottom: var(--spaceXS);
+    background: var(--featureAccent);
+  }
+
+  .title {
+    margin: 0;
+    font-size: var(--fontSizeBodyM);
+    font-weight: var(--fontWeightMedium);
+    color: var(--textTitle);
+  }
+
+  .detail {
+    margin: 0;
+    font-size: var(--fontSizeBodyS);
+    line-height: var(--lineHeightBody);
+    color: var(--textBody);
+    text-wrap: pretty;
+  }
+}

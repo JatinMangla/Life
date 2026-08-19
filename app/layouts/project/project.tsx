@@ -23,6 +23,14 @@ export interface ProjectHeaderProps {
   url?: string;
   /** What I was responsible for, listed alongside the summary. */
   roles?: readonly string[];
+  /** Technologies actually used, rendered as chips under the summary. */
+  stack?: readonly string[];
+  /** OKLCH hue tinting the chips, so each case study reads as its own thing. */
+  hue?: string;
+  /** Public source, when there is one. */
+  repoUrl?: string;
+  /** Caveat about the live link, e.g. that it sits behind owner-only auth. */
+  note?: string;
   className?: string;
 }
 
@@ -32,13 +40,17 @@ export function ProjectHeader({
   linkLabel = 'Visit website',
   url,
   roles,
+  stack,
+  hue = '202.24',
+  repoUrl,
+  note,
   className,
 }: ProjectHeaderProps) {
   return (
     <Section className={classes(styles.header, className)} as="section">
       <div
         className={styles.headerContent}
-        style={cssProps({ initDelay: numToMs(initDelay) })}
+        style={cssProps({ initDelay: numToMs(initDelay), hue })}
       >
         <div className={styles.details}>
           <Heading className={styles.title} level={2} as="h1">
@@ -47,16 +59,47 @@ export function ProjectHeader({
           <Text className={styles.description} size="xl" as="p">
             {description}
           </Text>
-          {!!url && (
-            <Button
-              secondary
-              iconHoverShift
-              className={styles.linkButton}
-              icon="chevron-right"
-              href={url}
-            >
-              {linkLabel}
-            </Button>
+          {!!stack?.length && (
+            <ul className={styles.stack}>
+              {stack.map((item, index) => (
+                <li
+                  className={styles.stackItem}
+                  style={cssProps({ delay: numToMs(initDelay + 200 + index * 60) })}
+                  key={item}
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+          )}
+          <div className={styles.actions}>
+            {!!url && (
+              <Button
+                secondary
+                iconHoverShift
+                className={styles.linkButton}
+                icon="chevron-right"
+                href={url}
+              >
+                {linkLabel}
+              </Button>
+            )}
+            {!!repoUrl && (
+              <Button
+                secondary
+                iconHoverShift
+                className={styles.linkButton}
+                icon="github"
+                href={repoUrl}
+              >
+                View source
+              </Button>
+            )}
+          </div>
+          {!!note && (
+            <Text className={styles.note} size="s" as="p" secondary>
+              {note}
+            </Text>
           )}
         </div>
         {!!roles?.length && (

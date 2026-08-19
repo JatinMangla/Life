@@ -1,4 +1,3 @@
-import scAnimateBoxPlaceholder from '~/assets/sc-animate-box-placeholder.jpg';
 import scHowItWorksPlaceholder from '~/assets/sc-how-it-works-placeholder.jpg';
 import scChildDrivenPlaceholder from '~/assets/sc-child-driven-placeholder.jpg';
 import scTamperproofPlaceholder from '~/assets/sc-tamperproof-placeholder.jpg';
@@ -8,7 +7,6 @@ import scNagFreePlaceholder from '~/assets/sc-nag-free-placeholder.jpg';
 import scFunFilledPlaceholder from '~/assets/sc-fun-filled-placeholder.jpg';
 import scTeenPlaceholder from '~/assets/sc-teen-placeholder.jpg';
 import scHowItWorks from '~/assets/sc-how-it-works.gif';
-import scAnimateBox from '~/assets/sc-animate-box.webp';
 import scChildDriven from '~/assets/sc-child-driven.webp';
 import scTamperproof from '~/assets/sc-tamperproof.webp';
 import scRewards from '~/assets/sc-rewards.webp';
@@ -21,7 +19,6 @@ import { Footer } from '~/components/footer';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import {
-  ProjectBackground,
   ProjectContainer,
   ProjectHeader,
   ProjectImage,
@@ -31,6 +28,7 @@ import {
   ProjectSectionHeading,
   ProjectSectionText,
   ProjectTextRow,
+  ProjectAtmosphere,
 } from '~/layouts/project';
 import { Fragment } from 'react';
 import { media } from '~/utils/style';
@@ -40,7 +38,7 @@ import { getProject, projectOgImage, projectPath } from '~/data/projects';
 import { ArchitectureDiagram } from '~/components/architecture-diagram';
 import styles from './screen-coach.module.css';
 
-const { title, description, roles, liveUrl } = getProject('screen-coach');
+const { title, description, roles, liveUrl, stack, hue } = getProject('screen-coach');
 
 export const meta = () => {
   return baseMeta({
@@ -59,17 +57,14 @@ export function ScreenCoach() {
   return (
     <Fragment>
       <ProjectContainer>
-        <ProjectBackground
-          opacity={0.5}
-          src={scAnimateBox}
-          srcSet={`${scAnimateBox} 800w`}
-          placeholder={scAnimateBoxPlaceholder}
-        />
+        <ProjectAtmosphere hue={hue} />
         <ProjectHeader
           title={title}
           description={description}
           url={liveUrl}
           roles={roles}
+          stack={stack}
+          hue={hue}
         />
         <ProjectSection padding="top">
           <ProjectSectionContent>

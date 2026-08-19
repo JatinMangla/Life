@@ -304,3 +304,14 @@
     opacity: 1;
   }
 }
+
+/* Matches the footprint the 3D device models occupy, so cards with a poster
+   and cards with a model line up on the same grid. */
+.posterWrapper {
+  width: 100%;
+  max-width: 560px;
+
+  @media (--mediaTablet) {
+    max-width: 480px;
+  }
+}

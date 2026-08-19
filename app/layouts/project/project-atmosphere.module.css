@@ -1,0 +1,68 @@
+@layer layout {
+  .atmosphere {
+    --atmosphereAccent: oklch(72% 0.17 var(--hue));
+
+    position: absolute;
+    inset: 0;
+    height: 100vh;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: var(--zIndex0);
+
+    [data-theme='light'] & {
+      --atmosphereAccent: oklch(52% 0.17 var(--hue));
+    }
+  }
+
+  .glow {
+    position: absolute;
+    inset: -30% -20% auto;
+    height: 120%;
+    background:
+      radial-gradient(45% 45% at 72% 22%, var(--atmosphereAccent) 0%, transparent 65%),
+      radial-gradient(35% 35% at 20% 8%, var(--atmosphereAccent) 0%, transparent 70%);
+    opacity: 0.16;
+    filter: blur(60px);
+
+    [data-theme='light'] & {
+      opacity: 0.1;
+    }
+
+    @media (--mediaUseMotion) {
+      animation: atmosphereDrift 24s ease-in-out infinite alternate;
+    }
+
+    .atmosphere[data-static='true'] & {
+      animation: none;
+    }
+  }
+
+  .grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(
+        color-mix(in lab, var(--atmosphereAccent) 22%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        color-mix(in lab, var(--atmosphereAccent) 22%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 64px 64px;
+    opacity: 0.3;
+    /* Fades out well before the copy starts, so it never competes with text. */
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 70%);
+  }
+}
+
+@keyframes atmosphereDrift {
+  from {
+    transform: translate3d(-3%, -2%, 0);
+  }
+
+  to {
+    transform: translate3d(3%, 2%, 0);
+  }
+}

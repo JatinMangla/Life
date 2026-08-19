@@ -26,7 +26,6 @@ import { Footer } from '~/components/footer';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import {
-  ProjectBackground,
   ProjectContainer,
   ProjectHeader,
   ProjectImage,
@@ -36,6 +35,7 @@ import {
   ProjectSectionHeading,
   ProjectSectionText,
   ProjectTextRow,
+  ProjectAtmosphere,
 } from '~/layouts/project';
 import { baseMeta, OG_IMAGE_SIZE } from '~/utils/meta';
 import config from '~/config.json';
@@ -45,7 +45,7 @@ import { ArchitectureDiagram } from '~/components/architecture-diagram';
 import styles from './mera-monitor.module.css';
 import { metrics } from '~/data/experience';
 
-const { title, description, roles, liveUrl } = getProject('mera-monitor');
+const { title, description, roles, liveUrl, stack, hue } = getProject('mera-monitor');
 
 export const meta = () => {
   return baseMeta({
@@ -64,17 +64,14 @@ export const MeraMonitor = () => {
   return (
     <>
       <ProjectContainer>
-        <ProjectBackground
-          opacity={0.4}
-          src={mmAnalyticsDashboard}
-          srcSet={`${mmAnalyticsDashboard} 1280w`}
-          placeholder={mmAnalyticsDashboardPlaceholder}
-        />
+        <ProjectAtmosphere hue={hue} />
         <ProjectHeader
           title={title}
           description={description}
           url={liveUrl}
           roles={roles}
+          stack={stack}
+          hue={hue}
         />
         <ProjectSection padding="top">
           <ProjectSectionContent>

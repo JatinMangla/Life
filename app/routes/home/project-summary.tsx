@@ -10,6 +10,7 @@ import { Loader } from '~/components/loader';
 import { Suspense, lazy, useState } from 'react';
 import type { Ref } from 'react';
 import type { ProjectModel } from '~/data/projects';
+import { ProjectPoster } from '~/components/project-poster';
 import { cssProps, media } from '~/utils/style';
 import { useHydrated } from '~/hooks/useHydrated';
 import katakana from './katakana.svg';
@@ -28,7 +29,14 @@ export interface ProjectSummaryProps {
   index: number;
   title: string;
   description: string;
-  model: ProjectModel;
+  /** Omit for projects with no honest screenshot; a poster is shown instead. */
+  model?: ProjectModel;
+  /** Rendered in the poster when there is no device model. */
+  stack?: readonly string[];
+  /** OKLCH hue for the poster's accent. */
+  hue?: string;
+  /** Small label above the poster title. */
+  eyebrow?: string;
   buttonText: string;
   buttonLink: string;
   /** Mirror the layout, putting the preview on the left. */
@@ -43,6 +51,9 @@ export function ProjectSummary({
   title,
   description,
   model,
+  stack,
+  hue,
+  eyebrow,
   buttonText,
   buttonLink,
   alternate,
@@ -115,6 +126,24 @@ export function ProjectSummary({
   }
 
   function renderPreview(visible: boolean) {
+    // No device model means no honest product screenshot exists — the two
+    // personal projects are auth-gated. Present them typographically instead.
+    if (!model) {
+      return (
+        <div className={styles.preview}>
+          <div className={styles.posterWrapper}>
+            <ProjectPoster
+              title={title}
+              stack={stack ?? []}
+              hue={hue ?? '202.24'}
+              eyebrow={eyebrow}
+              visible={visible}
+            />
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className={styles.preview}>
         {model.type === 'laptop' && (

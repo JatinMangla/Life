@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getProject, projectPath, projects } from './projects';
+import { getProject, hasDeviceModel, projectPath, projects } from './projects';
 import { projectModels } from './project-models';
 import { metrics } from './experience';
 
@@ -8,9 +8,28 @@ import { metrics } from './experience';
  * These tests guard that invariant.
  */
 describe('project data', () => {
-  it('has a model for every project', () => {
+  it('has a device model for exactly the projects that claim one', () => {
+    // The personal projects are auth-gated, so the only honest screenshot
+    // would be a sign-in screen. Those render a ProjectPoster instead, and
+    // hasDeviceModel is what the home page branches on.
     for (const project of projects) {
-      expect(projectModels[project.slug]).toBeDefined();
+      expect(Boolean(projectModels[project.slug])).toBe(hasDeviceModel(project.slug));
+    }
+  });
+
+  it('gives every project a stack, an accent hue and a kind', () => {
+    for (const project of projects) {
+      expect(project.stack.length).toBeGreaterThan(0);
+      // A bare OKLCH hue angle, interpolated into oklch(L C <hue>).
+      expect(Number(project.hue)).toBeGreaterThanOrEqual(0);
+      expect(Number(project.hue)).toBeLessThan(360);
+      expect(['work', 'personal']).toContain(project.kind);
+    }
+  });
+
+  it('points every personal project at public source', () => {
+    for (const project of projects.filter(entry => entry.kind === 'personal')) {
+      expect(project).toHaveProperty('repoUrl');
     }
   });
 
