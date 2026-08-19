@@ -23,6 +23,13 @@ CSS Modules
 
 _______________________________________________________________________________
 
+FONTS
+
+Jost (SIL Open Font License)
+IPA Gothic (IPA Font License)
+
+_______________________________________________________________________________
+
 CREDITS
 
 The visual design of this site started from Hamish Williams' open-source

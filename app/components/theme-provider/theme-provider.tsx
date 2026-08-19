@@ -1,9 +1,5 @@
-import GothamBoldItalic from '~/assets/fonts/gotham-bold-italic.woff2';
-import GothamBold from '~/assets/fonts/gotham-bold.woff2';
-import GothamBookItalic from '~/assets/fonts/gotham-book-italic.woff2';
-import GothamBook from '~/assets/fonts/gotham-book.woff2';
-import GothamMediumItalic from '~/assets/fonts/gotham-medium-italic.woff2';
-import GothamMedium from '~/assets/fonts/gotham-medium.woff2';
+import JostVariable from '~/assets/fonts/jost-variable.woff2';
+import JostVariableItalic from '~/assets/fonts/jost-variable-italic.woff2';
 import IPAGothic from '~/assets/fonts/ipa-gothic.woff2';
 import { createContext, useContext } from 'react';
 import type { CSSProperties, ElementType, ReactNode } from 'react';
@@ -131,51 +127,26 @@ const tokenStyles = squish(`
   }
 `);
 
+/**
+ * Jost is a variable font under the SIL Open Font License, and IPA Gothic is
+ * free under the IPA Font License. One variable file covers 400-700 per style.
+ *
+ * Note: everything in this template literal is inlined into the <head> of
+ * every server response, so keep comments out of it.
+ */
 const fontStyles = squish(`
   @font-face {
-    font-family: Gotham;
-    font-weight: 400;
-    src: url(${GothamBook}) format('woff2');
+    font-family: Jost;
+    font-weight: 400 700;
+    src: url(${JostVariable}) format('woff2-variations');
     font-display: swap;
     font-style: normal;
   }
 
   @font-face {
-    font-family: Gotham;
-    font-weight: 400;
-    src: url(${GothamBookItalic}) format('woff2');
-    font-display: swap;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: Gotham;
-    font-weight: 500;
-    src: url(${GothamMedium}) format('woff2');
-    font-display: swap;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: Gotham;
-    font-weight: 500;
-    src: url(${GothamMediumItalic}) format('woff2');
-    font-display: swap;
-    font-style: italic;
-  }
-
-  @font-face {
-    font-family: Gotham;
-    font-weight: 700;
-    src: url(${GothamBold}) format('woff2');
-    font-display: swap;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: Gotham;
-    font-weight: 700;
-    src: url(${GothamBoldItalic}) format('woff2');
+    font-family: Jost;
+    font-weight: 400 700;
+    src: url(${JostVariableItalic}) format('woff2-variations');
     font-display: swap;
     font-style: italic;
   }

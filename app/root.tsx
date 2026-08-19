@@ -14,8 +14,7 @@ import type { LoaderFunctionArgs } from '@remix-run/node';
 import type { ThemeId } from '~/components/theme-provider';
 import { getSession, commitSession } from '~/utils/session.server';
 import { ThemeProvider, themeStyles } from '~/components/theme-provider';
-import GothamBook from '~/assets/fonts/gotham-book.woff2';
-import GothamMedium from '~/assets/fonts/gotham-medium.woff2';
+import JostVariable from '~/assets/fonts/jost-variable.woff2';
 
 import { Error } from '~/layouts/error';
 import type { RouteErrorLike } from '~/layouts/error/error';
@@ -30,16 +29,11 @@ import './reset.css';
 import './global.css';
 
 export const links = () => [
+  // One variable file covers every weight the site uses, so a single
+  // preload replaces the two the static Gotham cuts needed.
   {
     rel: 'preload',
-    href: GothamMedium,
-    as: 'font',
-    type: 'font/woff2',
-    crossOrigin: '',
-  },
-  {
-    rel: 'preload',
-    href: GothamBook,
+    href: JostVariable,
     as: 'font',
     type: 'font/woff2',
     crossOrigin: '',
