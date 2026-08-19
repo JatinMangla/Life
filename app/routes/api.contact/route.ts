@@ -12,6 +12,9 @@ const MAX_MESSAGE_LENGTH = 4096;
 const MAX_NAME_LENGTH = 100;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/** Without these the route cannot send anything. */
+const REQUIRED_ENV = ['GMAIL_USER', 'GMAIL_APP_PASSWORD'] as const;
+
 // Strip CR/LF so user input can never inject extra email headers.
 const stripNewlines = (value: string): string => value.replace(/[\r\n]+/g, ' ').trim();
 
@@ -143,7 +146,18 @@ export async function action({ request }: ActionFunctionArgs) {
     return json({ errors });
   }
 
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+  const missingEnv = REQUIRED_ENV.filter(key => !process.env[key]);
+
+  if (missingEnv.length > 0) {
+    // Names only, never values, and only to the server log. Without this the
+    // failure is indistinguishable from a broken mail server, and the only
+    // clue is a generic message in the browser.
+    console.error(
+      `[contact] missing environment variable(s): ${missingEnv.join(', ')}. ` +
+        'Set them for the Production environment in Vercel, then redeploy — ' +
+        'environment changes do not apply to existing deployments.'
+    );
+
     return json(
       { errors: { general: 'Server misconfiguration. Please try again later.' } },
       { status: 500 }
@@ -161,7 +175,18 @@ export async function action({ request }: ActionFunctionArgs) {
 
     return json({ success: true, name: senderName });
   } catch (err) {
-    console.error('Email send error:', err);
+    // Gmail rejects app passwords that have been revoked or belong to an
+    // account without 2FA; the code distinguishes that from a network fault.
+    const { code, responseCode, message } = (err ?? {}) as {
+      code?: string;
+      responseCode?: number;
+      message?: string;
+    };
+
+    console.error(
+      `[contact] send failed${code ? ` (${code})` : ''}` +
+        `${responseCode ? ` smtp ${responseCode}` : ''}: ${message ?? String(err)}`
+    );
     return json(
       { errors: { general: 'Failed to send message. Please try again.' } },
       { status: 500 }

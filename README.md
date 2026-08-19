@@ -33,6 +33,22 @@ npm run dev          # http://localhost:7777
 | `GMAIL_APP_PASSWORD` | for the contact form | Google app password (2FA → Security → App passwords), not the account password. |
 | `CONTACT_TO` | no | Where contact-form messages are delivered. Defaults to `GMAIL_USER`. |
 
+### Deploying
+
+The same variables must exist in Vercel under **Settings → Environment
+Variables**, ticked for the **Production** environment. Two things catch
+people out:
+
+- Environment changes only apply to *new* deployments. After adding or
+  editing a variable you have to redeploy — an existing deployment keeps the
+  values it was built with.
+- A variable added only to Preview or Development is invisible in
+  Production, which is indistinguishable from not adding it at all.
+
+If the contact form answers with "Server misconfiguration", the function log
+names the missing variable — look in **Deployments → the deployment →
+Functions**, or run `vercel logs <deployment-url>`.
+
 ## Scripts
 
 | Script | Description |

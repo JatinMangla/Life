@@ -155,6 +155,7 @@ describe('POST /api/contact', () => {
   });
 
   it('fails cleanly when the mail credentials are missing', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
     delete process.env.GMAIL_USER;
 
     const { status, data } = await callAction(post(valid));
@@ -162,5 +163,31 @@ describe('POST /api/contact', () => {
     expect(status).toBe(500);
     expect(data.errors?.general).toBeTruthy();
     expect(sendMail).not.toHaveBeenCalled();
+  });
+
+  it('logs which variable is missing, by name and never by value', async () => {
+    // A generic "Server misconfiguration" in the browser is indistinguishable
+    // from a broken mail server. The server log has to say which one.
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    delete process.env.GMAIL_APP_PASSWORD;
+    await callAction(post(valid));
+
+    const logged = error.mock.calls.flat().join(' ');
+
+    expect(logged).toContain('GMAIL_APP_PASSWORD');
+    expect(logged).not.toContain('app-password');
+  });
+
+  it('reports the message as failed when the transport throws', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    sendMail.mockRejectedValueOnce(
+      Object.assign(new Error('Invalid login'), { responseCode: 535 })
+    );
+
+    const { status, data } = await callAction(post(valid));
+
+    expect(status).toBe(500);
+    expect(data.errors?.general).toMatch(/failed to send/i);
   });
 });
