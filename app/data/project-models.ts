@@ -1,4 +1,4 @@
-import mmDashboard from '~/assets/mm-analytics-dashboard.png';
+import mmDashboard from '~/assets/mm-analytics-dashboard.webp';
 import mmDashboardPlaceholder from '~/assets/mm-analytics-dashboard-placeholder.jpg';
 import scPhoneDashboard from '~/assets/sc-phone-dashboard.jpg';
 import scPhoneDashboardPlaceholder from '~/assets/sc-phone-dashboard-placeholder.jpg';
