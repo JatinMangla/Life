@@ -1,4 +1,10 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+// @vitest-environment node
+//
+// This route only ever runs on the server, and the fetch polyfill Remix
+// installs is built for Node, not jsdom. Running it under jsdom made the
+// polyfilled Request.formData() fail in ways production never would.
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { installGlobals } from '@remix-run/node';
 import type { ActionFunctionArgs } from '@remix-run/node';
 import type { ContactActionData } from './route';
 
@@ -40,7 +46,35 @@ async function callAction(request: Request) {
   };
 }
 
+/**
+ * Run against the same globals production uses.
+ *
+ * Remix calls installGlobals() on the server, which swaps the native Response
+ * for @remix-run/web-fetch's. That implementation has no static `json`, so
+ * `Response.json(...)` — which this route used to call — is undefined and
+ * throws before any reply is sent. The endpoint 500'd on every request in
+ * production while passing every test here, because the test environment kept
+ * Node's native Response.
+ */
+beforeAll(() => {
+  installGlobals();
+});
+
 describe('POST /api/contact', () => {
+  it('runs under the production Response implementation', () => {
+    // If this ever fails, the polyfill has gained a static json() and the
+    // note above is out of date.
+    expect(typeof (Response as { json?: unknown }).json).toBe('undefined');
+  });
+
+  it('answers a GET with a plain message rather than throwing', async () => {
+    const { loader } = await import('./route');
+    const response = loader();
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toHaveProperty('message');
+  });
+
   beforeEach(() => {
     vi.resetModules();
     sendMail.mockReset().mockResolvedValue({ messageId: 'test' });

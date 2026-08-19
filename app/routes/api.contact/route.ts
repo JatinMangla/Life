@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { json } from '@remix-run/node';
 import type { ActionFunctionArgs } from '@remix-run/node';
 import type { Transporter } from 'nodemailer';
 
@@ -94,11 +95,11 @@ export interface ContactActionData {
 
 export async function action({ request }: ActionFunctionArgs) {
   if (!isSameOrigin(request)) {
-    return Response.json({ errors: { general: 'Invalid request origin.' } }, { status: 403 });
+    return json({ errors: { general: 'Invalid request origin.' } }, { status: 403 });
   }
 
   if (isRateLimited(getClientIp(request))) {
-    return Response.json(
+    return json(
       { errors: { general: 'Too many messages. Please try again later.' } },
       { status: 429 }
     );
@@ -112,7 +113,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const errors: ContactErrors = {};
 
   // Honeypot — silently succeed for bots
-  if (isBot) return Response.json({ success: true });
+  if (isBot) return json({ success: true });
 
   if (!senderName) {
     errors.name = 'Please enter your name.';
@@ -139,11 +140,11 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   if (Object.keys(errors).length > 0) {
-    return Response.json({ errors });
+    return json({ errors });
   }
 
   if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-    return Response.json(
+    return json(
       { errors: { general: 'Server misconfiguration. Please try again later.' } },
       { status: 500 }
     );
@@ -158,10 +159,10 @@ export async function action({ request }: ActionFunctionArgs) {
       replyTo: email,
     });
 
-    return Response.json({ success: true, name: senderName });
+    return json({ success: true, name: senderName });
   } catch (err) {
     console.error('Email send error:', err);
-    return Response.json(
+    return json(
       { errors: { general: 'Failed to send message. Please try again.' } },
       { status: 500 }
     );
@@ -170,5 +171,5 @@ export async function action({ request }: ActionFunctionArgs) {
 
 // A bare GET to /api/contact has nothing to render
 export function loader() {
-  return Response.json({ message: 'Contact endpoint. POST to send a message.' });
+  return json({ message: 'Contact endpoint. POST to send a message.' });
 }

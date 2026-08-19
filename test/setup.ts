@@ -38,27 +38,33 @@ export class MockIntersectionObserver implements IntersectionObserver {
   }
 }
 
-vi.stubGlobal('IntersectionObserver', MockIntersectionObserver);
+// Server-only suites opt into the node environment with an
+// `@vitest-environment node` docblock, and have no window to patch.
+const hasDom = typeof window !== 'undefined';
 
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: (query: string) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  }),
-});
+if (hasDom) {
+  vi.stubGlobal('IntersectionObserver', MockIntersectionObserver);
+
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: (query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }),
+  });
+}
 
 beforeEach(() => {
   MockIntersectionObserver.instances = [];
 });
 
 afterEach(() => {
-  cleanup();
+  if (hasDom) cleanup();
   vi.restoreAllMocks();
 });
