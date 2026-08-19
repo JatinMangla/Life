@@ -23,6 +23,7 @@ import { VisuallyHidden } from '~/components/visually-hidden';
 import { Navbar } from '~/layouts/navbar';
 import { Progress } from '~/components/progress';
 import config from '~/config.json';
+import { personSchema, websiteSchema } from '~/utils/structured-data';
 import styles from './root.module.css';
 import './reset.css';
 import './global.css';
@@ -110,6 +111,12 @@ export default function App() {
         <Meta />
         <Links />
         <link rel="canonical" href={canonicalUrl} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([personSchema(), websiteSchema()]),
+          }}
+        />
       </head>
       <body data-theme={theme}>
         <ThemeProvider theme={theme} toggleTheme={toggleTheme}>

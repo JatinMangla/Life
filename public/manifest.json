@@ -1,6 +1,7 @@
 {
   "short_name": "Jatin Mangla",
-  "name": "Frontend Developer Portfolio - Jatin Mangla",
+  "name": "Jatin Mangla — Frontend Developer",
+  "description": "Portfolio of Jatin Mangla, a frontend developer building fast, accessible React applications.",
   "icons": [
     {
       "src": "shortcut.png",
@@ -15,10 +16,18 @@
     {
       "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "theme_color": "#111111",
   "background_color": "#111111"
