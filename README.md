@@ -42,8 +42,8 @@ npm run dev          # http://localhost:7777
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm test` | Vitest run |
 | `npm run test:watch` | Vitest in watch mode |
+| `npm run test:e2e` | Playwright: axe accessibility audit + browser smoke tests |
 | `npm run build` | Production build |
-| `npm start` | Serve the production build |
 | `npm run dev:storybook` | Storybook on port 6006 |
 | `npm run build:storybook` | Static Storybook build |
 | `npm run deploy` | Build and deploy to Vercel production |
@@ -62,8 +62,16 @@ regression tests pinning down bugs that were found and fixed:
   CRLF from header-bound values, and rate limits
 - `baseMeta` emits a per-page `og:url` and no `undefined` values
 
-CI (`.github/workflows/ci.yml`) runs lint, typecheck, test and build on every
-push and pull request.
+Alongside the unit suite, `npm run test:e2e` drives a real browser: it runs
+[axe](https://github.com/dequelabs/axe-core) over every page at desktop and
+mobile widths against WCAG 2.1 AA, and asserts the keyboard skip link, the
+theme toggle and the social links all work. Sections reveal on scroll from
+`opacity: 0`, so the audit scrolls the page first — auditing without that
+reports every un-revealed section as a false contrast failure.
+
+CI (`.github/workflows/ci.yml`) runs lint, typecheck, unit tests and build on
+every push and pull request, the browser suite alongside it, and Lighthouse
+against the live site on pushes to `main`.
 
 ## Architecture
 

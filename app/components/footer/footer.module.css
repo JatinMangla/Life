@@ -33,3 +33,25 @@
     opacity: 0.8;
   }
 }
+
+@layer components {
+  .social {
+    flex-basis: 100%;
+    display: flex;
+    justify-content: center;
+    gap: var(--spaceL);
+    margin-bottom: var(--spaceL);
+  }
+
+  .socialLink {
+    display: inline-flex;
+    padding: var(--spaceXS);
+    color: var(--textLight);
+    transition: color var(--durationM) var(--bezierFastoutSlowin);
+
+    &:hover,
+    &:focus-visible {
+      color: var(--text);
+    }
+  }
+}

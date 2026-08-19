@@ -11,7 +11,6 @@
     "build": "remix vite:build",
     "dev": "node ./scripts/dev.cjs && remix vite:dev",
     "vercel-build": "remix vite:build",
-    "start": "remix-serve build",
     "lint": "eslint app .storybook --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "postinstall": "node ./scripts/draco.cjs",
@@ -19,7 +18,9 @@
     "dev:storybook": "storybook dev -p 6006",
     "build:storybook": "storybook build",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@mdx-js/react": "^3.0.1",
@@ -36,11 +37,12 @@
     "three-stdlib": "^2.29.4"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@csstools/postcss-global-data": "^2.1.1",
     "@mapbox/rehype-prism": "^0.9.0",
     "@mdx-js/rollup": "^3.0.1",
+    "@playwright/test": "^1.62.1",
     "@remix-run/dev": "^2.7.1",
-    "@remix-run/serve": "^2.17.5",
     "@storybook/addon-a11y": "^7.6.17",
     "@storybook/addon-essentials": "^7.6.17",
     "@storybook/addon-interactions": "^7.6.17",

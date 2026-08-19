@@ -152,7 +152,12 @@ export function ErrorBoundary() {
         <Links />
       </head>
       <body data-theme="dark">
-        <Error error={error as RouteErrorLike} />
+        {/* The error document is a full page in its own right, so it needs a
+            main landmark like any other — without one there is nothing for a
+            screen reader to jump to. */}
+        <main id="main-content" className={styles.container} tabIndex={-1}>
+          <Error error={error as RouteErrorLike} />
+        </main>
         <ScrollRestoration />
         <Scripts />
         <Analytics />
