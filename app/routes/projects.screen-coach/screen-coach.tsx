@@ -36,6 +36,8 @@ import { Fragment } from 'react';
 import { media } from '~/utils/style';
 import { baseMeta } from '~/utils/meta';
 import { getProject, projectPath } from '~/data/projects';
+import { ArchitectureDiagram } from '~/components/architecture-diagram';
+import styles from './screen-coach.module.css';
 
 const { title, description, roles, liveUrl } = getProject('screen-coach');
 
@@ -75,7 +77,7 @@ export function ScreenCoach() {
                 placeholder={scHowItWorksPlaceholder}
                 sizes={`(max-width: ${media.mobile}px) 100vw, 1000px`}
                 alt="Screen Coach application showing how the screen time monitoring works"
-                style={{ maxWidth: '100%' }}
+                className={styles.constrained} data-size="full"
               />
             </ProjectTextRow>
           </ProjectSectionContent>
@@ -102,7 +104,7 @@ export function ScreenCoach() {
                 placeholder={scChildDrivenPlaceholder}
                 alt="Screen Coach child-driven screen time management interface"
                 sizes="(max-width: 600px) 95vw, 400px"
-                style={{ maxWidth: '400px', width: '100%', height: 'auto' }}
+                className={styles.constrained} data-size="m"
               />
             </ProjectTextRow>
             <ProjectTextRow>
@@ -127,7 +129,7 @@ export function ScreenCoach() {
                 placeholder={scTamperproofPlaceholder}
                 alt="Screen Coach tamper-proof protection preventing children from bypassing screen time limits"
                 sizes="(max-width: 600px) 95vw, 400px"
-                style={{ maxWidth: '400px', width: '100%', height: 'auto' }}
+                className={styles.constrained} data-size="m"
               />
             </ProjectTextRow>
             <ProjectTextRow>
@@ -152,7 +154,7 @@ export function ScreenCoach() {
                 placeholder={scRewardsPlaceholder}
                 alt="Screen Coach rewards system encouraging positive screen time behavior"
                 sizes="(max-width: 600px) 95vw, 400px"
-                style={{ maxWidth: '400px', width: '100%', height: 'auto' }}
+                className={styles.constrained} data-size="m"
               />
             </ProjectTextRow>
             <ProjectTextRow>
@@ -176,7 +178,7 @@ export function ScreenCoach() {
                 placeholder={scReportPlaceholder}
                 alt="Screen Coach reporting dashboard showing screen time analytics"
                 sizes="(max-width: 600px) 95vw, 500px"
-                style={{ maxWidth: '500px', width: '100%', height: 'auto' }}
+                className={styles.constrained} data-size="l"
               />
             </ProjectTextRow>
             <ProjectTextRow>
@@ -204,7 +206,7 @@ export function ScreenCoach() {
         <ProjectSection>
           <ProjectSectionContent>
             <ProjectSectionColumns>
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
+              <div className={styles.centerColumn}>
                 <Image
                   raised
                   srcSet={`${scNagFree} 800w`}
@@ -213,10 +215,10 @@ export function ScreenCoach() {
                   placeholder={scNagFreePlaceholder}
                   alt="Screen Coach nag-free screen time monitoring"
                   sizes="(max-width: 600px) 45vw, 250px"
-                  style={{ maxWidth: '250px', width: '100%', height: 'auto' }}
+                  className={styles.constrained} data-size="s"
                 />
               </div>
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
+              <div className={styles.centerColumn}>
                 <Image
                   raised
                   srcSet={`${scFunFilled} 800w`}
@@ -225,7 +227,7 @@ export function ScreenCoach() {
                   placeholder={scFunFilledPlaceholder}
                   alt="Screen Coach fun-filled experience for children"
                   sizes="(max-width: 600px) 45vw, 250px"
-                  style={{ maxWidth: '250px', width: '100%', height: 'auto' }}
+                  className={styles.constrained} data-size="s"
                 />
               </div>
             </ProjectSectionColumns>
@@ -242,7 +244,7 @@ export function ScreenCoach() {
                 placeholder={scTeenPlaceholder}
                 alt="Screen Coach teen-focused screen time monitoring and parental controls"
                 sizes="(max-width: 600px) 95vw, 600px"
-                style={{ maxWidth: '600px', width: '100%', height: 'auto' }}
+                className={styles.constrained} data-size="xl"
               />
             </ProjectTextRow>
             <ProjectTextRow>
@@ -256,6 +258,36 @@ export function ScreenCoach() {
                 resource loading and debounced event handlers.
               </ProjectSectionText>
             </ProjectTextRow>
+            <ArchitectureDiagram
+              caption="Data path from a set-top device to the parent's dashboard."
+              layers={[
+                {
+                  name: 'Device',
+                  nodes: [
+                    { id: 'settop', label: 'Set-top box', detail: 'low memory' },
+                    { id: 'ui', label: 'Responsive UI', detail: 'vanilla JavaScript' },
+                  ],
+                },
+                {
+                  name: 'Transport',
+                  nodes: [{ id: 'rest', label: 'RESTful API', detail: 'usage events' }],
+                },
+                {
+                  name: 'Services',
+                  nodes: [
+                    { id: 'node', label: 'Node.js', detail: 'Express.js' },
+                    { id: 'sync', label: 'Sync layer', detail: 'device ↔ dashboard' },
+                  ],
+                },
+                {
+                  name: 'Storage',
+                  nodes: [
+                    { id: 'mongo', label: 'MongoDB', detail: 'screen-time records' },
+                    { id: 'analytics', label: 'Aggregation', detail: 'trends and reports' },
+                  ],
+                },
+              ]}
+            />
           </ProjectSectionContent>
         </ProjectSection>
         <ProjectSection>

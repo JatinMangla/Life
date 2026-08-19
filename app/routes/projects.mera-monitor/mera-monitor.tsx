@@ -40,6 +40,8 @@ import {
 import { baseMeta } from '~/utils/meta';
 import { media } from '~/utils/style';
 import { getProject, projectPath } from '~/data/projects';
+import { ArchitectureDiagram } from '~/components/architecture-diagram';
+import styles from './mera-monitor.module.css';
 import { metrics } from '~/data/experience';
 
 const { title, description, roles, liveUrl } = getProject('mera-monitor');
@@ -242,7 +244,7 @@ export const MeraMonitor = () => {
                 </ProjectSectionText>
               </ProjectTextRow>
             </ProjectSectionContent>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', maxWidth: '600px' }}>
+            <div className={styles.imagePair} data-narrow="true">
               <Image
                 raised
                 srcSet={`${mmEfficiency} 400w`}
@@ -281,7 +283,7 @@ export const MeraMonitor = () => {
                 </ProjectSectionText>
               </ProjectTextRow>
             </ProjectSectionContent>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className={styles.imagePair}>
               <Image
                 raised
                 srcSet={`${mmTimeClaim} 400w`}
@@ -302,6 +304,59 @@ export const MeraMonitor = () => {
               />
             </div>
           </ProjectSectionColumns>
+        </ProjectSection>
+        <ProjectSection>
+          <ProjectSectionContent>
+            <ProjectTextRow>
+              <ProjectSectionHeading>How the pieces fit together</ProjectSectionHeading>
+              <ProjectSectionText>
+                Four concerns, deliberately kept separate: what the user sees,
+                where state lives, how data arrives, and who the user is. Server
+                state sits in React Query rather than Redux, so cache
+                invalidation and refetching are not hand-rolled; Redux holds only
+                the client state that genuinely spans routes. Live monitoring
+                arrives over SignalR rather than polling, because the dashboard
+                shows activity as it happens.
+              </ProjectSectionText>
+            </ProjectTextRow>
+            <ArchitectureDiagram
+              caption="Frontend architecture: interface, state, transport and identity layers."
+              layers={[
+                {
+                  name: 'Interface',
+                  nodes: [
+                    { id: 'react', label: 'React.js', detail: 'views' },
+                    { id: 'apexcharts', label: 'ApexCharts', detail: 'metrics' },
+                    { id: 'react-table', label: 'React Table', detail: 'data grids' },
+                    { id: 'formik', label: 'Formik', detail: 'forms' },
+                    { id: 'scss', label: 'SCSS modules', detail: 'styling' },
+                  ],
+                },
+                {
+                  name: 'State',
+                  nodes: [
+                    { id: 'redux', label: 'Redux', detail: 'Thunk + Saga' },
+                    { id: 'react-query', label: 'React Query', detail: 'server cache' },
+                  ],
+                },
+                {
+                  name: 'Transport',
+                  nodes: [
+                    { id: 'rest', label: 'REST', detail: 'reads and writes' },
+                    { id: 'signalr', label: 'SignalR', detail: 'live activity' },
+                  ],
+                },
+                {
+                  name: 'Identity',
+                  nodes: [
+                    { id: 'msal', label: 'Microsoft MSAL', detail: 'enterprise SSO' },
+                    { id: 'google', label: 'Google OAuth', detail: 'SSO' },
+                    { id: 'jwt', label: 'JWT', detail: 'session' },
+                  ],
+                },
+              ]}
+            />
+          </ProjectSectionContent>
         </ProjectSection>
         <ProjectSection>
           <ProjectSectionContent>

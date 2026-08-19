@@ -1,0 +1,92 @@
+@layer components {
+  .figure {
+    margin: 0;
+    width: 100%;
+  }
+
+  .diagram {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spaceM);
+    padding: var(--spaceXL);
+    border: 1px solid color-mix(in lab, var(--text) 15%, transparent);
+    background: color-mix(in lab, var(--text) 3%, transparent);
+
+    @media (--mediaMobile) {
+      padding: var(--spaceL) var(--spaceM);
+    }
+  }
+
+  .layer {
+    display: grid;
+    grid-template-columns: 128px 1fr;
+    align-items: center;
+    gap: var(--spaceL);
+    padding-block: var(--spaceM);
+
+    /* The connecting rule between layers, in place of drawn arrows. */
+    & + & {
+      border-top: 1px solid color-mix(in lab, var(--text) 12%, transparent);
+    }
+
+    @media (--mediaMobile) {
+      grid-template-columns: 1fr;
+      gap: var(--spaceS);
+    }
+  }
+
+  .layerName {
+    font-size: var(--fontSizeBodyXS);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--textLight);
+  }
+
+  .nodes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spaceS);
+  }
+
+  .node {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--spaceS) var(--spaceM);
+    border: 1px solid color-mix(in lab, var(--accent) 45%, transparent);
+    background: color-mix(in lab, var(--accent) 8%, transparent);
+    min-width: 0;
+  }
+
+  .nodeLabel {
+    font-size: var(--fontSizeBodyS);
+    color: var(--textTitle);
+    font-weight: var(--fontWeightMedium);
+  }
+
+  .nodeDetail {
+    font-size: var(--fontSizeBodyXS);
+    color: var(--textLight);
+  }
+
+  .caption {
+    margin-top: var(--spaceM);
+    font-size: var(--fontSizeBodyXS);
+    color: var(--textLight);
+    text-align: center;
+  }
+
+  /* Available to screen readers, hidden visually — the diagram above is
+     aria-hidden and conveys nothing without sight. */
+  .textAlternative {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(100%);
+    white-space: nowrap;
+    border: 0;
+  }
+}

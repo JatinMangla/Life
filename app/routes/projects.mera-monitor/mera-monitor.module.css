@@ -1,0 +1,24 @@
+@layer layout {
+  /*
+   * Paired screenshots. Previously an inline `1fr 1fr` grid with no media
+   * query, so the pair stayed two-across on a 320px phone and each image
+   * rendered at ~140px wide.
+   */
+  .imagePair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spaceM);
+    width: 100%;
+
+    @media (--mediaMobile) {
+      grid-template-columns: 1fr;
+      gap: var(--spaceL);
+      max-width: 360px;
+      margin-inline: auto;
+    }
+  }
+
+  .imagePair[data-narrow='true'] {
+    max-width: 600px;
+  }
+}

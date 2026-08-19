@@ -2,7 +2,7 @@ import phoneTexture from '~/assets/sc-phone-dashboard.jpg';
 import phoneTexturePlaceholder from '~/assets/sc-phone-dashboard-placeholder.jpg';
 import phoneTexture2 from '~/assets/sc-phone-rewards.jpg';
 import phoneTexture2Placeholder from '~/assets/sc-phone-rewards-placeholder.jpg';
-import laptopTexture from '~/assets/mm-analytics-dashboard.png';
+import laptopTexture from '~/assets/mm-analytics-dashboard.webp';
 import { Model } from '~/components/model';
 import { StoryContainer } from '../../../.storybook/story-container';
 import { deviceModels } from './device-models';

@@ -84,3 +84,20 @@ pre {
     transform-origin: right;
   }
 }
+
+/*
+ * Safety net for anything that isn't already gated behind --mediaUseMotion.
+ * Durations are collapsed rather than set to 0 so transitionend still fires —
+ * several components (the Image placeholder cross-fade, the error page reveal)
+ * use it to unmount or clean up, and would otherwise stall.
+ */
+@media (--mediaReduceMotion) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}

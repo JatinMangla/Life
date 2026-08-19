@@ -46,6 +46,11 @@ jobs:
       - name: Verify Draco decoder was emitted
         run: test -f public/draco/draco_decoder.wasm
 
+      # Storybook has its own vite config and its own asset imports, so it can
+      # break independently of the app build — and did, silently, for a while.
+      - name: Build Storybook
+        run: npm run build:storybook
+
   e2e:
     name: Accessibility and browser tests
     runs-on: ubuntu-latest

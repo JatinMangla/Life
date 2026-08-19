@@ -1,0 +1,34 @@
+@layer layout {
+  /* Screenshots that should not stretch to the full column width. */
+  .constrained {
+    width: 100%;
+    height: auto;
+    margin-inline: auto;
+  }
+
+  .constrained[data-size='s'] {
+    max-width: 250px;
+  }
+
+  .constrained[data-size='m'] {
+    max-width: 400px;
+  }
+
+  .constrained[data-size='l'] {
+    max-width: 500px;
+  }
+
+  .constrained[data-size='xl'] {
+    max-width: 600px;
+  }
+
+  .constrained[data-size='full'] {
+    max-width: 100%;
+  }
+
+  .centerColumn {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+}
