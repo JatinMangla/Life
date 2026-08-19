@@ -24,6 +24,7 @@ import { Navbar } from '~/layouts/navbar';
 import { Progress } from '~/components/progress';
 import config from '~/config.json';
 import { personSchema, websiteSchema } from '~/utils/structured-data';
+import { Analytics } from '@vercel/analytics/remix';
 import styles from './root.module.css';
 import './reset.css';
 import './global.css';
@@ -136,6 +137,7 @@ export default function App() {
         </ThemeProvider>
         <ScrollRestoration />
         <Scripts />
+        <Analytics />
       </body>
     </html>
   );
@@ -159,6 +161,7 @@ export function ErrorBoundary() {
         <Error error={error as RouteErrorLike} />
         <ScrollRestoration />
         <Scripts />
+        <Analytics />
       </body>
     </html>
   );

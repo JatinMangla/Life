@@ -19,14 +19,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Matches engines.node in package.json and the Vercel function runtime.
+      # Node 20 is disabled on Vercel from 1 October 2026.
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: .nvmrc
           cache: npm
 
       # `npm ci` runs postinstall, which copies the Draco decoder into
-      # public/draco. If that breaks, every 3D model on the site breaks, so
-      # the build step below is what catches it.
+      # public/draco. If that breaks, every 3D model on the site breaks.
       - name: Install dependencies
         run: npm ci
 

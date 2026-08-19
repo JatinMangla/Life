@@ -25,6 +25,7 @@
     "@mdx-js/react": "^3.0.1",
     "@remix-run/node": "^2.15.3",
     "@remix-run/react": "^2.7.1",
+    "@vercel/analytics": "^2.0.1",
     "framer-motion": "11.0.5",
     "isbot": "^4.1.0",
     "nodemailer": "^6.9.13",
@@ -39,6 +40,7 @@
     "@mapbox/rehype-prism": "^0.9.0",
     "@mdx-js/rollup": "^3.0.1",
     "@remix-run/dev": "^2.7.1",
+    "@remix-run/serve": "^2.17.5",
     "@storybook/addon-a11y": "^7.6.17",
     "@storybook/addon-essentials": "^7.6.17",
     "@storybook/addon-interactions": "^7.6.17",
@@ -82,7 +84,7 @@
     "vitest": "^2.1.9"
   },
   "engines": {
-    "node": "20.x"
+    "node": "24.x"
   },
   "overrides": {
     "@remix-run/router": "1.22.0"
