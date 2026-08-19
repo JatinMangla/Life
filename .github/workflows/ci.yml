@@ -21,7 +21,7 @@ jobs:
 
       # Matches engines.node in package.json and the Vercel function runtime.
       # Node 20 is disabled on Vercel from 1 October 2026.
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -58,7 +58,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
