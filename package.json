@@ -10,7 +10,7 @@
   "scripts": {
     "build": "remix vite:build",
     "dev": "node ./scripts/dev.cjs && remix vite:dev",
-    "vercel-build": "remix vite:build",
+    "vercel-build": "node -v && remix vite:build",
     "lint": "eslint app .storybook --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "postinstall": "node ./scripts/draco.cjs",

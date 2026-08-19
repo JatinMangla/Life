@@ -48,8 +48,12 @@ npm run dev          # http://localhost:7777
 | `npm run build:storybook` | Static Storybook build |
 | `npm run deploy` | Build and deploy to Vercel production |
 
-Node 24 is required (`engines`, `.nvmrc`); Vercel disables Node 20 for new
-deployments on 1 October 2026.
+Node 24 is required. It is declared in three places that must agree:
+`engines.node` in package.json, `.nvmrc` for local dev, and CI reads the
+version from `.nvmrc`. On Vercel, `engines.node` overrides whatever the
+project dashboard has selected, and `vercel-build` prints `node -v` so the
+deployment log shows which version actually ran. Vercel disables Node 20 for
+new deployments on 1 October 2026.
 
 ## Testing
 
