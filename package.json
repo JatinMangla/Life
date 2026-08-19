@@ -17,7 +17,9 @@
     "postinstall": "node ./scripts/draco.cjs",
     "deploy": "npm run build && vercel --prod",
     "dev:storybook": "storybook dev -p 6006",
-    "build:storybook": "storybook build"
+    "build:storybook": "storybook build",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@mdx-js/react": "^3.0.1",
@@ -45,6 +47,9 @@
     "@storybook/react": "^7.6.17",
     "@storybook/react-vite": "^7.6.17",
     "@storybook/test": "^7.6.17",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.5",
     "@types/node": "^26.2.0",
     "@types/nodemailer": "^8.0.1",
     "@types/react": "^18.3.0",
@@ -53,6 +58,7 @@
     "@typescript-eslint/eslint-plugin": "^8.67.0",
     "@typescript-eslint/parser": "^8.67.0",
     "@vercel/remix": "^2.15.3",
+    "@vitest/coverage-v8": "^2.1.9",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^4.4.5",
@@ -61,6 +67,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-storybook": "^0.8.0",
+    "jsdom": "^25.0.1",
     "postcss": "^8.4.33",
     "postcss-custom-media": "^10.0.2",
     "rehype-img-size": "^1.0.1",
@@ -71,9 +78,13 @@
     "typescript": "^5.9.3",
     "vercel": "^54.12.2",
     "vite": "^5.1.0",
-    "vite-tsconfig-paths": "^6.1.1"
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^2.1.9"
   },
   "engines": {
     "node": "20.x"
+  },
+  "overrides": {
+    "@remix-run/router": "1.22.0"
   }
 }

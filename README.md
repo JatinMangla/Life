@@ -1,5 +1,7 @@
 # Personal portfolio
 
+[![CI](https://github.com/JatinMangla/Life/actions/workflows/ci.yml/badge.svg)](https://github.com/JatinMangla/Life/actions/workflows/ci.yml)
+
 Source for [life-puce-kappa.vercel.app](https://life-puce-kappa.vercel.app) — the
 portfolio site of Jatin Mangla, Frontend Developer.
 
@@ -36,11 +38,32 @@ npm run dev          # http://localhost:7777
 | Script | Description |
 | --- | --- |
 | `npm run dev` | Remix dev server on port 7777 |
+| `npm run lint` | ESLint, zero warnings tolerated |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm test` | Vitest run |
+| `npm run test:watch` | Vitest in watch mode |
 | `npm run build` | Production build |
 | `npm start` | Serve the production build |
 | `npm run dev:storybook` | Storybook on port 6006 |
 | `npm run build:storybook` | Static Storybook build |
 | `npm run deploy` | Build and deploy to Vercel production |
+
+## Testing
+
+`npm test` runs Vitest with Testing Library against jsdom. The suite is
+deliberately small and targeted rather than coverage-driven — most of it is
+regression tests pinning down bugs that were found and fixed:
+
+- `useWindowSize` returns `width`/`height` and never `undefined`
+- `useInViewport` builds one observer, not one per render
+- `Button` does not override a caller-supplied `rel` or `target`
+- `Input` puts `onInvalid` on the field, where a non-bubbling event can reach it
+- the contact endpoint rejects cross-origin posts, honours the honeypot, strips
+  CRLF from header-bound values, and rate limits
+- `baseMeta` emits a per-page `og:url` and no `undefined` values
+
+CI (`.github/workflows/ci.yml`) runs lint, typecheck, test and build on every
+push and pull request.
 
 ## Architecture
 
