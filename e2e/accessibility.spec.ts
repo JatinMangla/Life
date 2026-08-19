@@ -18,20 +18,55 @@ const pages = [
  * opacity over #111 reads as #252525. Scroll the page the way a reader would,
  * then let the transitions settle, so axe sees the final state.
  */
+/**
+ * The dev server can reload the page out from under an `evaluate` while it
+ * pre-bundles a newly discovered dependency. Global setup warms the routes to
+ * make that rare; this swallows the one-off if it still happens.
+ */
+async function scrollTolerantly<T>(
+  page: Page,
+  fn: () => T,
+  fallback: T
+): Promise<T> {
+  try {
+    return await page.evaluate(fn);
+  } catch {
+    await page.waitForTimeout(500);
+    try {
+      return await page.evaluate(fn);
+    } catch {
+      return fallback;
+    }
+  }
+}
+
+async function scrollTo(page: Page, y: number) {
+  try {
+    await page.evaluate(offset => window.scrollTo(0, offset), y);
+  } catch {
+    // Context went away mid-scroll; the next step will carry on.
+  }
+}
+
 async function revealPage(page: Page) {
   await page.locator('#main-content').waitFor({ state: 'attached' });
 
-  await page.evaluate(async () => {
-    const height = document.body.scrollHeight;
-    const steps = 6;
+  // Let hydration finish first. Stepping the scroll while Remix is still
+  // taking over the document destroys the evaluate context mid-call.
+  await page.waitForLoadState('load');
+  await page.waitForTimeout(500);
 
-    for (let i = 1; i <= steps; i += 1) {
-      window.scrollTo(0, (height / steps) * i);
-      await new Promise(resolve => setTimeout(resolve, 150));
-    }
+  const height = await scrollTolerantly(page, () => document.body.scrollHeight, 0);
+  const steps = 6;
 
-    window.scrollTo(0, 0);
-  });
+  // One short evaluate per step, driven from here rather than a single long
+  // in-page loop, so a transient context teardown costs one step, not the test.
+  for (let i = 1; i <= steps; i += 1) {
+    await scrollTo(page, (height / steps) * i);
+    await page.waitForTimeout(150);
+  }
+
+  await scrollTo(page, 0);
 
   // Longest reveal transition in the theme is 800ms, plus collapse delays.
   await page.waitForTimeout(1500);

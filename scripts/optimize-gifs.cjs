@@ -21,11 +21,25 @@ async function main() {
     const output = input.replace(/\.gif$/, '.webp');
     const before = fs.statSync(input).size;
 
-    await sharp(input, { animated: true, limitInputPixels: false })
+    if (fs.existsSync(output)) {
+      console.info(`  ${file}: ${path.basename(output)} already exists, skipping`);
+      continue;
+    }
+
+    await sharp(fs.readFileSync(input), { animated: true, limitInputPixels: false })
       .webp({ quality: 70, effort: 5 })
       .toFile(output);
 
     const after = fs.statSync(output).size;
+
+    // Small or already-efficient GIFs can come out larger as WebP. Keeping
+    // those would be a regression, so drop the output and leave the GIF.
+    if (after >= before) {
+      fs.unlinkSync(output);
+      console.info(`  ${file}: WebP was larger, keeping the GIF`);
+      continue;
+    }
+
     const saved = Math.round((1 - after / before) * 100);
     console.info(
       `  ${file} ${(before / 1024 / 1024).toFixed(2)}MB -> ` +

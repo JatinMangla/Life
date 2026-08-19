@@ -34,8 +34,9 @@ import {
 } from '~/layouts/project';
 import { Fragment } from 'react';
 import { media } from '~/utils/style';
-import { baseMeta } from '~/utils/meta';
-import { getProject, projectPath } from '~/data/projects';
+import { baseMeta, OG_IMAGE_SIZE } from '~/utils/meta';
+import config from '~/config.json';
+import { getProject, projectOgImage, projectPath } from '~/data/projects';
 import { ArchitectureDiagram } from '~/components/architecture-diagram';
 import styles from './screen-coach.module.css';
 
@@ -47,6 +48,10 @@ export const meta = () => {
     description,
     prefix: 'Projects',
     path: projectPath('screen-coach'),
+    ogImage: new URL(projectOgImage('screen-coach'), config.url).href,
+    ogImageAlt: `${title} — case study`,
+    ogImageSize: OG_IMAGE_SIZE,
+    ogType: 'article',
   });
 };
 

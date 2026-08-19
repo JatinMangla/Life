@@ -37,9 +37,10 @@ import {
   ProjectSectionText,
   ProjectTextRow,
 } from '~/layouts/project';
-import { baseMeta } from '~/utils/meta';
+import { baseMeta, OG_IMAGE_SIZE } from '~/utils/meta';
+import config from '~/config.json';
 import { media } from '~/utils/style';
-import { getProject, projectPath } from '~/data/projects';
+import { getProject, projectOgImage, projectPath } from '~/data/projects';
 import { ArchitectureDiagram } from '~/components/architecture-diagram';
 import styles from './mera-monitor.module.css';
 import { metrics } from '~/data/experience';
@@ -52,6 +53,10 @@ export const meta = () => {
     description,
     prefix: 'Projects',
     path: projectPath('mera-monitor'),
+    ogImage: new URL(projectOgImage('mera-monitor'), config.url).href,
+    ogImageAlt: `${title} — case study`,
+    ogImageSize: OG_IMAGE_SIZE,
+    ogType: 'article',
   });
 };
 

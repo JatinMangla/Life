@@ -48,6 +48,9 @@ npm run dev          # http://localhost:7777
 | `npm run build:storybook` | Static Storybook build |
 | `npm run deploy` | Build and deploy to Vercel production |
 
+Node 24 is required (`engines`, `.nvmrc`); Vercel disables Node 20 for new
+deployments on 1 October 2026.
+
 ## Testing
 
 `npm test` runs Vitest with Testing Library against jsdom. The suite is
@@ -72,6 +75,20 @@ reports every un-revealed section as a false contrast failure.
 CI (`.github/workflows/ci.yml`) runs lint, typecheck, unit tests and build on
 every push and pull request, the browser suite alongside it, and Lighthouse
 against the live site on pushes to `main`.
+
+## Asset scripts
+
+Run these by hand after adding new project imagery; they are not part of the
+build, so committed assets stay deterministic. All of them are idempotent —
+running one twice is a no-op rather than a second lossy re-encode.
+
+| Script | Purpose |
+| --- | --- |
+| `node scripts/placeholders.cjs` | Generate ~1KB blur-up placeholders for any project image missing one |
+| `node scripts/optimize-images.cjs` | Re-encode project screenshots as WebP |
+| `node scripts/optimize-gifs.cjs` | Re-encode animated GIFs as animated WebP, keeping the GIF if it wins |
+| `node scripts/resize-profile.cjs` | Resize the portrait to the widths its srcSet declares |
+| `node scripts/og-images.cjs` | Build a 1200x630 social preview per project |
 
 ## Architecture
 

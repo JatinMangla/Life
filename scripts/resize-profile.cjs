@@ -21,11 +21,18 @@ async function main() {
   for (const { source, output, width } of targets) {
     const input = path.join(ASSETS, source);
     const before = fs.statSync(input).size;
-
-    // Read into memory first: sharp keeps a handle on the source file, which
-    // blocks overwriting it in place on Windows.
     const sourceBuffer = fs.readFileSync(input);
+    const { width: currentWidth = 0 } = await sharp(sourceBuffer).metadata();
 
+    // Idempotent: JPEG is lossy, so re-encoding an already-resized file just
+    // loses quality. Running this script twice must be a no-op.
+    if (currentWidth <= width) {
+      console.info(`  ${output}: already ${currentWidth}px wide, skipping`);
+      continue;
+    }
+
+    // sharp keeps a handle on the source file, which blocks overwriting it
+    // in place on Windows — hence reading into memory above.
     const buffer = await sharp(sourceBuffer)
       .resize({ width, withoutEnlargement: true })
       .jpeg({ quality: 82, mozjpeg: true })
