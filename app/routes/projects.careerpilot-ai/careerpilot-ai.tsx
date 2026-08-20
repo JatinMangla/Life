@@ -1,4 +1,5 @@
-import { Footer } from '~/components/footer';
+import cpApp from '~/assets/cp-app.webp';
+import cpAppPlaceholder from '~/assets/cp-app-placeholder.jpg';
 import { Link } from '~/components/link';
 import { ArchitectureDiagram } from '~/components/architecture-diagram';
 import { FeatureGrid } from '~/components/feature-grid';
@@ -11,6 +12,7 @@ import {
   ProjectSectionHeading,
   ProjectSectionText,
   ProjectTextRow,
+  ProjectImage,
 } from '~/layouts/project';
 import { baseMeta, OG_IMAGE_SIZE } from '~/utils/meta';
 import { getProject, projectOgImage, projectPath } from '~/data/projects';
@@ -51,6 +53,15 @@ export const CareerPilotAi = () => {
 
         <ProjectSection padding="top">
           <ProjectSectionContent>
+            <ProjectImage
+              raised
+              srcSet={`${cpApp} 1200w`}
+              width={1200}
+              height={1000}
+              placeholder={cpAppPlaceholder}
+              sizes="(max-width: 696px) 100vw, 900px"
+              alt="CareerPilot AI sign-in screen, offering a six-digit login code by email with a password fallback."
+            />
             <ProjectTextRow>
               <ProjectSectionHeading>The idea</ProjectSectionHeading>
               <ProjectSectionText>
@@ -187,7 +198,6 @@ export const CareerPilotAi = () => {
           </ProjectSectionContent>
         </ProjectSection>
       </ProjectContainer>
-      <Footer />
     </>
   );
 };

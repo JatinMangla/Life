@@ -22,7 +22,6 @@ import mmHoursSaved from '~/assets/mm-hours-saved.webp';
 import mmPrivateMode from '~/assets/mm-private-mode.webp';
 import mmTimeClaim from '~/assets/mm-time-claim.webp';
 import mmHomeFeatured from '~/assets/mm-home-featured.webp';
-import { Footer } from '~/components/footer';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import {
@@ -389,7 +388,6 @@ export const MeraMonitor = () => {
           </ProjectSectionContent>
         </ProjectSection>
       </ProjectContainer>
-      <Footer />
     </>
   );
 };

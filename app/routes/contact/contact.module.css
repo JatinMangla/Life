@@ -4,10 +4,8 @@
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
-  grid-template-rows: 1fr auto;
-  grid-template-areas:
-    'form earth'
-    'footer footer';
+  grid-template-rows: 1fr;
+  grid-template-areas: 'form earth';
   align-items: center;
   column-gap: var(--spaceL);
   margin: 0;
@@ -21,8 +19,7 @@
     grid-template-columns: 100%;
     grid-template-areas:
       'form'
-      'earth'
-      'footer';
+      'earth';
     justify-items: center;
     column-gap: 0;
   }
@@ -411,13 +408,3 @@
   margin-right: var(--spaceS);
 }
 
-.footer {
-  position: relative;
-  z-index: 1;
-  padding-block: 0 var(--spaceL);
-  opacity: 0;
-
-  &:global {
-    animation: fade-in var(--durationL) ease var(--durationXL) forwards;
-  }
-}

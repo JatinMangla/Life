@@ -19,15 +19,15 @@ test('skip link is reachable by keyboard and lands on main', async ({ page }) =>
   await expect(page.locator('#main-content')).toBeAttached();
 });
 
-// Regression test: the navbar hides its social icons below 696px, and the
-// mobile nav that used to hold them was unreachable dead code. For a while a
-// phone visitor had no route to GitHub or LinkedIn at all.
+// Regression test. The navbar used to hide its social icons below 696px and
+// delegate them to a mobile nav sheet that has been unreachable since the
+// hamburger was removed, so phones had no route to either profile. The footer
+// covered it for a while; with the footer gone the navbar is the only route.
 test('social profiles are reachable at every width', async ({ page }) => {
   await page.goto('/');
-  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
 
-  await expect(page.getByRole('link', { name: /on Github$/ })).toBeVisible();
-  await expect(page.getByRole('link', { name: /on Linkedin$/ })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Github', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Linkedin', exact: true })).toBeVisible();
 });
 
 test('contact form reports validation errors without leaving the page', async ({ page }) => {

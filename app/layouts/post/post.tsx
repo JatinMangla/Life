@@ -1,5 +1,4 @@
 import { Divider } from '~/components/divider';
-import { Footer } from '~/components/footer';
 import { Heading } from '~/components/heading';
 import { Image } from '~/components/image';
 import { Section } from '~/components/section';
@@ -116,7 +115,6 @@ export const Post = ({ children, title, date, banner, timecode }: PostProps) => 
           {children}
         </Text>
       </Section>
-      <Footer />
     </article>
   );
 };

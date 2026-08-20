@@ -1,7 +1,6 @@
 import { Button } from '~/components/button';
 import { DecoderText } from '~/components/decoder-text';
 import { Divider } from '~/components/divider';
-import { Footer } from '~/components/footer';
 import { useHydrated } from '~/hooks/useHydrated';
 import { Heading } from '~/components/heading';
 import { Icon } from '~/components/icon';
@@ -221,7 +220,6 @@ export const Contact = () => {
           )}
         </div>
       </div>
-      <Footer className={styles.footer} />
     </Section>
   );
 };

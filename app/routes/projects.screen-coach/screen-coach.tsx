@@ -15,7 +15,6 @@ import scFunFilled from '~/assets/sc-fun-filled.webp';
 import scReport from '~/assets/sc-report.webp';
 import scTeen from '~/assets/sc-teen.webp';
 import { Button } from '~/components/button';
-import { Footer } from '~/components/footer';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import {
@@ -315,7 +314,6 @@ export function ScreenCoach() {
           </ProjectSectionContent>
         </ProjectSection>
       </ProjectContainer>
-      <Footer />
     </Fragment>
   );
 }

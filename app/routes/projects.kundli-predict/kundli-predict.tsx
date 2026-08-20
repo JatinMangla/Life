@@ -1,4 +1,5 @@
-import { Footer } from '~/components/footer';
+import kpApp from '~/assets/kp-app.webp';
+import kpAppPlaceholder from '~/assets/kp-app-placeholder.jpg';
 import { Link } from '~/components/link';
 import { ArchitectureDiagram } from '~/components/architecture-diagram';
 import { FeatureGrid } from '~/components/feature-grid';
@@ -11,6 +12,7 @@ import {
   ProjectSectionHeading,
   ProjectSectionText,
   ProjectTextRow,
+  ProjectImage,
 } from '~/layouts/project';
 import { baseMeta, OG_IMAGE_SIZE } from '~/utils/meta';
 import { getProject, projectOgImage, projectPath } from '~/data/projects';
@@ -51,6 +53,15 @@ export const KundliPredict = () => {
 
         <ProjectSection padding="top">
           <ProjectSectionContent>
+            <ProjectImage
+              raised
+              srcSet={`${kpApp} 1200w`}
+              width={1200}
+              height={1000}
+              placeholder={kpAppPlaceholder}
+              sizes="(max-width: 696px) 100vw, 900px"
+              alt="Kundli Predict sign-in screen, showing the bilingual English and Hindi subtitle and the owner-only Google sign-in."
+            />
             <ProjectTextRow>
               <ProjectSectionHeading>The idea</ProjectSectionHeading>
               <ProjectSectionText>
@@ -214,7 +225,6 @@ export const KundliPredict = () => {
           </ProjectSectionContent>
         </ProjectSection>
       </ProjectContainer>
-      <Footer />
     </>
   );
 };

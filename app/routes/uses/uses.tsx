@@ -3,7 +3,6 @@ import { useRef } from 'react';
 import type { ComponentType, CSSProperties, MouseEvent, ReactNode } from 'react';
 import usesBackgroundPlaceholder from '~/assets/uses-background-placeholder.jpg';
 import usesBackground from '~/assets/uses-background.mp4';
-import { Footer } from '~/components/footer';
 import { Link } from '~/components/link';
 import { Table, TableBody, TableCell, TableHeadCell, TableRow } from '~/components/table';
 import {
@@ -181,7 +180,6 @@ export const Uses = () => {
           </ProjectSectionContent>
         </ProjectSection>
       </ProjectContainer>
-      <Footer />
     </>
   );
 };

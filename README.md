@@ -10,11 +10,16 @@ Built with [Remix](https://remix.run) (SSR), [Vite](https://vitejs.dev),
 [Framer Motion](https://www.framer.com/motion/) for interaction, and CSS Modules
 over a token-based theme. Deployed on Vercel.
 
-## Credits
+## Licence and credits
 
-The visual design started from [Hamish Williams' open-source portfolio](https://github.com/HamishMW/portfolio)
-and was rebuilt from there — the case-study content, `/uses` page, contact
-pipeline, data layer and build tooling in this repo are my own.
+This project began as a fork of
+[Hamish Williams' portfolio](https://github.com/HamishMW/portfolio), which is
+MIT licensed. That licence requires the original copyright notice to be
+retained, so it lives in [LICENSE](./LICENSE) alongside mine.
+
+The case-study content, `/uses` page, contact pipeline, data layer, test suite
+and build tooling here are my own. The written content, imagery and CV are not
+licensed for reuse.
 
 ## Getting started
 
@@ -136,7 +141,3 @@ Notable pieces:
   bundle. It applies a same-origin check, a honeypot field, header-injection
   stripping and a per-instance rate limit.
 
-## Licence
-
-Code is available for reference. The written content, case studies, imagery and
-CV are not licensed for reuse.

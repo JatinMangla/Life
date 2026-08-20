@@ -1,4 +1,3 @@
-import { Footer } from '~/components/footer';
 import { baseMeta } from '~/utils/meta';
 import { Intro } from './intro';
 import { Profile } from './profile';
@@ -116,7 +115,6 @@ export const Home = () => {
         visible={visibleSections.has('details')}
         id="details"
       />
-      <Footer />
     </div>
   );
 };
