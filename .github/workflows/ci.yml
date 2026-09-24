@@ -192,9 +192,12 @@ jobs:
         if: steps.reach.outputs.ok == 'true'
         run: |
           export CHROME_PATH="$(node -p "require('playwright').chromium.executablePath()")"
+          # The bypass header alone. Lighthouse sends extra headers on every
+          # request, and adding x-vercel-set-bypass-cookie made Vercel answer
+          # each one with a cookie-setting redirect: ERR_TOO_MANY_REDIRECTS in
+          # the console cost Best Practices 7 points.
           headers=$(node -p "JSON.stringify(process.env.VERCEL_AUTOMATION_BYPASS_SECRET
-            ? { 'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_SECRET,
-                'x-vercel-set-bypass-cookie': 'true' }
+            ? { 'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_SECRET }
             : {})")
           # Vercel sends X-Robots-Tag: noindex on every preview, which alone
           # takes the SEO category from 1.0 to about 0.6. Skip that one audit on
