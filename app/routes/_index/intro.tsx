@@ -14,6 +14,7 @@ import { cssProps } from '~/utils/style';
 import config from '~/config.json';
 import { disciplines } from '~/data/skills';
 import { useHydrated } from '~/hooks/useHydrated';
+import { canUseWebGL } from '~/utils/webgl';
 import styles from './intro.module.css';
 
 const DisplacementSphere = lazy(() =>
@@ -81,7 +82,7 @@ export function Intro({ id, sectionRef, scrollIndicatorHidden, ...rest }: IntroP
           entrance on a theme change, and used to remount the sphere with it:
           a new WebGL context and shader compile on every toggle. The sphere's
           lighting already follows the theme by itself. */}
-      {isHydrated && (
+      {isHydrated && canUseWebGL() && (
         <DecorativeBoundary>
           <Suspense>
             <DisplacementSphere />

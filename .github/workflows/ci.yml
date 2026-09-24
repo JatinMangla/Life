@@ -103,41 +103,84 @@ jobs:
     # the deploy and measured the previous version.
     if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success'
     runs-on: ubuntu-latest
+    # A blocked or unreachable target used to leave every test waiting out its
+    # full timeout, with a retry each: hours of "in progress" instead of a red X.
+    timeout-minutes: 30
     env:
-      BASE_URL: ${{ github.event.deployment_status.environment_url || github.event.deployment_status.target_url }}
-      # Preview deployments sit behind Vercel Authentication. With a
-      # "Protection Bypass for Automation" secret saved under this name, the
-      # tests send it as a header; without one, previews will answer 401.
+      # Preview deployments sit behind Vercel Authentication. The tests send
+      # this "Protection Bypass for Automation" secret as a header.
       VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
 
     steps:
       - uses: actions/checkout@v4
 
+      # Production is tested at the public address visitors use (url in
+      # app/config.json). The URL in the deployment event is the unique
+      # per-deployment address, which Vercel protects even for production —
+      # and Lighthouse can't send the bypass header, so it would score a
+      # login page.
+      - name: Resolve the URL to test
+        run: |
+          if [ "${{ github.event.deployment_status.environment }}" = "Production" ]; then
+            target=$(node -p "require('./app/config.json').url")
+          else
+            target="${{ github.event.deployment_status.environment_url || github.event.deployment_status.target_url }}"
+          fi
+          echo "BASE_URL=${target%/}" >> "$GITHUB_ENV"
+          echo "Testing ${target%/}"
+
+      # Seconds, not hours: check the page is actually reachable first, and
+      # say why when it isn't.
+      - name: Check the deployment is reachable
+        id: reach
+        run: |
+          status=$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 \
+            -H "x-vercel-protection-bypass: ${VERCEL_AUTOMATION_BYPASS_SECRET}" "$BASE_URL/")
+          echo "HTTP $status from $BASE_URL/"
+          if [ "$status" = "200" ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "$status" = "401" ] || [ "$status" = "302" ] || [ "$status" = "403" ]; then
+            if [ -z "$VERCEL_AUTOMATION_BYPASS_SECRET" ]; then
+              echo "::warning title=Preview is protected::Skipping browser tests: add the Vercel 'Protection Bypass for Automation' secret as the repository secret VERCEL_AUTOMATION_BYPASS_SECRET (GitHub → Settings → Secrets and variables → Actions)."
+              echo "ok=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "::error title=Bypass secret rejected::Vercel answered $status even with VERCEL_AUTOMATION_BYPASS_SECRET set. Copy the secret again from Vercel → Settings → Deployment Protection → Protection Bypass for Automation, and check it is saved in GitHub with no spaces or line breaks."
+            exit 1
+          fi
+          echo "::error title=Deployment unreachable::$BASE_URL answered HTTP $status."
+          exit 1
+
       - uses: actions/setup-node@v4
+        if: steps.reach.outputs.ok == 'true'
         with:
           node-version-file: .nvmrc
           cache: npm
 
       - name: Install dependencies
+        if: steps.reach.outputs.ok == 'true'
         run: npm ci
 
       - name: Install Chromium
+        if: steps.reach.outputs.ok == 'true'
         run: npx playwright install --with-deps chromium
 
       - name: Run Playwright tests against ${{ env.BASE_URL }}
-        run: npm run test:e2e
+        if: steps.reach.outputs.ok == 'true'
+        run: npm run test:e2e -- --max-failures=5
 
       - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.reach.outputs.ok == 'true' }}
         with:
           name: playwright-report-deployed
           path: playwright-report
           retention-days: 7
 
-      # Production only: previews are behind authentication, and Lighthouse
-      # scores are only meaningful for what visitors actually get.
+      # Production only: scores are only meaningful for what visitors get.
       - name: Lighthouse
-        if: github.event.deployment_status.environment == 'Production'
+        if: steps.reach.outputs.ok == 'true' && github.event.deployment_status.environment == 'Production'
         uses: treosh/lighthouse-ci-action@v12
         with:
           urls: |

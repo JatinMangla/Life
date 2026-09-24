@@ -66,8 +66,18 @@ export const cleanMaterial = (material: Material): void => {
  * screen.
  */
 export const cleanRenderer = (renderer?: WebGLRenderer | null): void => {
-  renderer?.dispose();
-  renderer?.forceContextLoss();
+  if (!renderer) return;
+
+  renderer.dispose();
+
+  // Only once the canvas has actually left the page. React's StrictMode runs
+  // every effect's cleanup and setup twice in development on the *same*
+  // canvas, and a context lost here stays lost: the second renderer got it
+  // back dead and every scene failed. On a real unmount React has already
+  // removed the canvas by the time effect cleanup runs.
+  if (!renderer.domElement.isConnected) {
+    renderer.forceContextLoss();
+  }
 };
 
 /** Detach lights from their parent so the scene can be garbage collected. */

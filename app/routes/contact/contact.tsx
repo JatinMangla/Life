@@ -1,6 +1,7 @@
 import { Button } from '~/components/button';
 import { DecoderText } from '~/components/decoder-text';
 import { DecorativeBoundary } from '~/components/decorative-boundary';
+import { canUseWebGL } from '~/utils/webgl';
 import { Divider } from '~/components/divider';
 import { useHydrated } from '~/hooks/useHydrated';
 import { Heading } from '~/components/heading';
@@ -252,7 +253,7 @@ export const Contact = () => {
       </Transition>
       <div className={styles.earthColumn} aria-hidden>
         <div className={styles.globe}>
-          {isHydrated && (
+          {isHydrated && canUseWebGL() && (
             <DecorativeBoundary>
               <Suspense fallback={null}>
                 <ContactEarth />

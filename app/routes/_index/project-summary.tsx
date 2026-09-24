@@ -1,5 +1,6 @@
 import { Button } from '~/components/button';
 import { DecorativeBoundary } from '~/components/decorative-boundary';
+import { canUseWebGL } from '~/utils/webgl';
 import { Divider } from '~/components/divider';
 import { Heading } from '~/components/heading';
 import { deviceModels } from '~/components/model/device-models';
@@ -138,7 +139,7 @@ export function ProjectSummary({
   function renderPreview(visible: boolean) {
     // No device model means no honest product screenshot exists — the two
     // personal projects are auth-gated. Present them typographically instead.
-    if (!model || modelFailed) {
+    if (!model || modelFailed || (isHydrated && !canUseWebGL())) {
       return (
         <div className={styles.preview}>
           <div className={styles.posterWrapper}>

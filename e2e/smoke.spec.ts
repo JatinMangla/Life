@@ -31,7 +31,11 @@ test('the work history and a direct email are on the home page', async ({ page }
 test('/home is not a second copy of the homepage', async ({ page }) => {
   const response = await page.goto('/home');
 
-  expect(response?.status()).toBe(404);
+  // The app answers 404; on Vercel, vercel.json redirects it to / first.
+  // Either is fine — serving the homepage again at /home is not.
+  const redirectedHome = new URL(page.url()).pathname === '/';
+
+  expect(redirectedHome || response?.status() === 404).toBe(true);
 });
 
 test('skip link is reachable by keyboard and lands on main', async ({ page }) => {
