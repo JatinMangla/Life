@@ -14,9 +14,14 @@ permissions:
   contents: read
 
 # A new push to the same branch cancels the previous run.
+#
+# Deployment events carry an empty github.ref, so keyed on the ref alone every
+# deployment shared one group: a Dependabot preview deploy cancelled the
+# production run just before Lighthouse. Each deployment gets its own group,
+# and deployment runs are never cancelled — each one checks a different build.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.deployment.id || github.ref }}
+  cancel-in-progress: ${{ github.event_name != 'deployment_status' }}
 
 jobs:
   verify:
