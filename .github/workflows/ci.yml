@@ -183,16 +183,28 @@ jobs:
           path: playwright-report
           retention-days: 7
 
-      # Production only: scores are only meaningful for what visitors get.
+      # Run Lighthouse CI directly with the Chromium Playwright just installed
+      # and used. treosh/lighthouse-ci-action launched the runner's own Chrome,
+      # and every run from August on died at "collect" with no usable error.
+      # Runs on previews too — the bypass header gets it past Vercel's
+      # protection — so a pull request shows the scores before it is merged.
       - name: Lighthouse
-        if: steps.reach.outputs.ok == 'true' && github.event.deployment_status.environment == 'Production'
-        uses: treosh/lighthouse-ci-action@v12
-        with:
-          urls: |
-            ${{ env.BASE_URL }}/
-            ${{ env.BASE_URL }}/projects/personal-vault
-            ${{ env.BASE_URL }}/projects/mera-monitor
-            ${{ env.BASE_URL }}/contact
-          configPath: ./.lighthouserc.json
-          uploadArtifacts: true
-          temporaryPublicStorage: true
+        if: steps.reach.outputs.ok == 'true'
+        run: |
+          export CHROME_PATH="$(node -p "require('playwright').chromium.executablePath()")"
+          headers=$(node -p "JSON.stringify(process.env.VERCEL_AUTOMATION_BYPASS_SECRET
+            ? { 'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_SECRET,
+                'x-vercel-set-bypass-cookie': 'true' }
+            : {})")
+          npx --yes @lhci/cli@0.14.0 collect --config=.lighthouserc.json \
+            --url="$BASE_URL/" \
+            --url="$BASE_URL/projects/personal-vault" \
+            --url="$BASE_URL/projects/mera-monitor" \
+            --url="$BASE_URL/contact" \
+            --settings.extraHeaders="$headers"
+          npx --yes @lhci/cli@0.14.0 assert --config=.lighthouserc.json
+
+      # A shareable report link in the log, pass or fail.
+      - name: Upload Lighthouse report
+        if: ${{ !cancelled() && steps.reach.outputs.ok == 'true' }}
+        run: npx --yes @lhci/cli@0.14.0 upload --target=temporary-public-storage || true

@@ -44,8 +44,7 @@ worked through a four-phase improvement plan. Branch:
 - Model loader: parallel fetch, cancel on unmount, failures reach the boundary.
 - A11y: touch-visible video pause, persistent live region + focus on contact
   success, 24px+ mobile nav targets, `100svh`, reduced-motion delays, error page
-  heading, marquee duplicate hidden. Theme follows the OS via the
-  `Sec-CH-Prefers-Color-Scheme` client hint when no choice is saved.
+  heading, marquee duplicate hidden.
 
 **Phase 3 — SEO & content**
 - Titles "X case study | Jatin Mangla"; one canonical URL form
@@ -82,6 +81,13 @@ Remix 2 / React Router 6 line or `@vercel/remix`.
   same canvas; now only when the canvas has left the page. Added
   `canUseWebGL()` probe before starting scenes.
 - `scripts/serve-build.mjs` serves the production build locally for e2e.
+- Deployment CI runs no longer cancel each other (shared concurrency group).
+- Lighthouse now runs via `@lhci/cli` with Playwright's Chromium, on previews
+  too (bypass header), instead of `treosh/lighthouse-ci-action`, which kept
+  failing at "collect".
+- **Removed the OS-theme client hint.** Lighthouse showed `Critical-CH` made
+  Chrome fetch the page twice — ~0.7s on every first visit. The site loads
+  dark again; the `light` Playwright project toggles before auditing.
 - Owner completed: SESSION_SECRET (Vercel), bypass secret (GitHub), `.env`,
   résumé (`public/resume.pdf`, `config.resume`).
 
@@ -113,6 +119,10 @@ Remix 2 / React Router 6 line or `@vercel/remix`.
    `entry.server.tsx`, remove the static CSP in `vercel.json`).
 3. Tooling: ESLint 9 flat config, Vite 6 / Vitest 3, Storybook 8 (or drop
    Storybook — 14 stories, never deployed).
-4. Contact hardening (needs owner accounts): Cloudflare Turnstile, Upstash
+4. Contact page performance: Lighthouse shows ~2.9s total blocking time from
+   the 1MB earth.glb and its textures decoding on the main thread (performance
+   score ~0.45 there, a warning in CI). Options: KTX2/compressed textures, a
+   smaller model, or loading the globe on idle/in view.
+5. Contact hardening (needs owner accounts): Cloudflare Turnstile, Upstash
    rate limit (already used in two of the owner's projects), Resend instead of
    Gmail SMTP.
