@@ -199,12 +199,15 @@ jobs:
           headers=$(node -p "JSON.stringify(process.env.VERCEL_AUTOMATION_BYPASS_SECRET
             ? { 'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_SECRET }
             : {})")
-          # Vercel sends X-Robots-Tag: noindex on every preview, which alone
-          # takes the SEO category from 1.0 to about 0.6. Skip that one audit on
-          # previews only; on production it must pass.
+          # Two SEO audits can't pass on a protected preview, so they are
+          # skipped there and still enforced on production:
+          # - is-crawlable: Vercel sends X-Robots-Tag: noindex on every
+          #   preview, which alone takes SEO from 1.0 to about 0.6.
+          # - robots-txt: Lighthouse fetches robots.txt without the extra
+          #   headers, so on a preview it gets Vercel's login page instead.
           skip=()
           if [ "${{ github.event.deployment_status.environment }}" != "Production" ]; then
-            skip=(--settings.skipAudits=is-crawlable)
+            skip=(--settings.skipAudits=is-crawlable,robots-txt)
           fi
           npx --yes @lhci/cli@0.14.0 collect --config=.lighthouserc.json \
             --url="$BASE_URL/" \
