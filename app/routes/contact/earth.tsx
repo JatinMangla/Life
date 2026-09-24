@@ -19,9 +19,10 @@ import type { BufferGeometry, Group, Light, Mesh, MeshStandardMaterial } from 't
 import { cleanRenderer, cleanScene, modelLoader, removeLights, textureLoader } from '~/utils/three';
 import styles from './earth.module.css';
 
-// Slow ambient spin (radians per frame) — gentle enough to read as "alive"
-// without distracting from the contact form beside it.
-const ROTATION_SPEED = 0.0014;
+// Slow ambient spin in radians per second — gentle enough to read as "alive"
+// without distracting from the contact form beside it. Per second rather than
+// per frame, which spun twice as fast on a 120Hz display.
+const ROTATION_SPEED = 0.084;
 
 // How far back the camera sits — larger value = smaller globe within its box.
 const CAMERA_DISTANCE = 2.3;
@@ -85,6 +86,9 @@ export const ContactEarth = (props: ContactEarthProps) => {
 
     return () => {
       removeLights(lights.current);
+      // The environment map isn't attached to any mesh, so cleanScene's
+      // traversal never reaches it.
+      scene.current.environment?.dispose();
       cleanScene(scene.current);
       cleanRenderer(renderer.current);
     };
@@ -125,7 +129,8 @@ export const ContactEarth = (props: ContactEarthProps) => {
     };
 
     startTransition(() => {
-      load();
+      // A failed download just leaves the globe out; it's decoration.
+      load().catch(error => console.warn('[earth] globe failed to load:', error));
     });
 
     return () => {
@@ -148,10 +153,14 @@ export const ContactEarth = (props: ContactEarthProps) => {
   useEffect(() => {
     if (!renderer.current || !loaded) return;
     let animation: number;
+    let lastFrame = performance.now();
 
-    const animate = () => {
+    const animate = (now: number = performance.now()) => {
       animation = requestAnimationFrame(animate);
-      if (model.current) model.current.rotation.y += ROTATION_SPEED;
+      // Capped so the first frame after a hidden tab can't lurch.
+      const elapsed = Math.min(now - lastFrame, 100) / 1000;
+      lastFrame = now;
+      if (model.current) model.current.rotation.y += ROTATION_SPEED * elapsed;
       renderer.current.render(scene.current, camera.current);
     };
 

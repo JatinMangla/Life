@@ -1,5 +1,5 @@
 import { Cache, TextureLoader } from 'three';
-import type { Light, Material, Mesh, Object3D, Scene, WebGLRenderer } from 'three';
+import type { Light, Material, Mesh, Object3D, WebGLRenderer } from 'three';
 import { DRACOLoader, GLTFLoader } from 'three-stdlib';
 
 // Enable caching for all loaders
@@ -18,8 +18,8 @@ function isMesh(object: Object3D): object is Mesh {
   return (object as Mesh).isMesh === true;
 }
 
-/** Dispose of every geometry and material in a scene. */
-export const cleanScene = (scene?: Scene | null): void => {
+/** Dispose of every geometry and material in a scene, or any object tree. */
+export const cleanScene = (scene?: Object3D | null): void => {
   scene?.traverse(object => {
     if (!isMesh(object)) return;
 
@@ -56,9 +56,28 @@ export const cleanMaterial = (material: Material): void => {
   }
 };
 
-/** Dispose of a renderer's GPU resources. */
+/**
+ * Dispose of a renderer's GPU resources and release its WebGL context.
+ *
+ * dispose() alone frees buffers but leaves the context alive until garbage
+ * collection. Browsers cap live contexts (16 in Chrome) and silently kill the
+ * oldest when a page exceeds it, so a few home/project round trips, each
+ * mounting the sphere and device models, blanked whichever canvas was on
+ * screen.
+ */
 export const cleanRenderer = (renderer?: WebGLRenderer | null): void => {
-  renderer?.dispose();
+  if (!renderer) return;
+
+  renderer.dispose();
+
+  // Only once the canvas has actually left the page. React's StrictMode runs
+  // every effect's cleanup and setup twice in development on the *same*
+  // canvas, and a context lost here stays lost: the second renderer got it
+  // back dead and every scene failed. On a real unmount React has already
+  // removed the canvas by the time effect cleanup runs.
+  if (!renderer.domElement.isConnected) {
+    renderer.forceContextLoss();
+  }
 };
 
 /** Detach lights from their parent so the scene can be garbage collected. */

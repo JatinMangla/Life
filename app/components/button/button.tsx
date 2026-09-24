@@ -12,6 +12,17 @@ function isExternalLink(href?: string): boolean {
   return href?.includes('://') ?? false;
 }
 
+/**
+ * Hrefs the router must not handle: other origins, other schemes (`mailto:`,
+ * `tel:`) and static files like `/resume.pdf`. Client-side navigation to a
+ * file path renders the 404 route instead of downloading the file.
+ */
+function isDocumentLink(href: string): boolean {
+  const path = href.split(/[?#]/)[0] ?? '';
+
+  return isExternalLink(href) || /^[a-z][a-z\d+.-]*:/i.test(href) || /\.[a-z\d]+$/i.test(path);
+}
+
 export interface ButtonProps
   extends Omit<AllHTMLAttributes<HTMLElement>, 'as' | 'size' | 'type' | 'children'> {
   /** Override the rendered element. Inferred from `href` when omitted. */
@@ -36,7 +47,7 @@ export interface ButtonProps
  * a plain anchor with the right rel/target.
  */
 export const Button = forwardRef<HTMLElement, ButtonProps>(({ href, ...rest }, ref) => {
-  if (isExternalLink(href) || !href) {
+  if (!href || isDocumentLink(href)) {
     return <ButtonContent href={href} ref={ref} {...rest} />;
   }
 

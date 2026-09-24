@@ -3,8 +3,14 @@
   position: relative;
   transition: opacity 0.4s var(--bezierFastoutSlowin);
 
+  /*
+   * Dim rather than blank, and only after a beat: most navigations finish
+   * inside 300ms, and fading the whole page to nothing on every one read as a
+   * blank screen on slow connections.
+   */
   &[data-loading='true'] {
-    opacity: 0;
+    opacity: 0.6;
+    transition-delay: 0.3s;
   }
 }
 

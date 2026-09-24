@@ -27,16 +27,16 @@ function getMessage(error?: RouteErrorLike) {
       return {
         code: '405',
         summary: 'Method not allowed',
-        message: error.data || 'That request method isn’t supported on this route.',
+        // Not error.data: for a 405 Remix fills it with the internal route id
+        // (e.g. "routes/api.set-theme"), which is nobody's business.
+        message: 'That request method isn’t supported on this route.',
       };
     default:
       return {
         code: error?.status ? String(error.status) : 'Error',
         summary: 'Something went wrong',
-        message:
-          error?.statusText ||
-          error?.data ||
-          'An unexpected error occurred. Try again, or head back to the homepage.',
+        // Fixed copy rather than error.data, which can carry server detail.
+        message: 'An unexpected error occurred. Try again, or head back to the homepage.',
       };
   }
 }
@@ -54,6 +54,7 @@ export function Error({ error }: { error?: RouteErrorLike }) {
                 className={styles.title}
                 data-visible={visible}
                 level={0}
+                as="p"
                 weight="bold"
               >
                 {code}

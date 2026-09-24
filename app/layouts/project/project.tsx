@@ -7,6 +7,7 @@ import { Section } from '~/components/section';
 import { Text } from '~/components/text';
 import { tokens } from '~/components/theme-provider/theme';
 import { Transition } from '~/components/transition';
+import { ProjectReveal } from './project-reveal';
 import { useParallax } from '~/hooks';
 import { forwardRef, useRef } from 'react';
 import type { ElementType, HTMLAttributes, ReactNode, Ref } from 'react';
@@ -134,6 +135,8 @@ export interface ProjectSectionProps extends HTMLAttributes<HTMLElement> {
   fullHeight?: boolean;
   backgroundOverlayOpacity?: number;
   backgroundElement?: ReactNode;
+  /** Set false to opt out of the scroll-reveal entrance. */
+  reveal?: boolean;
   children?: ReactNode;
 }
 
@@ -146,6 +149,7 @@ export const ProjectSection = forwardRef<HTMLElement, ProjectSectionProps>(
       fullHeight,
       backgroundOverlayOpacity = 0.9,
       backgroundElement,
+      reveal = true,
       children,
       ...rest
     },
@@ -167,7 +171,7 @@ export const ProjectSection = forwardRef<HTMLElement, ProjectSectionProps>(
         </div>
       )}
       <Section className={styles.sectionInner} data-padding={padding}>
-        {children}
+        {reveal ? <ProjectReveal>{children}</ProjectReveal> : children}
       </Section>
     </section>
   )

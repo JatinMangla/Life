@@ -31,26 +31,14 @@ import {
 } from '~/layouts/project';
 import { Fragment } from 'react';
 import { media } from '~/utils/style';
-import { baseMeta, OG_IMAGE_SIZE } from '~/utils/meta';
-import config from '~/config.json';
-import { getProject, projectOgImage, projectPath } from '~/data/projects';
+import { projectMeta } from '~/utils/meta';
+import { getProject } from '~/data/projects';
 import { ArchitectureDiagram } from '~/components/architecture-diagram';
 import styles from './screen-coach.module.css';
 
 const { title, description, roles, liveUrl, stack, hue } = getProject('screen-coach');
 
-export const meta = () => {
-  return baseMeta({
-    title,
-    description,
-    prefix: 'Projects',
-    path: projectPath('screen-coach'),
-    ogImage: new URL(projectOgImage('screen-coach'), config.url).href,
-    ogImageAlt: `${title} — case study`,
-    ogImageSize: OG_IMAGE_SIZE,
-    ogType: 'article',
-  });
-};
+export const meta = () => projectMeta(getProject('screen-coach'));
 
 export function ScreenCoach() {
   return (
@@ -97,9 +85,9 @@ export function ScreenCoach() {
           <ProjectSectionContent>
             <ProjectTextRow center noMargin>
               <Image
-                srcSet={`${scChildDriven} 950w`}
-                width={950}
-                height={1920}
+                srcSet={`${scChildDriven} 520w`}
+                width={520}
+                height={1051}
                 placeholder={scChildDrivenPlaceholder}
                 alt="Screen Coach child-driven screen time management interface"
                 sizes="(max-width: 600px) 95vw, 400px"
@@ -134,8 +122,8 @@ export function ScreenCoach() {
             <ProjectTextRow>
               <ProjectSectionHeading>Tamper-Proof Protection</ProjectSectionHeading>
               <ProjectSectionText>
-                Implemented robust tamper-proof mechanisms to prevent children from
-                bypassing screen time limits. The system monitors device activity in
+                Implemented tamper-proofing that stops children bypassing screen time
+                limits. The system monitors device activity in
                 real-time and enforces time restrictions even across multiple apps,
                 ensuring the monitoring cannot be easily circumvented.
               </ProjectSectionText>
@@ -183,24 +171,13 @@ export function ScreenCoach() {
             <ProjectTextRow>
               <ProjectSectionHeading>Reporting & Analytics</ProjectSectionHeading>
               <ProjectSectionText>
-                Built comprehensive reporting dashboards that give parents detailed
-                insights into screen time usage across all devices. The dashboard
+                Built the reporting dashboards that show parents screen time across
+                all of a child&rsquo;s devices. The dashboard
                 shows daily and weekly trends, app-by-app breakdowns, and helps
                 parents make informed decisions about screen time limits.
               </ProjectSectionText>
             </ProjectTextRow>
           </ProjectSectionContent>
-        </ProjectSection>
-        <ProjectSection>
-          <ProjectTextRow>
-            <ProjectSectionHeading>Nag-Free & Fun-Filled Experience</ProjectSectionHeading>
-            <ProjectSectionText>
-              Screen Coach eliminates the constant nagging between parents and children
-              about screen time. The app provides a fun-filled, engaging experience
-              where kids take ownership of their screen time, while parents get peace
-              of mind knowing the system is working in the background.
-            </ProjectSectionText>
-          </ProjectTextRow>
         </ProjectSection>
         <ProjectSection>
           <ProjectSectionContent>
@@ -294,19 +271,18 @@ export function ScreenCoach() {
             <ProjectTextRow center centerMobile noMargin>
               <ProjectSectionHeading>Project Outcomes</ProjectSectionHeading>
               <ProjectSectionText>
-                Screen Coach successfully delivered a performant screen-time monitoring
-                solution for resource-constrained devices. The optimized JavaScript
+                Screen Coach shipped as a screen-time monitoring product that runs on
+                resource-constrained devices. The optimized JavaScript
                 frontend maintained smooth performance even on low-memory set-top boxes,
                 while the Node.js/MongoDB backend handled real-time data streaming
-                efficiently. Visit{' '}
-                <Link href="https://www.myscreencoach.com">myscreencoach.com</Link>{' '}
-                to learn more.
+                efficiently. The product is live at{' '}
+                <Link href={liveUrl}>myscreencoach.com</Link>.
               </ProjectSectionText>
               <Button
                 secondary
                 iconHoverShift
                 icon="chevron-right"
-                href="https://www.myscreencoach.com"
+                href={liveUrl}
               >
                 Visit Screen Coach
               </Button>

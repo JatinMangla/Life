@@ -2,7 +2,7 @@ import { Button } from '~/components/button';
 import { Icon } from '~/components/icon';
 import { useTheme } from '~/components/theme-provider';
 import { useReducedMotion } from 'framer-motion';
-import { useHasMounted, useInViewport } from '~/hooks';
+import { useHydrated, useInViewport } from '~/hooks';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import type { CSSProperties, MouseEvent, ReactNode } from 'react';
 import { resolveSrcFromSrcSet } from '~/utils/image';
@@ -30,6 +30,13 @@ export interface ImageProps {
   width?: number;
   height?: number;
   cover?: boolean;
+  /**
+   * The page's largest image. Rendered with its real source in the server
+   * HTML and fetched eagerly at high priority, instead of waiting for
+   * hydration and an IntersectionObserver callback before the request can
+   * even start.
+   */
+  priority?: boolean;
   /** Video only: whether the clip should be playing. */
   play?: boolean;
   restartOnPause?: boolean;
@@ -107,6 +114,7 @@ const ImageElements = ({
   height,
   noPauseButton,
   cover,
+  priority,
   ...rest
 }: ImageElementsProps) => {
   const reduceMotion = useReducedMotion();
@@ -115,10 +123,17 @@ const ImageElements = ({
   const [videoSrc, setVideoSrc] = useState<string>();
   const [videoInteracted, setVideoInteracted] = useState(false);
   const placeholderRef = useRef<HTMLImageElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const isVideo = getIsVideo(src);
-  const showFullRes = inViewport;
-  const hasMounted = useHasMounted();
+  const showFullRes = priority || inViewport;
+  const hasMounted = useHydrated();
+
+  // A priority image is in the server HTML, so it can finish loading before
+  // React attaches onLoad. Without this the placeholder would never fade.
+  useEffect(() => {
+    if (priority && imageRef.current?.complete) onLoad();
+  }, [priority, onLoad]);
 
   useEffect(() => {
     if (!isVideo) return;
@@ -222,8 +237,12 @@ const ImageElements = ({
           data-loaded={loaded}
           data-cover={cover}
           onLoad={onLoad}
-          decoding="async"
-          loading="lazy"
+          ref={imageRef}
+          decoding={priority ? 'sync' : 'async'}
+          loading={priority ? 'eager' : 'lazy'}
+          // Lowercase so React 18 passes it through as an attribute rather
+          // than warning about an unknown camelCase prop.
+          {...(priority ? { fetchpriority: 'high' } : {})}
           src={showFullRes ? src : undefined}
           srcSet={showFullRes ? srcSet : undefined}
           width={width}

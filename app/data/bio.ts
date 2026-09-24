@@ -1,13 +1,13 @@
-import { employer, metrics } from './experience';
+import { employer, metrics, yearsOfExperience } from './experience';
 
 /**
- * The About section copy. Kept out of profile.jsx so the figures come from
+ * The About section copy. Kept out of profile.tsx so the figures come from
  * `experience.ts` rather than being retyped into prose.
  */
 export const bio: readonly string[] = [
-  `I'm Jatin Mangla, a Frontend Developer with 4.5+ years of experience specializing in React.js, JavaScript and modern web tooling. At ${employer.name} I own the front-end architecture for SaaS products — driving component design, performance, and code quality for applications used by thousands of people.`,
+  `I'm Jatin Mangla, a frontend developer with ${yearsOfExperience()}+ years of professional experience in React, TypeScript and modern web tooling. At ${employer.name} I build the web app for Mera Monitor, a workforce-analytics product used by ${metrics.activeUsers.value} people — dashboards, reports, state management with Redux and React Query, and Microsoft/Google single sign-on.`,
 
-  `I've worked on live products with ${metrics.activeUsers.value} active users, implementing Redux (Thunk/Saga) for state management, lazy loading and code splitting for performance, and integrating Microsoft MSAL and Google OAuth for secure SSO. I also contribute to Node.js/MongoDB backends to deliver full-stack features.`,
+  `Outside work I build complete products end to end: an end-to-end-encrypted document vault with its own backup and monitoring stack, a remote MCP server that lets Claude query a workforce-analytics API over OAuth 2.1, an AI career copilot, and an offline-capable Vedic astrology engine. Each one is written up here with what went wrong as well as what worked.`,
 
-  `With experience across SCSS, Webpack, React Query, and real-time technologies like SignalR and WebSockets, I build responsive, accessible, SEO-friendly interfaces. I work in Agile/Scrum teams and care most about shipping things that stay maintainable after I've moved on.`,
+  `I care about interfaces that are fast, accessible and still maintainable after I've moved on — which in practice means typed data, measured performance, and tests that check the thing that actually broke last time.`,
 ] as const;

@@ -37,6 +37,10 @@ interface Char {
   value: string;
 }
 
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, char => `&#${char.charCodeAt(0)};`);
+}
+
 function shuffle(content: string[], output: Char[], position: number): Char[] {
   return content.map((value, index) => {
     if (index < position) {
@@ -74,7 +78,7 @@ export const DecoderText = memo(
 
       const renderOutput = () => {
         const characterMap = output.current.map(item => {
-          return `<span class="${styles[item.type]}">${item.value}</span>`;
+          return `<span class="${styles[item.type]}">${escapeHtml(item.value)}</span>`;
         });
 
         if (containerInstance) containerInstance.innerHTML = characterMap.join('');
@@ -107,7 +111,18 @@ export const DecoderText = memo(
     return (
       <span className={classes(styles.text, className)} {...rest}>
         <VisuallyHidden className={styles.label}>{text}</VisuallyHidden>
-        <span aria-hidden className={styles.content} ref={container} />
+        {/*
+          Seeded with the final text so the server HTML — and anyone for whom
+          the animation never runs — shows real words instead of an empty
+          span. Passed as HTML rather than children because the effect above
+          rewrites this node directly, and React must not reconcile over it.
+        */}
+        <span
+          aria-hidden
+          className={styles.content}
+          ref={container}
+          dangerouslySetInnerHTML={{ __html: escapeHtml(text) }}
+        />
       </span>
     );
   }

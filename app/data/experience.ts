@@ -9,6 +9,8 @@
 
 export interface Employer {
   readonly name: string;
+  /** For tight spaces like project-card labels. */
+  readonly shortName: string;
   readonly role: string;
   readonly startedAt: string;
   readonly location: string;
@@ -16,6 +18,7 @@ export interface Employer {
 
 export const employer: Employer = {
   name: 'AAPNA Infotech Pvt. Ltd',
+  shortName: 'AAPNA Infotech',
   role: 'Frontend Web Developer',
   startedAt: '2022-01',
   location: 'Delhi, India',
@@ -44,3 +47,52 @@ export const metrics = {
     method: 'Lighthouse, throttled 4G profile, measured before and after',
   },
 } as const;
+
+export interface TimelineEntry {
+  readonly organisation: string;
+  readonly role: string;
+  /** `YYYY-MM`. */
+  readonly startedAt: string;
+  /** `YYYY-MM`, or absent while ongoing. */
+  readonly endedAt?: string;
+  readonly location?: string;
+  readonly highlights: readonly string[];
+}
+
+/** The Experience section on the home page, most recent first. */
+export const timeline: readonly TimelineEntry[] = [
+  {
+    organisation: 'Independent projects',
+    role: 'Design, build and operate',
+    startedAt: '2026-07',
+    highlights: [
+      'An end-to-end-encrypted document vault with its own backup, restore-drill and health-monitoring stack, run for $0 a year on free tiers.',
+      'A remote MCP server that exposes a workforce-analytics API to Claude, with its own OAuth 2.1 authorization server, ported to serverless on Vercel.',
+      'An AI career copilot and an offline-capable Vedic astrology engine, both Next.js and TypeScript, both live on Vercel.',
+    ],
+  },
+  {
+    organisation: employer.name,
+    role: employer.role,
+    startedAt: employer.startedAt,
+    location: employer.location,
+    highlights: [
+      `Frontend for Mera Monitor, a workforce-analytics SaaS used by ${metrics.activeUsers.value} people: data-heavy dashboards and reports, Redux and React Query state, Microsoft and Google single sign-on.`,
+      `Cut initial load time by ${metrics.loadTimeReduction.value} with route-level code splitting and lazy-loaded chart libraries (${metrics.loadTimeReduction.method}).`,
+      'Frontend and Node.js/MongoDB APIs for Screen Coach, a parental screen-time app.',
+    ],
+  },
+];
+
+/** "Jan 2022", or "Present" for an open end date. */
+export function formatMonth(value: string | undefined): string {
+  if (!value) return 'Present';
+
+  const [year, month] = value.split('-').map(Number) as [number, number];
+
+  return new Date(Date.UTC(year, month - 1)).toLocaleString('en-GB', {
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}

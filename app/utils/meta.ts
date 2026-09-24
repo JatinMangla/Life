@@ -1,11 +1,14 @@
 import config from '~/config.json';
+import { projectOgImage, projectPath } from '~/data/projects';
+import { canonicalUrlFor } from '~/utils/url';
+import { caseStudySchema } from '~/utils/structured-data';
 
 const { name, url } = config;
 const defaultOgImage = `${url}/social-image.png`;
-// Actual pixel size of social-image.png. These were declared as 1280x800,
-// which did not match any image the site has ever served.
-const defaultOgImageSize = { width: 1200, height: 675 };
-/** Size of every image produced by scripts/og-images.cjs. */
+/**
+ * Size of every image produced by scripts/og-images.cjs and
+ * scripts/brand-assets.cjs, including the default social-image.png.
+ */
 export const OG_IMAGE_SIZE = { width: 1200, height: 630 };
 
 /**
@@ -15,11 +18,12 @@ export const OG_IMAGE_SIZE = { width: 1200, height: 630 };
  * canonical social URL, so a shared project link previews as the homepage.
  */
 export interface BaseMetaOptions {
-  /** Page-specific part of the title. */
+  /**
+   * Page-specific part of the title. My name is appended, so it survives
+   * search-result truncation on the one part that identifies the page.
+   */
   title: string;
   description: string;
-  /** Leading segment of the title; defaults to my name. */
-  prefix?: string;
   ogImage?: string;
   /** Describes the preview image; falls back to a generic site description. */
   ogImageAlt?: string;
@@ -34,15 +38,16 @@ export interface BaseMetaOptions {
 export function baseMeta({
   title,
   description,
-  prefix = name,
   ogImage = defaultOgImage,
   ogImageAlt,
-  ogImageSize = defaultOgImageSize,
+  ogImageSize = OG_IMAGE_SIZE,
   path = '/',
   ogType = 'website',
 }: BaseMetaOptions) {
-  const titleText = [prefix, title].filter(Boolean).join(' | ');
-  const pageUrl = new URL(path, url).href;
+  // "Projects | Mera Monitor — Employee Productivity Platform" put the
+  // generic word first and pushed my name out of the result entirely.
+  const titleText = title === name ? name : `${title} | ${name}`;
+  const pageUrl = canonicalUrlFor(path);
 
   return [
     { title: titleText },
@@ -61,5 +66,41 @@ export function baseMeta({
     { name: 'twitter:description', content: description },
     { name: 'twitter:title', content: titleText },
     { name: 'twitter:image', content: ogImage },
+  ];
+}
+
+/** Title for a case-study page: short enough to survive in search results. */
+export const projectMetaTitle = (shortTitle: string) => `${shortTitle} case study`;
+
+interface ProjectMetaSource {
+  readonly slug: string;
+  readonly title: string;
+  readonly shortTitle: string;
+  readonly description: string;
+  readonly stack: readonly string[];
+  readonly updatedAt: string;
+  readonly liveUrl?: string;
+  readonly repoUrl?: string;
+}
+
+/**
+ * The full meta set for a case study: its own URL and preview card, plus
+ * CreativeWork structured data attributed to me.
+ */
+export function projectMeta(project: ProjectMetaSource) {
+  const { slug, title, shortTitle, description } = project;
+  const path = projectPath(slug);
+  const ogImage = new URL(projectOgImage(slug), url).href;
+
+  return [
+    ...baseMeta({
+      title: projectMetaTitle(shortTitle),
+      description,
+      path,
+      ogImage,
+      ogImageAlt: `${title} — case study`,
+      ogType: 'article',
+    }),
+    { 'script:ld+json': caseStudySchema(project, canonicalUrlFor(path), ogImage) },
   ];
 }

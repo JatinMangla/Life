@@ -22,6 +22,18 @@ updates:
         update-types: [version-update:semver-major]
       - dependency-name: '@types/react-dom'
         update-types: [version-update:semver-major]
+      # React 19 needs React Router 7; Remix 2 targets React 18. A react-dom
+      # major bump arrived without react itself, which cannot work.
+      - dependency-name: react
+        update-types: [version-update:semver-major]
+      - dependency-name: react-dom
+        update-types: [version-update:semver-major]
+      # three is 0.x: its "minor" releases routinely break the API, so they
+      # are not the safe grouped bump the minor-and-patch group assumes.
+      - dependency-name: three
+        update-types: [version-update:semver-minor]
+      - dependency-name: '@types/three'
+        update-types: [version-update:semver-minor]
 
   - package-ecosystem: github-actions
     directory: /

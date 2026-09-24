@@ -12,3 +12,5 @@ export {
 } from './project';
 export { ProjectAtmosphere } from './project-atmosphere';
 export type { ProjectAtmosphereProps } from './project-atmosphere';
+export { ProjectReveal } from './project-reveal';
+export type { ProjectRevealProps } from './project-reveal';

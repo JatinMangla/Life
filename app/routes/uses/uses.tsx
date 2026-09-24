@@ -22,7 +22,7 @@ export const meta = () => {
     title: 'Tech Stack',
     path: '/uses',
     description:
-      'A list of tools, frameworks, and technologies I use to build modern web applications',
+      'The tools, frameworks and infrastructure I build with — React, TypeScript, Next.js, Node.js, the Gemini API, MCP and more.',
   });
 };
 
@@ -44,31 +44,30 @@ const categories: Category[] = [
     label: 'Frontend',
     accent: '202.24',
     icon: MonitorIcon,
-    intro: 'Crafting fast, accessible, pixel-perfect interfaces.',
+    intro: 'Fast, accessible interfaces for data-heavy products.',
     items: [
       <>
-        <Link href="https://reactjs.org/">React.js</Link> is my primary framework for
-        building interactive UIs, paired with{' '}
-        <Link href="https://www.typescriptlang.org/">TypeScript</Link> for type safety and
-        a sharper developer experience.
+        <Link href="https://react.dev/">React</Link> and{' '}
+        <Link href="https://www.typescriptlang.org/">TypeScript</Link> everywhere, with{' '}
+        <Link href="https://nextjs.org/">Next.js</Link> or{' '}
+        <Link href="https://remix.run/">Remix</Link> when a project needs a server.
       </>,
       <>
-        State managed with <Link href="https://redux.js.org/">Redux</Link> (Thunk + Saga)
-        and <Link href="https://tanstack.com/query">React Query</Link> for server-state
-        synchronization.
+        Client state in <Link href="https://redux.js.org/">Redux</Link> (Thunk + Saga) only
+        where it genuinely spans routes; server state in{' '}
+        <Link href="https://tanstack.com/query">React Query</Link>.
       </>,
       <>
-        Styling with SCSS modules, Tailwind CSS, and Material UI &mdash; always responsive,
-        cross-browser, and accessible.
+        CSS modules, SCSS and Tailwind CSS, with design tokens and cascade layers rather than
+        one-off overrides.
       </>,
       <>
-        Data-heavy UIs built with React Table, ApexCharts, Formik, and list
-        virtualization for buttery-smooth performance.
+        Data-heavy views with React Table, ApexCharts, Formik and list virtualisation, so
+        large grids stay responsive.
       </>,
       <>
-        Scroll-driven motion and micro-interactions with{' '}
-        <Link href="https://www.framer.com/motion/">Framer Motion</Link> to make every
-        transition feel intentional.
+        Motion with <Link href="https://www.framer.com/motion/">Framer Motion</Link> and
+        three.js, respecting reduced-motion preferences.
       </>,
     ],
   },
@@ -77,50 +76,72 @@ const categories: Category[] = [
     label: 'Backend & APIs',
     accent: '150',
     icon: ServerIcon,
-    intro: 'Robust services that scale under real-world load.',
+    intro: 'Serverless where it fits, a real process where it doesn’t.',
     items: [
       <>
-        <Link href="https://nodejs.org/">Node.js</Link> with{' '}
-        <Link href="https://expressjs.com/">Express.js</Link> for RESTful APIs and
-        server-side logic.
+        <Link href="https://nodejs.org/">Node.js</Link> route handlers and Express APIs, most
+        often deployed as Vercel functions.
       </>,
       <>
-        <Link href="https://www.mongodb.com/">MongoDB</Link> with Mongoose, PostgreSQL for
-        relational data, and Firebase for real-time features.
+        <Link href="https://supabase.com/">Supabase</Link> Postgres with row-level security,
+        MongoDB, and Upstash Redis for state that has to outlive a function instance.
       </>,
       <>
-        Real-time communication via SignalR, WebSockets, and GraphQL, secured with JWT
-        authentication.
+        Real-time updates over SignalR; mail over IMAP with a cursor that can&rsquo;t skip
+        messages.
       </>,
       <>
-        Enterprise SSO with Microsoft MSAL and Google OAuth, shipped to production
-        applications.
+        Authentication from Microsoft MSAL and Google OAuth in production to a
+        self-hosted OAuth 2.1 authorization server with PKCE.
+      </>,
+    ],
+  },
+  {
+    id: 'ai-infra',
+    label: 'AI & Infrastructure',
+    accent: '295',
+    icon: SparkIcon,
+    intro: 'Language models behind guard rails, on infrastructure I can afford to run.',
+    items: [
+      <>
+        The <Link href="https://ai.google.dev/">Gemini API</Link> with schema-enforced JSON,
+        streaming, response caching and concurrency limits sized to a free-tier quota.
+      </>,
+      <>
+        Remote <Link href="https://modelcontextprotocol.io/">MCP</Link> servers that expose
+        real APIs to Claude, with the limits enforced in the tools rather than the prompt.
+      </>,
+      <>
+        Client-side encryption with the Web Crypto API: AES-GCM, PBKDF2, non-extractable
+        keys.
+      </>,
+      <>
+        Oracle Cloud VMs configured with Ansible, restic backups with restore drills, and
+        Tailscale instead of open ports.
       </>,
     ],
   },
   {
     id: 'tools',
-    label: 'Development Tools',
+    label: 'Testing & Tooling',
     accent: '60',
     icon: WrenchIcon,
-    intro: 'The workbench that keeps shipping smooth.',
+    intro: 'Tests that check the thing that actually broke last time.',
     items: [
       <>
-        <Link href="https://code.visualstudio.com/">VS Code</Link> with ESLint, Prettier,
-        and SonarQube guarding code quality.
+        <Link href="https://vitest.dev/">Vitest</Link> and Testing Library for units,{' '}
+        <Link href="https://playwright.dev/">Playwright</Link> with axe-core for end-to-end
+        and accessibility checks.
       </>,
       <>
-        <Link href="https://vitejs.dev/">Vite</Link>, Webpack, and Babel for bundling;
-        PM2 and Nodemon for server management.
+        GitHub Actions running lint, type checks, tests and builds on every push;
+        Lighthouse against deployed previews.
       </>,
       <>
-        Git, GitHub, and GitLab for version control. Postman for API testing, Vercel for
-        deployment.
+        <Link href="https://vitejs.dev/">Vite</Link> and Webpack for bundling; ESLint and
+        Prettier for consistency.
       </>,
-      <>
-        <Link href="https://jestjs.io/">Jest</Link> for unit testing and Storybook for
-        building UI components in isolation.
-      </>,
+      <>Git and GitHub, Postman for API work, and Vercel for deployment.</>,
     ],
   },
 ];
@@ -137,7 +158,7 @@ export const Uses = () => {
         />
         <ProjectHeader
           title="Tech Stack"
-          description="The tools, frameworks, and technologies I reach for every day to build high-performance, delightful web applications — from React on the frontend to Node.js and databases on the backend."
+          description="What I build with day to day, and on the projects written up on this site — from React interfaces to serverless APIs, language-model integrations and the infrastructure under them."
         />
 
         <ProjectSection padding="none" className={styles.marqueeSection}>
@@ -221,7 +242,7 @@ function TiltCard({ category, index }: TiltCardProps) {
       className={styles.card}
       style={
         {
-          '--accent': accent,
+          '--cardHue': accent,
           rotateX: reduceMotion ? 0 : rotateX,
           rotateY: reduceMotion ? 0 : rotateY,
         } as CSSProperties
@@ -269,7 +290,13 @@ function Marquee({ tags }: MarqueeProps) {
     <div className={styles.marquee} data-static={reduceMotion || undefined}>
       <div className={styles.marqueeTrack}>
         {row.map((tag, i) => (
-          <span className={styles.tag} key={`${tag}-${i}`}>
+          // The second copy only exists to make the loop seamless; screen
+          // readers should hear each tag once.
+          <span
+            className={styles.tag}
+            key={`${tag}-${i}`}
+            aria-hidden={i >= tags.length || undefined}
+          >
             <span className={styles.tagDot} aria-hidden />
             {tag}
           </span>
@@ -280,6 +307,27 @@ function Marquee({ tags }: MarqueeProps) {
 }
 
 /* --- Inline category icons (stroke-based, inherit currentColor) --- */
+
+function SparkIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden focusable="false">
+      <path
+        d="M12 3.5l2.1 5.4 5.4 2.1-5.4 2.1L12 18.5l-2.1-5.4L4.5 11l5.4-2.1L12 3.5Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M18.5 16.5v4M16.5 18.5h4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
 
 function MonitorIcon() {
   return (

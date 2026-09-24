@@ -190,4 +190,27 @@ describe('POST /api/contact', () => {
     expect(status).toBe(500);
     expect(data.errors?.general).toMatch(/failed to send/i);
   });
+
+  it.each(['ada@example.com,evil@example.com', '"Ada" <evil@example.com>', 'a;b@example.com'])(
+    'rejects %s, which the mailer would re-parse into another address',
+    async email => {
+      const { data } = await callAction(post({ ...valid, email }));
+
+      expect(data.errors?.email).toBeTruthy();
+      expect(sendMail).not.toHaveBeenCalled();
+    }
+  );
+
+  it('answers a non-form body with a 400 rather than throwing', async () => {
+    const request = new Request(`${ORIGIN}/api/contact`, {
+      method: 'POST',
+      body: JSON.stringify(valid),
+      headers: { host: 'example.test', origin: ORIGIN, 'content-type': 'application/json' },
+    });
+
+    const { status } = await callAction(request);
+
+    expect(status).toBe(400);
+    expect(sendMail).not.toHaveBeenCalled();
+  });
 });

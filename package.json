@@ -9,7 +9,7 @@
   "type": "module",
   "scripts": {
     "build": "remix vite:build",
-    "dev": "node ./scripts/dev.cjs && remix vite:dev",
+    "dev": "remix vite:dev",
     "vercel-build": "node -v && remix vite:build",
     "lint": "eslint app .storybook --max-warnings=0",
     "typecheck": "tsc --noEmit",
@@ -23,24 +23,20 @@
     "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
-    "@mdx-js/react": "^3.0.1",
     "@remix-run/node": "^2.15.3",
     "@remix-run/react": "^2.7.1",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/remix": "^2.15.3",
     "framer-motion": "11.0.5",
-    "isbot": "^4.1.0",
-    "nodemailer": "^6.9.13",
+    "nodemailer": "^10.0.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "rehype-slug": "^6.0.0",
     "three": "^0.161.0",
     "three-stdlib": "^2.29.4"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
     "@csstools/postcss-global-data": "^2.1.1",
-    "@mapbox/rehype-prism": "^0.9.0",
-    "@mdx-js/rollup": "^3.0.1",
     "@playwright/test": "^1.62.1",
     "@remix-run/dev": "^2.7.1",
     "@storybook/addon-a11y": "^7.6.17",
@@ -55,13 +51,12 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.5",
     "@types/node": "^26.2.0",
-    "@types/nodemailer": "^8.0.1",
+    "@types/nodemailer": "^8.0.2",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
-    "@types/three": "^0.185.4",
+    "@types/three": "^0.161.2",
     "@typescript-eslint/eslint-plugin": "^8.67.0",
     "@typescript-eslint/parser": "^8.67.0",
-    "@vercel/remix": "^2.15.3",
     "@vitest/coverage-v8": "^2.1.9",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
@@ -74,9 +69,6 @@
     "jsdom": "^25.0.1",
     "postcss": "^8.4.33",
     "postcss-custom-media": "^10.0.2",
-    "rehype-img-size": "^1.0.1",
-    "remark-frontmatter": "^5.0.0",
-    "remark-mdx-frontmatter": "^4.0.0",
     "sharp": "^0.35.3",
     "storybook": "^7.6.17",
     "typescript": "^5.9.3",
@@ -87,8 +79,5 @@
   },
   "engines": {
     "node": "24.x"
-  },
-  "overrides": {
-    "@remix-run/router": "1.22.0"
   }
 }

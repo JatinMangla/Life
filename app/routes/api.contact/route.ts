@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import { json } from '@remix-run/node';
 import type { ActionFunctionArgs } from '@remix-run/node';
 import type { Transporter } from 'nodemailer';
+import { getClientIp, isSameOrigin, readFormData } from '~/utils/request.server';
 
 // Resource route: handles contact-form submissions on the server only.
 // It has no default (component) export, so Remix never builds a client bundle
@@ -10,7 +11,10 @@ import type { Transporter } from 'nodemailer';
 const MAX_EMAIL_LENGTH = 512;
 const MAX_MESSAGE_LENGTH = 4096;
 const MAX_NAME_LENGTH = 100;
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Deliberately loose on structure, strict on the characters nodemailer's
+// address parser treats as syntax: `a@b.c,evil@x.y` or `"x" <evil@x.y>` would
+// otherwise be re-parsed into a different Reply-To than the one validated.
+const EMAIL_PATTERN = /^[^\s@<>,;"()]+@[^\s@<>,;"()]+\.[^\s@<>,;"()]+$/;
 
 /** Without these the route cannot send anything. */
 const REQUIRED_ENV = ['GMAIL_USER', 'GMAIL_APP_PASSWORD'] as const;
@@ -18,15 +22,14 @@ const REQUIRED_ENV = ['GMAIL_USER', 'GMAIL_APP_PASSWORD'] as const;
 // Strip CR/LF so user input can never inject extra email headers.
 const stripNewlines = (value: string): string => value.replace(/[\r\n]+/g, ' ').trim();
 
-// Reuse a single pooled SMTP transport across (warm) invocations instead of
-// opening a fresh connection on every submission.
+// One transport per warm instance. Not pooled: a pooled socket held open
+// across a frozen serverless invocation is often dead by the next request,
+// and the first message after an idle period failed with "Connection closed".
 let transporter: Transporter | undefined;
 function getTransporter(): Transporter {
   if (!transporter) {
     transporter = nodemailer.createTransport({
       service: 'gmail',
-      pool: true,
-      maxConnections: 1,
       auth: {
         user: process.env.GMAIL_USER,
         pass: process.env.GMAIL_APP_PASSWORD,
@@ -61,26 +64,6 @@ function isRateLimited(key: string): boolean {
   return false;
 }
 
-function getClientIp(request: Request): string {
-  const forwarded = request.headers.get('x-forwarded-for');
-  if (forwarded) return forwarded.split(',')[0]!.trim();
-  return request.headers.get('x-real-ip') ?? 'unknown';
-}
-
-// Reject cross-site POSTs: a legitimate submission always carries an Origin
-// (or at least a Referer) matching this deployment's host.
-function isSameOrigin(request: Request): boolean {
-  const host = request.headers.get('host');
-  if (!host) return false;
-  const source = request.headers.get('origin') ?? request.headers.get('referer');
-  if (!source) return false;
-  try {
-    return new URL(source).host === host;
-  } catch {
-    return false;
-  }
-}
-
 /** Field-level validation messages, plus a catch-all for transport failures. */
 export interface ContactErrors {
   general?: string;
@@ -108,7 +91,12 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const formData = await request.formData();
+  const formData = await readFormData(request);
+
+  if (!formData) {
+    return json({ errors: { general: 'Invalid form submission.' } }, { status: 400 });
+  }
+
   const isBot = formData.get('website') ?? '';
   const senderName = stripNewlines(String(formData.get('name') ?? ''));
   const email = stripNewlines(String(formData.get('email') ?? ''));

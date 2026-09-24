@@ -2,12 +2,6 @@ import { defineConfig } from 'vite';
 import { vitePlugin as remix } from '@remix-run/dev';
 import { vercelPreset } from '@vercel/remix/vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import mdx from '@mdx-js/rollup';
-import remarkFrontmatter from 'remark-frontmatter';
-import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
-import rehypeImgSize from 'rehype-img-size';
-import rehypeSlug from 'rehype-slug';
-import rehypePrism from '@mapbox/rehype-prism';
 
 export default defineConfig({
   assetsInclude: ['**/*.glb', '**/*.hdr', '**/*.glsl'],
@@ -18,18 +12,11 @@ export default defineConfig({
     port: 7777,
   },
   plugins: [
-    mdx({
-      rehypePlugins: [[rehypeImgSize, { dir: 'public' }], rehypeSlug, rehypePrism],
-      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
-      providerImportSource: '@mdx-js/react',
-    }),
+    // The home page is routes/_index/, Remix's own index convention. It used
+    // to be routes/home/ remapped to "/" here, which the flat-routes
+    // convention *also* served at /home: a duplicate homepage.
     remix({
       presets: [vercelPreset()],
-      routes(defineRoutes) {
-        return defineRoutes((route) => {
-          route('/', 'routes/home/route.ts', { index: true });
-        });
-      },
     }),
     tsconfigPaths(),
   ],

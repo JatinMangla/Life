@@ -23,6 +23,7 @@
       radial-gradient(35% 35% at 20% 8%, var(--atmosphereAccent) 0%, transparent 70%);
     opacity: 0.16;
     filter: blur(60px);
+    will-change: transform;
 
     [data-theme='light'] & {
       opacity: 0.1;
@@ -35,6 +36,18 @@
     .atmosphere[data-static='true'] & {
       animation: none;
     }
+  }
+
+  /* Cinematic vignette framing the top of the case study. */
+  .vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      120% 90% at 50% 0%,
+      transparent 55%,
+      color-mix(in lab, var(--background) 60%, transparent) 100%
+    );
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 85%);
   }
 
   .grid {

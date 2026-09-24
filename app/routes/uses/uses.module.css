@@ -107,7 +107,7 @@
 }
 
 .card {
-  --accentColor: oklch(84.42% 0.19 var(--accent, 202.24));
+  --accentColor: oklch(84.42% 0.19 var(--cardHue, 202.24));
 
   position: relative;
   border-radius: 18px;

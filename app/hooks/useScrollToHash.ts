@@ -39,7 +39,11 @@ export function useScrollToHash(): ScrollToHash {
         }, 50);
       };
 
-      window.addEventListener('scroll', handleScroll);
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      // If the target is already in view, scrollIntoView doesn't scroll and no
+      // scroll event ever fires. Kick the settle timer once so onDone still
+      // runs and the listener is removed.
+      handleScroll();
 
       return () => {
         window.removeEventListener('scroll', handleScroll);

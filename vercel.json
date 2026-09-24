@@ -1,5 +1,6 @@
 {
   "redirects": [
+    { "source": "/home", "destination": "/", "permanent": true },
     { "source": "/projects/messaging-automation", "destination": "/", "permanent": true },
     { "source": "/articles", "destination": "/", "permanent": true },
     { "source": "/articles/:slug", "destination": "/", "permanent": true }

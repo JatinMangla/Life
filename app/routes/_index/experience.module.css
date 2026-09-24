@@ -1,0 +1,154 @@
+.experience {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: var(--space5XL);
+  padding-bottom: var(--space3XL);
+
+  @media (--mediaTablet) {
+    padding-right: 80px;
+    padding-left: 80px;
+  }
+
+  @media (--mediaMobile), (--mediaMobileLS) {
+    padding-top: var(--space4XL);
+    padding-right: var(--spaceOuter);
+    padding-left: var(--spaceOuter);
+  }
+}
+
+.content {
+  width: 100%;
+  max-width: var(--maxWidthL);
+
+  @media (--mediaTablet) {
+    max-width: 600px;
+  }
+}
+
+.tag {
+  margin-bottom: var(--spaceM);
+  display: grid;
+  grid-template-columns: var(--space4XL) 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.tagText {
+  font-size: var(--fontSizeBodyS);
+  font-weight: var(--fontWeightMedium);
+  color: var(--primary);
+  opacity: 0;
+  transition: opacity var(--durationM) var(--bezierFastoutSlowin) 0.8s;
+
+  &[data-visible='true'] {
+    opacity: 1;
+  }
+}
+
+.title,
+.entry,
+.activity,
+.actions {
+  opacity: 0;
+  transition: opacity var(--durationXL) ease var(--delay, 0ms);
+
+  @media (--mediaUseMotion) {
+    transform: translate3d(0, var(--spaceL), 0);
+    transition:
+      opacity var(--durationXL) ease var(--delay, 0ms),
+      transform var(--durationXL) var(--bezierFastoutSlowin) var(--delay, 0ms);
+  }
+
+  &[data-visible='true'] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.title {
+  margin-bottom: var(--spaceXL);
+}
+
+.list {
+  display: grid;
+  gap: var(--space2XL);
+  margin: 0 0 var(--space2XL);
+  padding: 0;
+  list-style: none;
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: var(--spaceL);
+
+  @media (--mediaMobile) {
+    grid-template-columns: 1fr;
+    gap: var(--spaceS);
+  }
+}
+
+.period {
+  font-weight: var(--fontWeightMedium);
+  color: var(--textTitle);
+}
+
+.location {
+  color: var(--textLight);
+}
+
+.role {
+  margin-bottom: var(--spaceM);
+}
+
+.organisation {
+  color: var(--textLight);
+  font-weight: var(--fontWeightRegular);
+}
+
+.highlights {
+  display: grid;
+  gap: var(--spaceS);
+  margin: 0;
+  padding-left: var(--spaceL);
+  color: var(--textBody);
+}
+
+.actions {
+  --delay: 700ms;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spaceM);
+}
+
+.activity {
+  --delay: 600ms;
+
+  margin-bottom: var(--space2XL);
+  padding-top: var(--spaceXL);
+  border-top: 1px solid color-mix(in lab, var(--text) 12%, transparent);
+}
+
+.activityTitle {
+  margin-bottom: var(--spaceL);
+}
+
+.activityList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--spaceL);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.activityItem {
+  display: grid;
+  gap: var(--spaceXS);
+}
+
+.activityMeta {
+  color: var(--textLight);
+}

@@ -14,25 +14,13 @@ import {
   ProjectTextRow,
   ProjectImage,
 } from '~/layouts/project';
-import { baseMeta, OG_IMAGE_SIZE } from '~/utils/meta';
-import { getProject, projectOgImage, projectPath } from '~/data/projects';
-import config from '~/config.json';
+import { projectMeta } from '~/utils/meta';
+import { getProject } from '~/data/projects';
 
 const { title, description, roles, liveUrl, repoUrl, access, stack, hue } =
   getProject('careerpilot-ai');
 
-export const meta = () => {
-  return baseMeta({
-    title,
-    description,
-    prefix: 'Projects',
-    path: projectPath('careerpilot-ai'),
-    ogImage: new URL(projectOgImage('careerpilot-ai'), config.url).href,
-    ogImageAlt: `${title} — case study`,
-    ogImageSize: OG_IMAGE_SIZE,
-    ogType: 'article',
-  });
-};
+export const meta = () => projectMeta(getProject('careerpilot-ai'));
 
 export const CareerPilotAi = () => {
   return (
@@ -90,19 +78,19 @@ export const CareerPilotAi = () => {
                     'Checks a resume against the conventions recruiters actually screen on, and suggests concrete rewrites rather than generic advice.',
                 },
                 {
-                  title: 'Job matching',
+                  title: 'Job search',
                   detail:
-                    'Reads a posting against your background and argues both sides — what fits, what does not, and whether it is worth the application.',
+                    'Reads 121 companies’ own applicant-tracking boards in parallel — over 15,000 live postings — plus aggregators, then scores each match against your profile on an anchored 0–100 scale.',
                 },
                 {
                   title: 'Application prep',
                   detail:
-                    'Drafts tailored cover letters and per-posting content, ready to review before anything is sent.',
+                    'Drafts tailored resume bullets, a cover letter and screening answers per posting, then opens each application in its own tab for you to check and submit.',
                 },
                 {
                   title: 'Inbox triage',
                   detail:
-                    'Sorts job-related mail out of a busy Gmail inbox and drafts replies to recruiters.',
+                    'Syncs a Gmail inbox over IMAP, sorts job-related mail from the rest, and drafts replies to recruiters.',
                 },
                 {
                   title: 'Mock interviews',
@@ -129,6 +117,17 @@ export const CareerPilotAi = () => {
                 schema so replies arrive as structured JSON the UI can rely on rather
                 than prose to be parsed, and responses stream so long answers appear
                 as they are generated instead of after a blank pause.
+              </ProjectSectionText>
+              <ProjectSectionText>
+                It runs on Gemini&rsquo;s free tier — 250 calls a day — and that
+                shapes the design. Answers that are genuinely the same for the same
+                input, like classifying mail or scoring an unchanged resume, are cached
+                in Redis with a lifetime per task; anything the user re-runs wanting
+                something new is never cached. Batch work runs three calls at a time,
+                because the client steps down to weaker models on a rate limit, so a
+                bigger burst would not fail loudly — it would quietly return worse
+                answers. Identical requests already in flight share one call, so a
+                double-click costs nothing.
               </ProjectSectionText>
             </ProjectTextRow>
             <ArchitectureDiagram
@@ -171,11 +170,40 @@ export const CareerPilotAi = () => {
         <ProjectSection light>
           <ProjectSectionContent>
             <ProjectTextRow>
+              <ProjectSectionHeading>The bug that lost 45 emails in 250</ProjectSectionHeading>
+              <ProjectSectionText>
+                Mail was arriving in Gmail and never showing up in the app. The sync
+                cursor was a date, but pages came back in IMAP UID order, and the
+                cursor advanced to the newest message on each page. Those two orders
+                diverge in any real mailbox — forwarded threads, senders in other
+                timezones, mail held in a queue — and every divergence was a permanent
+                hole. Simulated against 250 messages with realistic date jitter, the old
+                sync delivered 205.
+              </ProjectSectionText>
+              <ProjectSectionText>
+                The cursor is now the UID itself, which only ever increases within a
+                mailbox, and it carries the mailbox&rsquo;s UID validity so a rebuilt
+                mailbox triggers one clean rescan instead of resuming from numbers that
+                no longer mean anything. Each page is stored before the cursor moves, so
+                an interrupted sync costs a repeat rather than a gap. The same pass
+                fixed four smaller bugs on that path, including a re-sync that
+                resurrected mail already dealt with.
+              </ProjectSectionText>
+            </ProjectTextRow>
+          </ProjectSectionContent>
+        </ProjectSection>
+
+        <ProjectSection>
+          <ProjectSectionContent>
+            <ProjectTextRow>
               <ProjectSectionHeading>Two deliberate limits</ProjectSectionHeading>
               <ProjectSectionText>
-                It never submits an application. Automated submission breaks the terms
-                of every job board worth applying through, so the tool prepares
-                everything and stops at the point a human clicks apply. It also labels
+                The last click stays human. An earlier version could submit
+                applications on its own; I removed that path entirely. A sent
+                application can&rsquo;t be recalled, so one mis-parsed form field would
+                be permanent, and automated submission breaks the terms of most job
+                boards anyway. The tool now prepares everything, fills the form, and
+                stops with the submit button in view. It also labels
                 where a listing came from — live results via Adzuna are marked
                 separately from openings the model surfaced — because a role an LLM
                 recalled is not the same claim as a role that exists in a feed today.

@@ -1,0 +1,41 @@
+@layer layout {
+  /* The ledger is four columns of short values; let it scroll sideways on a
+     phone rather than wrapping every cell into a column of single words. */
+  .tableWrap {
+    width: 100%;
+    overflow-x: auto;
+    margin-block: var(--spaceXL);
+
+    & table {
+      min-width: 560px;
+    }
+  }
+
+  .numbers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spaceL);
+    margin: var(--spaceXL) 0 0;
+    padding: 0;
+    list-style: none;
+
+    @media (--mediaMobile) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .number {
+    display: grid;
+    gap: var(--spaceXS);
+  }
+
+  .numberValue {
+    font-size: var(--fontSizeH4);
+    font-weight: var(--fontWeightMedium);
+    color: var(--textTitle);
+  }
+
+  .numberLabel {
+    color: var(--textLight);
+  }
+}

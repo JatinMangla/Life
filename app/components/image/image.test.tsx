@@ -67,4 +67,25 @@ describe('Image', () => {
       'loading'
     );
   });
+
+  it('puts a priority image in the initial HTML at high fetch priority', () => {
+    render(
+      <Image
+        priority
+        srcSet="/hero.webp 856w"
+        placeholder="/hero-placeholder.jpg"
+        alt="Hero"
+        width={856}
+        height={583}
+      />
+    );
+
+    const image = screen.getByAltText('Hero');
+
+    // No IntersectionObserver has fired in jsdom, so a lazy image would have
+    // no source yet.
+    expect(image).toHaveAttribute('srcset', '/hero.webp 856w');
+    expect(image).toHaveAttribute('loading', 'eager');
+    expect(image).toHaveAttribute('fetchpriority', 'high');
+  });
 });

@@ -36,8 +36,10 @@ export interface Project {
   readonly hue: string;
   readonly liveUrl?: string;
   readonly repoUrl?: string;
-  /** Why a live link may not get a visitor very far. */
+  /** Why a live link may not get a visitor very far, or why there is no source link. */
   readonly access?: string;
+  /** When the case study last changed materially, `YYYY-MM-DD`. Feeds the sitemap. */
+  readonly updatedAt: string;
 }
 
 export const projectPath = (slug: string) => `/projects/${slug}`;
@@ -51,20 +53,144 @@ export const projectOgImage = (slug: string) => `/og/${slug}.png`;
  */
 export const projects = [
   {
-    slug: 'mera-monitor',
-    title: 'Mera Monitor — Employee Productivity Platform',
-    shortTitle: 'Mera Monitor',
-    description: `Lead front-end development for a SaaS product with ${metrics.activeUsers.value} active users, featuring real-time monitoring, Redux state management, and SSO authentication.`,
+    slug: 'personal-vault',
+    title: 'Personal Vault — Encrypted Archive on a $0 Budget',
+    shortTitle: 'Personal Vault',
+    description:
+      'A photo, video and document archive that costs nothing to run: an end-to-end-encrypted document vault, a self-hosted photo engine, verified backups and a live health dashboard, each with its failure modes written down.',
     roles: [
-      'Lead Frontend Development',
+      'Architecture & Threat Model',
+      'Client-side Cryptography',
+      'Infrastructure & Backups',
+      'Full-stack Development',
+    ],
+    kind: 'personal',
+    stack: [
+      'Next.js 16',
+      'TypeScript',
+      'Web Crypto',
+      'Supabase',
+      'Oracle Cloud',
+      'Ansible',
+      'restic',
+      'Tailscale',
+      'Playwright',
+    ],
+    hue: '28',
+    liveUrl: 'https://vault-amber-five.vercel.app',
+    repoUrl: 'https://github.com/JatinMangla/personal-vault',
+    access: 'Private by design — the live link shows the sign-in screen.',
+    updatedAt: '2026-09-24',
+  },
+  {
+    slug: 'mera-monitor',
+    title: 'Mera Monitor — Workforce Analytics Platform',
+    shortTitle: 'Mera Monitor',
+    description: `Frontend work on a workforce-analytics SaaS used by ${metrics.activeUsers.value} people: data-heavy dashboards and reports, Redux and React Query state, and Microsoft/Google single sign-on.`,
+    roles: [
+      'Frontend Development',
       'React.js & Redux',
-      'SSO Authentication (MSAL/OAuth)',
-      'Real-time Features (SignalR)',
+      'SSO Integration (MSAL/OAuth)',
+      'Load-time Optimisation',
     ],
     kind: 'work',
-    stack: ['React.js', 'Redux', 'SCSS', 'ApexCharts', 'SignalR', 'MSAL'],
+    stack: [
+      'React.js',
+      'Redux',
+      'React Query',
+      'Formik',
+      'ApexCharts',
+      'SignalR',
+      'MSAL',
+      'SCSS',
+    ],
     hue: '202.24',
     liveUrl: 'https://meramonitor.com',
+    updatedAt: '2026-09-24',
+  },
+  {
+    slug: 'analytics-mcp-server',
+    title: 'Analytics MCP Server — Claude over OAuth 2.1',
+    shortTitle: 'Analytics MCP Server',
+    description:
+      'A remote MCP server that lets Claude query a workforce-analytics API, with its own OAuth 2.1 authorization server, safety rails on every sensitive tool, and a port from a long-running process to serverless.',
+    roles: [
+      'Protocol & API Design',
+      'OAuth 2.1 Authorization Server',
+      'Serverless Port',
+      'LLM Tool Safety',
+    ],
+    kind: 'personal',
+    stack: [
+      'TypeScript',
+      'Node.js',
+      'MCP SDK',
+      'OAuth 2.1 + PKCE',
+      'Upstash Redis',
+      'Vercel Functions',
+    ],
+    hue: '255',
+    access:
+      'Built against a production API that holds employee data, so the source and endpoint stay private; this write-up covers the design only.',
+    updatedAt: '2026-09-24',
+  },
+  {
+    slug: 'careerpilot-ai',
+    title: 'CareerPilot AI — Personal Career Copilot',
+    shortTitle: 'CareerPilot AI',
+    description:
+      'An AI career copilot that finds jobs across 120+ company boards, tailors applications for approval, triages a Gmail inbox and runs mock interviews — on Gemini’s free tier, with the usage guards that makes necessary.',
+    roles: [
+      'Full-stack Development',
+      'LLM Integration (Gemini)',
+      'Serverless API Design',
+      'Sync & Data Integrity',
+    ],
+    kind: 'personal',
+    stack: [
+      'Next.js 14',
+      'TypeScript',
+      'Tailwind CSS',
+      'Google Gemini',
+      'Upstash Redis',
+      'IMAP',
+      'Vercel Functions',
+    ],
+    hue: '295',
+    liveUrl: 'https://careerpilot-ai-beige-tau.vercel.app',
+    repoUrl: 'https://github.com/JatinMangla/CareerPilot-AI',
+    access: 'Single-user by design — the live link shows the sign-in screen.',
+    updatedAt: '2026-09-24',
+  },
+  {
+    slug: 'kundli-predict',
+    title: 'Kundli Predict — Vedic Astrology Engine with AI Readings',
+    shortTitle: 'Kundli Predict',
+    description:
+      'Computes complete birth charts, dashas, transits and a Hindu calendar in the browser, then has Gemini read the whole chart — so the maths is exact and testable, and only the interpretation is generated.',
+    roles: [
+      'Full-stack Development',
+      'Astronomical Computation Engine',
+      'LLM Integration (Gemini)',
+      'Bilingual UI (English/Hindi)',
+    ],
+    kind: 'personal',
+    stack: [
+      'Next.js 15',
+      'TypeScript',
+      'Tailwind CSS 4',
+      'astronomy-engine',
+      'Google Gemini',
+      'Dexie / IndexedDB',
+      'Auth.js v5',
+      'Vitest',
+    ],
+    hue: '75',
+    liveUrl: 'https://predict-five-blue.vercel.app',
+    repoUrl: 'https://github.com/JatinMangla/predict',
+    access:
+      'Sign-in is restricted to the owner’s account. Profiles stay on the device; readings send the computed chart to Gemini.',
+    updatedAt: '2026-09-24',
   },
   {
     slug: 'screen-coach',
@@ -82,59 +208,7 @@ export const projects = [
     stack: ['JavaScript', 'Node.js', 'Express.js', 'MongoDB', 'REST'],
     hue: '150',
     liveUrl: 'https://www.myscreencoach.com',
-  },
-  {
-    slug: 'kundli-predict',
-    title: 'Kundli Predict — Offline-First Vedic Astrology Engine',
-    shortTitle: 'Kundli Predict',
-    description:
-      'A Vedic astrology engine that computes complete birth charts, dashas and predictions entirely on-device — no server, no internet, no AI required.',
-    roles: [
-      'Full-stack Development',
-      'Astronomical Computation Engine',
-      'Offline-first Architecture',
-      'Bilingual UI (English/Hindi)',
-    ],
-    kind: 'personal',
-    stack: [
-      'Next.js 15',
-      'TypeScript',
-      'Tailwind CSS 4',
-      'astronomy-engine',
-      'Dexie / IndexedDB',
-      'Auth.js v5',
-      'Vitest',
-    ],
-    hue: '75',
-    liveUrl: 'https://predict-five-blue.vercel.app',
-    repoUrl: 'https://github.com/JatinMangla/predict',
-    access: 'Sign-in is restricted to the owner’s account; chart data never leaves the device.',
-  },
-  {
-    slug: 'careerpilot-ai',
-    title: 'CareerPilot AI — Personal Career Copilot',
-    shortTitle: 'CareerPilot AI',
-    description:
-      'An AI career assistant that reviews resumes, analyses job matches and runs mock interviews, built on Next.js serverless functions with schema-enforced Gemini responses.',
-    roles: [
-      'Full-stack Development',
-      'LLM Integration (Gemini)',
-      'Serverless API Design',
-      'Auth & Cross-device Sync',
-    ],
-    kind: 'personal',
-    stack: [
-      'Next.js 14',
-      'TypeScript',
-      'Tailwind CSS',
-      'Google Gemini',
-      'Upstash Redis',
-      'Vercel Functions',
-    ],
-    hue: '295',
-    liveUrl: 'https://careerpilot-ai-beige-tau.vercel.app',
-    repoUrl: 'https://github.com/JatinMangla/CareerPilot-AI',
-    access: 'Single-user by design — the live link shows the sign-in screen.',
+    updatedAt: '2026-08-20',
   },
 ] as const satisfies readonly Project[];
 

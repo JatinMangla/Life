@@ -1,16 +1,7 @@
 import { chromium } from '@playwright/test';
 import type { FullConfig } from '@playwright/test';
+import { pages } from './routes';
 
-const routes = [
-  '/',
-  '/contact',
-  '/uses',
-  '/projects/mera-monitor',
-  '/projects/screen-coach',
-  '/projects/kundli-predict',
-  '/projects/careerpilot-ai',
-  '/this-page-does-not-exist',
-];
 
 /**
  * Visit every route once before the suite runs.
@@ -22,12 +13,15 @@ const routes = [
  * Warming the routes here moves that reload outside the tests.
  */
 export default async function globalSetup(config: FullConfig) {
+  // A deployed build has no dev server to warm up.
+  if (process.env.BASE_URL) return;
+
   const baseURL = config.projects[0]?.use?.baseURL ?? 'http://localhost:7777';
   const browser = await chromium.launch();
   const page = await browser.newPage();
 
-  for (const route of routes) {
-    await page.goto(new URL(route, baseURL).href, { waitUntil: 'load' });
+  for (const { path } of pages) {
+    await page.goto(new URL(path, baseURL).href, { waitUntil: 'load' });
     await page.waitForTimeout(500);
   }
 

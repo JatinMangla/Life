@@ -1,5 +1,14 @@
 {
-  "include": ["app/**/*.ts", "app/**/*.tsx", "app/**/*.js", "app/**/*.jsx", "*.d.ts"],
+  "include": [
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "app/**/*.js",
+    "app/**/*.jsx",
+    "e2e/**/*.ts",
+    "test/**/*.ts",
+    "*.config.ts",
+    "*.d.ts"
+  ],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "types": ["@remix-run/node", "vite/client"],
@@ -17,7 +26,6 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "noEmit": true,
-    "baseUrl": ".",
     "paths": {
       "~/*": ["./app/*"]
     }
