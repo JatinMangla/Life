@@ -69,15 +69,30 @@ Verified at handoff: typecheck, lint, 100/100 unit, build, 48/48 e2e.
 `npm audit --omit=dev`: 9 left (5 moderate, 4 high, 0 critical) — all on the
 Remix 2 / React Router 6 line or `@vercel/remix`.
 
+### Follow-up fixes (same day, after the first CI run on the branch)
+
+- The deployed-build job hung for hours against protected previews; it now
+  checks reachability first, fails fast with a named cause, tests production
+  at the public URL, and caps at 30 minutes.
+- Lighthouse had failed at "collect" on every push since August: Ubuntu 24.04
+  runners block Chrome's sandbox → `--no-sandbox` in `.lighthouserc.json`.
+- **Production-only bug:** the theme toggle was invisible on phones — a
+  leftover `display: none` that only the dev server's CSS order masked. Removed.
+- `cleanRenderer` forced WebGL context loss on StrictMode's dev re-run of the
+  same canvas; now only when the canvas has left the page. Added
+  `canUseWebGL()` probe before starting scenes.
+- `scripts/serve-build.mjs` serves the production build locally for e2e.
+- Owner completed: SESSION_SECRET (Vercel), bypass secret (GitHub), `.env`,
+  résumé (`public/resume.pdf`, `config.resume`).
+
 ## Waiting on the owner
 
-1. Add `public/resume.pdf` and set `"resume": "/resume.pdf"` in `app/config.json`.
+1. ~~Résumé~~ — done.
 2. Review the rewritten copy, especially Mera Monitor and Screen Coach. Supply
    before/after numbers for the 40% load-time claim (`metrics` in
    `experience.ts`) and, ideally, real screenshots of the personal projects.
-3. Vercel: `SESSION_SECRET` for Preview as well as Production; GitHub secret
-   `VERCEL_AUTOMATION_BYPASS_SECRET` for preview e2e.
-4. Local `.env`: remove the `NODE_ENV` line; regenerate `SESSION_SECRET`.
+3. ~~Vercel `SESSION_SECRET`, GitHub `VERCEL_AUTOMATION_BYPASS_SECRET`~~ — done.
+4. ~~Local `.env`~~ — done.
 5. Custom domain → change only `url` in `app/config.json`; consider renaming the
    repo from "Life".
 6. Outside this repo: GitHub profile README (wrong portfolio link, calls Mera

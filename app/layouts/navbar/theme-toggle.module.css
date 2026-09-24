@@ -8,22 +8,13 @@
     margin-left: auto;
     margin-right: 4rem;
 
-    @media (--mediaMobile), (--mediaMobileLS) {
-      &:not([data-mobile='true']) {
-        display: none;
-      }
-    }
-
-    &[data-mobile='true'] {
-      --offset: var(--spaceXS);
-      --inset: calc(var(--spaceXL) - var(--offset));
-
-      top: unset;
-      bottom: var(--inset);
-      margin-top: 0;
-      margin-right: 0;
-      margin-left: 0;
-    }
+    /*
+     * There used to be a rule here hiding this toggle on mobile in favour of a
+     * second one in the mobile nav sheet. The sheet is long gone, and the only
+     * thing keeping the toggle visible on phones was the button stylesheet
+     * happening to load later in development. The production bundle orders
+     * CSS differently, so phones on the live site had no theme toggle at all.
+     */
   }
 
   .circle {

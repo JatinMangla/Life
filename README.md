@@ -106,7 +106,10 @@ flow, social links, `/home` returning 404, and the sitemap. Sections reveal on
 scroll, so the audit scrolls each page first.
 
 Set `BASE_URL` to run the suite against a deployment instead of the dev
-server. CI (`.github/workflows/ci.yml`) does exactly that when Vercel reports a
+server. To test the production build locally — bundled CSS can cascade
+differently from the dev server — run `npm run build`, then
+`NODE_ENV=production node scripts/serve-build.mjs` and point `BASE_URL` at
+`http://localhost:7778`. CI (`.github/workflows/ci.yml`) does exactly that when Vercel reports a
 deployment, and runs Lighthouse against production deployments; on pushes and
 pull requests it runs lint, a production dependency audit, typecheck, unit
 tests, the build and the browser suite. For preview deployments behind Vercel

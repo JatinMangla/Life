@@ -24,6 +24,7 @@ Call entry points with node directly:
 | Build | `node node_modules/@remix-run/dev/dist/cli.js vite:build` |
 | Dev server | `node node_modules/@remix-run/dev/dist/cli.js vite:dev` (port 7777) |
 | E2E | start the dev server first, then `node node_modules/@playwright/test/cli.js test` |
+| E2E on the production build | build, then `$env:NODE_ENV='production'; node scripts/serve-build.mjs` (port 7778), then set `$env:BASE_URL='http://localhost:7778'` and run Playwright |
 
 Playwright's own `webServer` runs `npm run dev`, which hits the EPERM above —
 start the dev server yourself; `reuseExistingServer` picks it up.
@@ -32,6 +33,9 @@ Local Node is 20.16; the project and Vercel run Node 24.
 
 Before calling any change done: typecheck, lint, unit tests and build must
 pass, and e2e for anything user-visible (axe runs in light, dark and mobile).
+Run e2e against the **production build** too: the dev server has hidden real
+bugs (CSS cascade order differs once bundled — the mobile theme toggle was
+invisible in production only; StrictMode double effects exist only in dev).
 
 ## Content rules — these matter more than the code
 

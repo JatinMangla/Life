@@ -103,8 +103,15 @@ test('theme toggle flips the document theme', async ({ page }) => {
   const body = page.locator('body');
   const before = await body.getAttribute('data-theme');
 
-  await page.getByRole('button', { name: /toggle theme/i }).first().click();
-  await expect(body).not.toHaveAttribute('data-theme', before ?? 'dark');
+  // A click that lands before React hydrates the button does nothing, which
+  // happens under load in a full parallel run. Retry the click until one
+  // registers, rather than failing on timing.
+  await expect(async () => {
+    await page.getByRole('button', { name: /toggle theme/i }).first().click();
+    await expect(body).not.toHaveAttribute('data-theme', before ?? 'dark', {
+      timeout: 2_000,
+    });
+  }).toPass({ timeout: 30_000 });
 });
 
 test('robots.txt and the sitemap advertise the canonical origin', async ({ request }) => {
