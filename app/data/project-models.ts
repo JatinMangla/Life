@@ -23,7 +23,7 @@ export const projectModels: Partial<Record<ProjectSlug, ProjectModel>> = {
     alt: 'Mera Monitor dashboard showing employee productivity metrics',
     textures: [
       {
-        srcSet: `${mmDashboard} 1280w`,
+        srcSet: `${mmDashboard} 856w`,
         placeholder: mmDashboardPlaceholder,
       },
     ],

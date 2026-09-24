@@ -5,9 +5,12 @@
  * social-image.png, so a link to a specific case study looks identical to a
  * link to the homepage.
  *
- * Projects with a screenshot get it as a background. The two personal projects
- * are auth-gated, so the only honest screenshot would be a sign-in screen —
- * those get a typographic card built from their stack instead.
+ * Projects with a screenshot get it as a background. The personal projects
+ * are auth-gated or private, so the only honest screenshot would be a sign-in
+ * screen — those get a typographic card built from their stack instead.
+ *
+ * Keep this list in step with app/data/projects.ts; projects.test.ts fails if
+ * a project has no card in public/og.
  *
  * Usage: node scripts/og-images.cjs
  */
@@ -26,11 +29,42 @@ const FONT = 'Verdana, DejaVu Sans, sans-serif';
 
 const projects = [
   {
+    slug: 'personal-vault',
+    title: 'Personal Vault',
+    subtitle: 'Encrypted archive on a $0 budget',
+    accent: '#ff7a45',
+    stack: ['Next.js 16', 'Web Crypto', 'Supabase', 'Oracle Cloud', 'restic'],
+  },
+  {
     slug: 'mera-monitor',
     title: 'Mera Monitor',
-    subtitle: 'Employee Productivity Platform',
+    subtitle: 'Workforce analytics platform',
     accent: '#00eeff',
     screenshot: 'mm-analytics-dashboard.webp',
+    // The performer lists are demo accounts, but in a link preview a column of
+    // names reads as real people.
+    blur: [{ left: 664, top: 290, width: 192, height: 293 }],
+  },
+  {
+    slug: 'analytics-mcp-server',
+    title: 'Analytics MCP Server',
+    subtitle: 'Claude over OAuth 2.1',
+    accent: '#7c9cff',
+    stack: ['TypeScript', 'MCP SDK', 'OAuth 2.1', 'Upstash Redis', 'Vercel'],
+  },
+  {
+    slug: 'careerpilot-ai',
+    title: 'CareerPilot AI',
+    subtitle: 'Personal career copilot',
+    accent: '#c58cff',
+    stack: ['Next.js 14', 'TypeScript', 'Google Gemini', 'Upstash Redis', 'IMAP'],
+  },
+  {
+    slug: 'kundli-predict',
+    title: 'Kundli Predict',
+    subtitle: 'Vedic astrology engine with AI readings',
+    accent: '#e0b34d',
+    stack: ['Next.js 15', 'TypeScript', 'astronomy-engine', 'Gemini', 'Vitest'],
   },
   {
     slug: 'screen-coach',
@@ -38,20 +72,6 @@ const projects = [
     subtitle: 'Screen Time Monitoring',
     accent: '#00e0a4',
     screenshot: 'sc-phone-dashboard.jpg',
-  },
-  {
-    slug: 'kundli-predict',
-    title: 'Kundli Predict',
-    subtitle: 'Offline-first Vedic astrology engine',
-    accent: '#e0b34d',
-    stack: ['Next.js 15', 'TypeScript', 'astronomy-engine', 'IndexedDB', 'Vitest'],
-  },
-  {
-    slug: 'careerpilot-ai',
-    title: 'CareerPilot AI',
-    subtitle: 'Personal career copilot',
-    accent: '#c58cff',
-    stack: ['Next.js 14', 'TypeScript', 'Google Gemini', 'Upstash Redis'],
   },
 ];
 
@@ -146,12 +166,26 @@ async function generatedBackground(accent) {
   return sharp(svg).png().toBuffer();
 }
 
+/** The screenshot, with any `blur` regions (in source pixels) obscured. */
+async function screenshotSource({ screenshot, blur = [] }) {
+  const source = fs.readFileSync(path.join(ASSETS, screenshot));
+  const patches = await Promise.all(
+    blur.map(async region => ({
+      input: await sharp(source).extract(region).blur(8).toBuffer(),
+      left: region.left,
+      top: region.top,
+    }))
+  );
+
+  return patches.length ? sharp(source).composite(patches).png().toBuffer() : source;
+}
+
 async function main() {
   fs.mkdirSync(OUT, { recursive: true });
 
   for (const project of projects) {
     const background = project.screenshot
-      ? await sharp(fs.readFileSync(path.join(ASSETS, project.screenshot)))
+      ? await sharp(await screenshotSource(project))
           .resize({ width: WIDTH, height: HEIGHT, fit: 'cover', position: 'right top' })
           .toBuffer()
       : await generatedBackground(project.accent);

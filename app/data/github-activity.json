@@ -1,0 +1,38 @@
+{
+  "generatedAt": "2026-09-24",
+  "repos": [
+    {
+      "name": "personal-vault",
+      "url": "https://github.com/JatinMangla/personal-vault",
+      "description": "",
+      "caseStudy": "personal-vault",
+      "commit": {
+        "subject": "Record the parallel fetcher's first production result: 14x",
+        "url": "https://github.com/JatinMangla/personal-vault/commit/b39352fdae1ba7cdfe0f497430969ab7e3181602",
+        "date": "2026-09-19"
+      }
+    },
+    {
+      "name": "CareerPilot-AI",
+      "url": "https://github.com/JatinMangla/CareerPilot-AI",
+      "description": "",
+      "caseStudy": "careerpilot-ai",
+      "commit": {
+        "subject": "Stop losing mail on sync, and page the long lists",
+        "url": "https://github.com/JatinMangla/CareerPilot-AI/commit/336158799d73d6f532ad1b892eb5d4a6e124236c",
+        "date": "2026-09-17"
+      }
+    },
+    {
+      "name": "predict",
+      "url": "https://github.com/JatinMangla/predict",
+      "description": "",
+      "caseStudy": "kundli-predict",
+      "commit": {
+        "subject": "Move the Gemini call to gemini-3.6-flash",
+        "url": "https://github.com/JatinMangla/predict/commit/55a25614082a1a8291846e9a6db0f8632461a61c",
+        "date": "2026-09-08"
+      }
+    }
+  ]
+}

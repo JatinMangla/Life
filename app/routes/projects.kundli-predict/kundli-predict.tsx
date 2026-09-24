@@ -14,25 +14,13 @@ import {
   ProjectTextRow,
   ProjectImage,
 } from '~/layouts/project';
-import { baseMeta, OG_IMAGE_SIZE } from '~/utils/meta';
-import { getProject, projectOgImage, projectPath } from '~/data/projects';
-import config from '~/config.json';
+import { projectMeta } from '~/utils/meta';
+import { getProject } from '~/data/projects';
 
 const { title, description, roles, liveUrl, repoUrl, access, stack, hue } =
   getProject('kundli-predict');
 
-export const meta = () => {
-  return baseMeta({
-    title,
-    description,
-    prefix: 'Projects',
-    path: projectPath('kundli-predict'),
-    ogImage: new URL(projectOgImage('kundli-predict'), config.url).href,
-    ogImageAlt: `${title} — case study`,
-    ogImageSize: OG_IMAGE_SIZE,
-    ogType: 'article',
-  });
-};
+export const meta = () => projectMeta(getProject('kundli-predict'));
 
 export const KundliPredict = () => {
   return (
@@ -65,11 +53,13 @@ export const KundliPredict = () => {
             <ProjectTextRow>
               <ProjectSectionHeading>The idea</ProjectSectionHeading>
               <ProjectSectionText>
-                Almost every kundli site sends your birth details to a server and
-                returns a chart. That is a privacy problem for unusually personal
-                data, and it makes the app useless without a connection. I wanted the
-                opposite: a full Vedic astrology engine that runs in the browser, so
-                nothing about a birth chart ever leaves the device.
+                Most kundli sites are a black box: birth details go to a server and a
+                chart and a paragraph of predictions come back, with no way to check
+                either. I wanted the two halves separated. The astronomy and the
+                classical rules are deterministic, so they run in the browser where
+                they can be tested against reference values. Interpretation is where a
+                language model is genuinely good, so Gemini reads the complete computed
+                chart — and only that part is generated.
               </ProjectSectionText>
             </ProjectTextRow>
           </ProjectSectionContent>
@@ -113,14 +103,14 @@ export const KundliPredict = () => {
                     'Bindu tables used to score current transits against the natal chart.',
                 },
                 {
-                  title: 'Panchang',
+                  title: 'Hindu calendar',
                   detail:
-                    'Tithi, vara, nakshatra, yoga and karana resolved for any given moment.',
+                    'A panchang month grid with an astronomically drawn moon per day, tithi at local sunrise, festivals, and a personal calendar coloured by each chart’s Tarabala and Chandra Bala.',
                 },
                 {
-                  title: 'Question engine',
+                  title: 'Precision timing',
                   detail:
-                    'Answers on career, marriage, wealth, health and more, derived from the chart itself and returned with a confidence score.',
+                    'The classical five-step funnel for a goal: birth-time tolerance, whether the chart promises it, which dashas can deliver it, transit windows, then exact muhurta days.',
                 },
               ]}
             />
@@ -130,20 +120,26 @@ export const KundliPredict = () => {
         <ProjectSection>
           <ProjectSectionContent>
             <ProjectTextRow>
-              <ProjectSectionHeading>
-                Offline-first, not merely offline-capable
-              </ProjectSectionHeading>
+              <ProjectSectionHeading>Exact maths locally, readings from AI</ProjectSectionHeading>
               <ProjectSectionText>
-                The distinction matters. Nothing is fetched in order to produce a
-                chart: the ephemeris maths runs locally, a 36,000-city database ships
-                with the app so birth places resolve to coordinates and timezones
-                without a lookup, and results persist in IndexedDB through Dexie.
-                Claude and Gemini are wired in as optional fallbacks for phrasing,
-                never as a dependency — with the network off, the app still answers.
+                Nothing is fetched to produce a chart: the ephemeris maths runs locally,
+                a 36,000-city database ships with the app so birth places resolve to
+                coordinates and timezones without a lookup, and profiles persist in
+                IndexedDB through Dexie. With the network off, charts, dashas, transits
+                and the calendar all still work.
+              </ProjectSectionText>
+              <ProjectSectionText>
+                Answers to questions and period predictions are written by Gemini from
+                the full computed chart — dashas, divisional charts, transits and
+                ashtakavarga together — rather than from a sun or moon sign. The Rashi
+                deep-dive shows the difference directly: the model gives the general
+                forecast for a moon sign, then checks each point against this specific
+                chart and marks it as applying, modified or not applying, naming the
+                placement that decides it.
               </ProjectSectionText>
             </ProjectTextRow>
             <ArchitectureDiagram
-              caption="Everything above the storage layer runs in the browser; no server is involved in producing a chart."
+              caption="Chart computation and storage run in the browser; only sign-in and AI readings need the network."
               layers={[
                 {
                   name: 'Interface',
@@ -181,10 +177,10 @@ export const KundliPredict = () => {
                   ],
                 },
                 {
-                  name: 'Optional',
+                  name: 'Online',
                   nodes: [
                     { id: 'auth', label: 'Auth.js v5', detail: 'owner-only sign-in' },
-                    { id: 'llm', label: 'Claude / Gemini', detail: 'phrasing fallback' },
+                    { id: 'llm', label: 'Google Gemini', detail: 'reads the whole chart' },
                   ],
                 },
               ]}
@@ -212,6 +208,25 @@ export const KundliPredict = () => {
         </ProjectSection>
 
         <ProjectSection>
+          <ProjectSectionContent>
+            <ProjectTextRow>
+              <ProjectSectionHeading>When a retired model looks like a bad key</ProjectSectionHeading>
+              <ProjectSectionText>
+                One day every reading failed with &ldquo;AI is unavailable (offline or
+                no API key)&rdquo;. The key was fine. Google had retired the model for
+                newly created keys — older keys were still grandfathered onto it — so a
+                routine key rotation took the whole AI path down, and the API&rsquo;s
+                404 fell into an error branch that treated every non-rate-limit failure
+                as &ldquo;no AI configured&rdquo;. The fix was moving to the current model,
+                verified against the live API with the same request shape. The lesson
+                was the error handling: a message that names the wrong cause costs more
+                time than the fault itself.
+              </ProjectSectionText>
+            </ProjectTextRow>
+          </ProjectSectionContent>
+        </ProjectSection>
+
+        <ProjectSection light>
           <ProjectSectionContent>
             <ProjectTextRow center centerMobile noMargin>
               <ProjectSectionHeading>Where it stands</ProjectSectionHeading>

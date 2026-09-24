@@ -1,0 +1,58 @@
+@layer layout {
+  .reveal {
+    --revealStagger: 120ms;
+
+    position: relative;
+  }
+
+  /* Only sections that ask for parallax pay for a transformed layer. */
+  .inner[data-parallax='true'] {
+    transform: translate3d(0, var(--parallax, 0), 0);
+  }
+
+  /*
+   * The units that animate: each direct child, or — when a section wraps
+   * everything in a single container, as most do — that container's
+   * children, so the stagger actually has something to stagger.
+   *
+   * Opacity and transform only. A blur filter here re-rasterised whole
+   * sections, images included, on every frame of the entrance.
+   */
+  .inner > :not(:only-child),
+  .inner > :only-child > * {
+    @media (--mediaUseMotion) {
+      :root[data-js] .reveal:not([data-static='true']) & {
+        transition:
+          opacity 0.9s var(--bezierFastoutSlowin),
+          transform 0.9s var(--bezierFastoutSlowin);
+        transition-delay: calc(var(--index, 0) * var(--revealStagger));
+      }
+
+      :root[data-js] .reveal:not([data-static='true'], [data-inview='true']) & {
+        opacity: 0;
+        transform: translate3d(0, 40px, 0);
+      }
+    }
+  }
+
+  /* Stagger via nth-child so no per-child inline styles are needed. */
+  .inner > *:nth-child(2),
+  .inner > :only-child > *:nth-child(2) {
+    --index: 1;
+  }
+
+  .inner > *:nth-child(3),
+  .inner > :only-child > *:nth-child(3) {
+    --index: 2;
+  }
+
+  .inner > *:nth-child(4),
+  .inner > :only-child > *:nth-child(4) {
+    --index: 3;
+  }
+
+  .inner > *:nth-child(n + 5),
+  .inner > :only-child > *:nth-child(n + 5) {
+    --index: 4;
+  }
+}

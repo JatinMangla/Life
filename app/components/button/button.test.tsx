@@ -16,7 +16,7 @@ vi.mock('@remix-run/react', () => ({
     to: string;
     prefetch?: string;
     // eslint-disable-next-line jsx-a11y/anchor-has-content -- children arrive via rest
-  } & AnchorHTMLAttributes<HTMLAnchorElement>) => <a {...rest} href={to} />,
+  } & AnchorHTMLAttributes<HTMLAnchorElement>) => <a {...rest} href={to} data-router-link="" />,
 }));
 
 /**
@@ -85,4 +85,24 @@ describe('Button', () => {
     expect(link).not.toHaveAttribute('disabled');
     expect(link).toHaveAttribute('aria-disabled', 'true');
   });
+
+  it('uses the router for page paths, including in-page hashes', () => {
+    render(<Button href="/#project-1">Projects</Button>);
+
+    expect(screen.getByRole('link')).toHaveAttribute('data-router-link');
+  });
+
+  it.each(['mailto:me@example.com', '/resume.pdf', '/resume.pdf?v=2'])(
+    'renders %s as a plain anchor the router cannot swallow',
+    href => {
+      render(<Button href={href}>Link</Button>);
+
+      const link = screen.getByRole('link');
+
+      expect(link).not.toHaveAttribute('data-router-link');
+      expect(link).toHaveAttribute('href', href);
+      // Not an external site, so no forced new tab.
+      expect(link).not.toHaveAttribute('target');
+    }
+  );
 });

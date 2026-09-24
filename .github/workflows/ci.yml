@@ -5,15 +5,23 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  # Vercel reports each deployment back to GitHub. Tests that need the real
+  # production build run from this event, against the URL it carries.
+  deployment_status:
+
+# Read-only unless a job asks for more.
+permissions:
+  contents: read
 
 # A new push to the same branch cancels the previous run.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   verify:
     name: Lint, typecheck, test, build
+    if: github.event_name != 'deployment_status'
     runs-on: ubuntu-latest
 
     steps:
@@ -30,6 +38,13 @@ jobs:
       # public/draco. If that breaks, every 3D model on the site breaks.
       - name: Install dependencies
         run: npm ci
+
+      # Production dependencies only: dev tooling never ships. The threshold is
+      # `critical` until the React Router 7 migration, because the remaining
+      # high advisories are all on the Remix 2 / React Router 6 line and have
+      # no fix there. Raise it to `high` once that lands.
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=critical
 
       - name: Lint
         run: npm run lint
@@ -52,7 +67,8 @@ jobs:
         run: npm run build:storybook
 
   e2e:
-    name: Accessibility and browser tests
+    name: Browser tests (dev server)
+    if: github.event_name != 'deployment_status'
     runs-on: ubuntu-latest
 
     steps:
@@ -69,8 +85,8 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
-      # Runs axe over every page at desktop and mobile widths, and asserts the
-      # keyboard skip link, the theme toggle and the social links all work.
+      # axe over every page in both themes and at mobile width, plus the
+      # smoke tests: skip link, theme toggle, contact flow, sitemap.
       - name: Run Playwright tests
         run: npm run test:e2e
 
@@ -81,23 +97,54 @@ jobs:
           path: playwright-report
           retention-days: 7
 
-  lighthouse:
-    name: Lighthouse
+  deployed:
+    name: Browser tests and Lighthouse (deployed build)
+    # Only once Vercel says the deployment is live — auditing on push raced
+    # the deploy and measured the previous version.
+    if: github.event_name == 'deployment_status' && github.event.deployment_status.state == 'success'
     runs-on: ubuntu-latest
-    # Only meaningful against a real deployment, so this runs on main after the
-    # Vercel production deploy rather than on pull requests.
-    if: github.event_name == 'push'
+    env:
+      BASE_URL: ${{ github.event.deployment_status.environment_url || github.event.deployment_status.target_url }}
+      # Preview deployments sit behind Vercel Authentication. With a
+      # "Protection Bypass for Automation" secret saved under this name, the
+      # tests send it as a header; without one, previews will answer 401.
+      VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Audit the live site
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests against ${{ env.BASE_URL }}
+        run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-deployed
+          path: playwright-report
+          retention-days: 7
+
+      # Production only: previews are behind authentication, and Lighthouse
+      # scores are only meaningful for what visitors actually get.
+      - name: Lighthouse
+        if: github.event.deployment_status.environment == 'Production'
         uses: treosh/lighthouse-ci-action@v12
         with:
           urls: |
-            https://life-puce-kappa.vercel.app/
-            https://life-puce-kappa.vercel.app/projects/mera-monitor
-            https://life-puce-kappa.vercel.app/contact
+            ${{ env.BASE_URL }}/
+            ${{ env.BASE_URL }}/projects/personal-vault
+            ${{ env.BASE_URL }}/projects/mera-monitor
+            ${{ env.BASE_URL }}/contact
           configPath: ./.lighthouserc.json
           uploadArtifacts: true
           temporaryPublicStorage: true

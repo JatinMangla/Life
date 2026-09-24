@@ -1,18 +1,22 @@
 import { Button } from '~/components/button';
 import { DecoderText } from '~/components/decoder-text';
+import { DecorativeBoundary } from '~/components/decorative-boundary';
 import { Divider } from '~/components/divider';
 import { useHydrated } from '~/hooks/useHydrated';
 import { Heading } from '~/components/heading';
 import { Icon } from '~/components/icon';
 import { Input } from '~/components/input';
+import { Link } from '~/components/link';
 import { Section } from '~/components/section';
 import { Text } from '~/components/text';
 import { tokens } from '~/components/theme-provider/theme';
 import { Transition } from '~/components/transition';
+import { VisuallyHidden } from '~/components/visually-hidden';
 import { useFormInput } from '~/hooks';
-import { Suspense, lazy, useRef } from 'react';
+import { Suspense, lazy, useEffect, useRef } from 'react';
 import { cssProps, msToNum, numToMs } from '~/utils/style';
 import { baseMeta } from '~/utils/meta';
+import config from '~/config.json';
 import { useFetcher } from '@remix-run/react';
 import type { ContactActionData } from '~/routes/api.contact/route';
 import styles from './contact.module.css';
@@ -50,6 +54,7 @@ export const links = () => [
   },
 ];
 
+const COMPLETE_TITLE_ID = 'contact-complete-title';
 const MAX_EMAIL_LENGTH = 512;
 const MAX_MESSAGE_LENGTH = 4096;
 const MAX_NAME_LENGTH = 100;
@@ -65,9 +70,31 @@ export const Contact = () => {
   const fetcher = useFetcher<ContactActionData>();
   const actionData = fetcher.data;
   const sending = fetcher.state === 'submitting';
+  const sent = !!actionData?.success;
+
+  // The form that had focus is unmounted on success, which dropped focus to
+  // <body>. Move it to the confirmation so keyboard and screen reader users
+  // land on the outcome.
+  useEffect(() => {
+    if (!sent) return;
+
+    const frame = requestAnimationFrame(() =>
+      document.getElementById(COMPLETE_TITLE_ID)?.focus()
+    );
+
+    return () => cancelAnimationFrame(frame);
+  }, [sent]);
 
   return (
     <Section className={styles.contact}>
+      {/*
+        Always mounted, so the announcement is heard. A live region that
+        mounts together with its content is usually skipped by screen readers,
+        which is what the old aria-live on the confirmation panel did.
+      */}
+      <VisuallyHidden as="p" role="status" aria-live="polite">
+        {sent ? 'Message sent.' : ''}
+      </VisuallyHidden>
       <Transition<HTMLFormElement> unmount in={!actionData?.success} timeout={1600}>
         {({ status, nodeRef }) => (
           <fetcher.Form
@@ -90,6 +117,16 @@ export const Contact = () => {
               data-status={status}
               style={getDelay(tokens.base.durationXS, initDelay, 0.4)}
             />
+            <Text
+              size="s"
+              as="p"
+              className={styles.direct}
+              data-status={status}
+              style={getDelay(tokens.base.durationXS, initDelay, 0.45)}
+            >
+              Or email me directly at{' '}
+              <Link href={`mailto:${config.email}`}>{config.email}</Link>
+            </Text>
             {/* Honeypot — hidden from real users, bots fill it */}
             <Input
               className={styles.botkiller}
@@ -179,10 +216,12 @@ export const Contact = () => {
       </Transition>
       <Transition<HTMLDivElement> unmount in={actionData?.success}>
         {({ status, nodeRef }) => (
-          <div className={styles.complete} aria-live="polite" ref={nodeRef}>
+          <div className={styles.complete} ref={nodeRef}>
             <Heading
               level={3}
-              as="h3"
+              as="h1"
+              id={COMPLETE_TITLE_ID}
+              tabIndex={-1}
               className={styles.completeTitle}
               data-status={status}
             >
@@ -195,7 +234,7 @@ export const Contact = () => {
               data-status={status}
               style={getDelay(tokens.base.durationXS)}
             >
-              Thanks{actionData?.name ? `, ${actionData.name}` : ''}! I&rsquo;ll get back to you within a couple days.
+              Thanks{actionData?.name ? `, ${actionData.name}` : ''}! I&rsquo;ll get back to you within a couple of days.
             </Text>
             <Button
               secondary
@@ -214,9 +253,11 @@ export const Contact = () => {
       <div className={styles.earthColumn} aria-hidden>
         <div className={styles.globe}>
           {isHydrated && (
-            <Suspense fallback={null}>
-              <ContactEarth />
-            </Suspense>
+            <DecorativeBoundary>
+              <Suspense fallback={null}>
+                <ContactEarth />
+              </Suspense>
+            </DecorativeBoundary>
           )}
         </div>
       </div>

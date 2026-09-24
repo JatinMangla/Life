@@ -1,5 +1,5 @@
-import config from '~/config.json';
 import { projects, projectPath } from '~/data/projects';
+import { canonicalUrlFor } from '~/utils/url';
 
 /**
  * Generated rather than hand-maintained. The previous static file listed a
@@ -8,15 +8,29 @@ import { projects, projectPath } from '~/data/projects';
  */
 const staticPaths = ['/', '/contact', '/uses'];
 
+/** Newest case-study change, standing in for pages that list them all. */
+const latestUpdate = projects.map(project => project.updatedAt).sort().at(-1);
+
 export function loader() {
-  const paths = [...staticPaths, ...projects.map(project => projectPath(project.slug))];
+  const entries = [
+    ...staticPaths.map(path => ({ path, lastmod: path === '/' ? latestUpdate : undefined })),
+    ...projects.map(project => ({
+      path: projectPath(project.slug),
+      lastmod: project.updatedAt,
+    })),
+  ];
 
-  const urls = paths
-    .map(path => {
-      const loc = new URL(path, config.url).href;
-
-      return `  <url>\n    <loc>${loc}</loc>\n    <changefreq>monthly</changefreq>\n  </url>`;
-    })
+  const urls = entries
+    .map(({ path, lastmod }) =>
+      [
+        '  <url>',
+        `    <loc>${canonicalUrlFor(path)}</loc>`,
+        lastmod && `    <lastmod>${lastmod}</lastmod>`,
+        '  </url>',
+      ]
+        .filter(Boolean)
+        .join('\n')
+    )
     .join('\n');
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;

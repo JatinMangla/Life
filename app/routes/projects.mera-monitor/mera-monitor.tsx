@@ -1,27 +1,15 @@
 import mmAnalyticsDashboardPlaceholder from '~/assets/mm-analytics-dashboard-placeholder.jpg';
-import mmHomeFeaturedPlaceholder from '~/assets/mm-home-featured-placeholder.jpg';
-import mmScreenMonitoringPlaceholder from '~/assets/mm-screen-monitoring-placeholder.jpg';
 import mmProductivityPlaceholder from '~/assets/mm-productivity-placeholder.jpg';
 import mmWebAppsPlaceholder from '~/assets/mm-web-apps-placeholder.jpg';
 import mmAttendancePlaceholder from '~/assets/mm-attendance-placeholder.jpg';
 import mmPrivateModePlaceholder from '~/assets/mm-private-mode-placeholder.jpg';
-import mmEfficiencyPlaceholder from '~/assets/mm-efficiency-placeholder.jpg';
-import mmVisibilityPlaceholder from '~/assets/mm-visibility-placeholder.jpg';
 import mmTimeClaimPlaceholder from '~/assets/mm-time-claim-placeholder.jpg';
-import mmHoursSavedPlaceholder from '~/assets/mm-hours-saved-placeholder.jpg';
-import mmTeamSupportPlaceholder from '~/assets/mm-team-support-placeholder.jpg';
 import mmAnalyticsDashboard from '~/assets/mm-analytics-dashboard.webp';
-import mmScreenMonitoring from '~/assets/mm-screen-monitoring.webp';
 import mmProductivity from '~/assets/mm-productivity.webp';
 import mmWebApps from '~/assets/mm-web-apps.webp';
 import mmAttendance from '~/assets/mm-attendance.webp';
-import mmTeamSupport from '~/assets/mm-team-support.webp';
-import mmEfficiency from '~/assets/mm-efficiency.webp';
-import mmVisibility from '~/assets/mm-visibility.webp';
-import mmHoursSaved from '~/assets/mm-hours-saved.webp';
 import mmPrivateMode from '~/assets/mm-private-mode.webp';
 import mmTimeClaim from '~/assets/mm-time-claim.webp';
-import mmHomeFeatured from '~/assets/mm-home-featured.webp';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import {
@@ -29,35 +17,30 @@ import {
   ProjectHeader,
   ProjectImage,
   ProjectSection,
-  ProjectSectionColumns,
   ProjectSectionContent,
   ProjectSectionHeading,
   ProjectSectionText,
   ProjectTextRow,
   ProjectAtmosphere,
 } from '~/layouts/project';
-import { baseMeta, OG_IMAGE_SIZE } from '~/utils/meta';
-import config from '~/config.json';
+import { projectMeta } from '~/utils/meta';
 import { media } from '~/utils/style';
-import { getProject, projectOgImage, projectPath } from '~/data/projects';
+import { getProject } from '~/data/projects';
 import { ArchitectureDiagram } from '~/components/architecture-diagram';
+import { employer, metrics } from '~/data/experience';
 import styles from './mera-monitor.module.css';
-import { metrics } from '~/data/experience';
 
-const { title, description, roles, liveUrl, stack, hue } = getProject('mera-monitor');
+const project = getProject('mera-monitor');
+const { title, description, roles, liveUrl, stack, hue } = project;
 
-export const meta = () => {
-  return baseMeta({
-    title,
-    description,
-    prefix: 'Projects',
-    path: projectPath('mera-monitor'),
-    ogImage: new URL(projectOgImage('mera-monitor'), config.url).href,
-    ogImageAlt: `${title} — case study`,
-    ogImageSize: OG_IMAGE_SIZE,
-    ogType: 'article',
-  });
-};
+/**
+ * Every screenshot on this page is the product's own demo organisation
+ * ("Kevin", round member counts), exported at 856x583. Declared sizes must
+ * match the files — see app/assets/assets.test.ts.
+ */
+const SCREENSHOT = { width: 856, height: 583 } as const;
+
+export const meta = () => projectMeta(project);
 
 export const MeraMonitor = () => {
   return (
@@ -76,248 +59,147 @@ export const MeraMonitor = () => {
           <ProjectSectionContent>
             <ProjectImage
               raised
-              srcSet={`${mmHomeFeatured} 1280w`}
-              width={1280}
-              height={800}
-              placeholder={mmHomeFeaturedPlaceholder}
-              sizes={`(max-width: ${media.mobile}px) 100vw, (max-width: ${media.tablet}px) 800px, 1000px`}
-              alt="Mera Monitor dashboard showing employee productivity analytics and real-time monitoring."
-            />
-          </ProjectSectionContent>
-        </ProjectSection>
-        <ProjectSection>
-          <ProjectTextRow>
-            <ProjectSectionHeading>The Challenge</ProjectSectionHeading>
-            <ProjectSectionText>
-              Mera Monitor needed a complete frontend overhaul to support 10,500+ active
-              users with real-time employee productivity tracking. The existing system
-              lacked performance optimization, proper state management, and secure
-              authentication. The goals were to build a scalable React.js application
-              with lazy loading, code splitting, Redux for complex state flows, and
-              enterprise-grade SSO via Microsoft MSAL and Google OAuth.
-            </ProjectSectionText>
-          </ProjectTextRow>
-        </ProjectSection>
-        <ProjectSection light>
-          <ProjectSectionContent>
-            <Image
-              srcSet={`${mmAnalyticsDashboard} 1024w`}
-              width={1024}
-              height={800}
+              priority
+              srcSet={`${mmAnalyticsDashboard} ${SCREENSHOT.width}w`}
+              {...SCREENSHOT}
               placeholder={mmAnalyticsDashboardPlaceholder}
-              alt="Mera Monitor analytics dashboard with real-time productivity metrics and team performance data"
-              sizes="100vw"
+              sizes={`(max-width: ${media.mobile}px) 100vw, (max-width: ${media.tablet}px) 800px, 1000px`}
+              alt="Mera Monitor organisation dashboard: live member counts, active and productive hours, and a productive-versus-unproductive trend chart."
             />
-            <ProjectTextRow>
-              <ProjectSectionHeading>Analytics Dashboard</ProjectSectionHeading>
-              <ProjectSectionText>
-                Built a comprehensive analytics dashboard with interactive charts powered
-                by ApexCharts, displaying real-time productivity metrics, screen time
-                tracking, application usage statistics, and team performance insights.
-                The dashboard supports multiple data views and custom date ranges for
-                enterprise reporting.
-              </ProjectSectionText>
-            </ProjectTextRow>
-          </ProjectSectionContent>
-        </ProjectSection>
-        <ProjectSection>
-          <ProjectSectionContent>
-            <ProjectImage
-              raised
-              srcSet={`${mmScreenMonitoring} 1280w`}
-              width={1280}
-              height={800}
-              placeholder={mmScreenMonitoringPlaceholder}
-              alt="Mera Monitor screen monitoring showing live employee activity tracking"
-              sizes="100vw"
-            />
-            <ProjectTextRow>
-              <ProjectSectionHeading>Screen Monitoring & Activity Tracking</ProjectSectionHeading>
-              <ProjectSectionText>
-                Implemented real-time screen monitoring with periodic screenshot capture
-                and activity tracking. Built an intuitive interface for managers to view
-                live employee screens, track application usage, and monitor productivity
-                levels. The system handles concurrent streams from 10,500+ active users
-                with optimized WebSocket connections via SignalR.
-              </ProjectSectionText>
-            </ProjectTextRow>
-          </ProjectSectionContent>
-        </ProjectSection>
-        <ProjectSection>
-          <ProjectSectionContent>
-            <ProjectImage
-              raised
-              srcSet={`${mmProductivity} 1280w`}
-              width={1280}
-              height={800}
-              placeholder={mmProductivityPlaceholder}
-              alt="Mera Monitor productivity and unproductivity tracking interface"
-              sizes="100vw"
-            />
-            <ProjectTextRow>
-              <ProjectSectionHeading>Productivity & Unproductivity Classification</ProjectSectionHeading>
-              <ProjectSectionText>
-                Developed an intelligent productivity classification system that categorizes
-                employee activities as productive or unproductive based on application
-                usage, time spent, and custom rules. Built Redux-powered state management
-                for complex async workflows with Thunk and Saga middleware.
-              </ProjectSectionText>
-            </ProjectTextRow>
-          </ProjectSectionContent>
-        </ProjectSection>
-        <ProjectSection light>
-          <ProjectSectionContent>
-            <Image
-              srcSet={`${mmWebApps} 1024w`}
-              width={1024}
-              height={800}
-              placeholder={mmWebAppsPlaceholder}
-              alt="Mera Monitor web applications monitoring dashboard"
-              sizes="100vw"
-            />
-            <ProjectTextRow>
-              <ProjectSectionHeading>Web Applications & URL Tracking</ProjectSectionHeading>
-              <ProjectSectionText>
-                Built comprehensive web application monitoring that tracks visited URLs,
-                time spent on each site, and categorizes websites by productivity level.
-                Implemented with React.js and SCSS modules
-                for scoped styling with Webpack for optimized builds.
-              </ProjectSectionText>
-            </ProjectTextRow>
           </ProjectSectionContent>
         </ProjectSection>
         <ProjectSection>
           <ProjectTextRow>
-            <ProjectSectionHeading>Authentication & Security</ProjectSectionHeading>
+            <ProjectSectionHeading>My part in it</ProjectSectionHeading>
             <ProjectSectionText>
-              Implemented Microsoft MSAL and Google OAuth for enterprise SSO
-              authentication, supporting multi-tenant access. Built JWT-based
-              session management with secure token refresh flows, ensuring
-              data protection for 10,500+ active users.
+              Mera Monitor is {employer.name}&rsquo;s workforce-analytics product, used by{' '}
+              {metrics.activeUsers.value} people. I work on its web app as a{' '}
+              {employer.role.toLowerCase()} in a product team: I build and maintain the
+              dashboard, reporting and settings screens in React and Redux, wired up the
+              single sign-on flows, and did the load-time work described at the end of
+              this page.
+            </ProjectSectionText>
+            <ProjectSectionText>
+              What makes it interesting to build is volume. A manager&rsquo;s view
+              aggregates every member&rsquo;s activity across a date range, so most
+              screens are data-heavy tables and charts that have to stay responsive
+              when an organisation is large.
             </ProjectSectionText>
           </ProjectTextRow>
         </ProjectSection>
-        <ProjectSection>
+        <ProjectSection light>
           <ProjectSectionContent>
-            <ProjectImage
-              raised
-              srcSet={`${mmAttendance} 1280w`}
-              width={1280}
-              height={800}
-              placeholder={mmAttendancePlaceholder}
-              alt="Mera Monitor attendance tracking and time management interface"
-              sizes={`(max-width: ${media.mobile}px) 100vw, 80vw`}
-            />
-          </ProjectSectionContent>
-        </ProjectSection>
-        <ProjectSection>
-          <ProjectSectionContent>
-            <ProjectImage
-              raised
-              srcSet={`${mmPrivateMode} 1280w`}
-              width={1280}
-              height={800}
-              placeholder={mmPrivateModePlaceholder}
-              alt="Mera Monitor private mode and time claim management"
+            <Image
+              srcSet={`${mmWebApps} ${SCREENSHOT.width}w`}
+              {...SCREENSHOT}
+              placeholder={mmWebAppsPlaceholder}
+              alt="Websites and applications report: each member's tracked sites and apps with time spent."
               sizes={`(max-width: ${media.mobile}px) 100vw, 80vw`}
             />
             <ProjectTextRow>
-              <ProjectSectionHeading>Private Mode & Time Claims</ProjectSectionHeading>
+              <ProjectSectionHeading>Reports that stay fast at scale</ProjectSectionHeading>
               <ProjectSectionText>
-                Developed privacy-aware monitoring features including private mode toggles
-                and time claim management. Employees can request breaks or mark specific
-                time periods with custom reasons, while admins get full visibility into
-                attendance patterns and work-hour tracking.
+                The websites-and-applications report lists every tracked site and app per
+                member with time spent. Server state lives in React Query, so switching
+                between team and individual views or date ranges can reuse cached
+                results instead of refetching, and large grids are virtualised rather
+                than rendered in full.
               </ProjectSectionText>
             </ProjectTextRow>
           </ProjectSectionContent>
         </ProjectSection>
         <ProjectSection>
-          <ProjectSectionColumns width="full">
-            <ProjectSectionContent width="full">
-              <ProjectTextRow width="s">
-                <ProjectSectionHeading>Real-time Features</ProjectSectionHeading>
-                <ProjectSectionText>
-                  Integrated SignalR and WebSockets for real-time employee activity
-                  monitoring. Built live dashboards with ApexCharts for data
-                  visualization, showing productivity metrics, screen time, and
-                  application usage in real-time across the entire platform.
-                </ProjectSectionText>
-              </ProjectTextRow>
-            </ProjectSectionContent>
-            <div className={styles.imagePair} data-narrow="true">
-              <Image
-                raised
-                srcSet={`${mmEfficiency} 400w`}
-                width={400}
-                height={300}
-                placeholder={mmEfficiencyPlaceholder}
-                alt="Increased efficiency metrics from Mera Monitor"
-                sizes={`(max-width: ${media.mobile}px) 50vw, 25vw`}
-              />
-              <Image
-                raised
-                srcSet={`${mmVisibility} 400w`}
-                width={400}
-                height={300}
-                placeholder={mmVisibilityPlaceholder}
-                alt="More visibility in team operations"
-                sizes={`(max-width: ${media.mobile}px) 50vw, 25vw`}
-              />
-            </div>
-          </ProjectSectionColumns>
+          <ProjectSectionContent>
+            <ProjectImage
+              raised
+              srcSet={`${mmProductivity} ${SCREENSHOT.width}w`}
+              {...SCREENSHOT}
+              placeholder={mmProductivityPlaceholder}
+              alt="Productivity configuration: lists of URLs an organisation marks as productive or unproductive."
+              sizes={`(max-width: ${media.mobile}px) 100vw, 80vw`}
+            />
+            <ProjectTextRow>
+              <ProjectSectionHeading>Productivity rules</ProjectSectionHeading>
+              <ProjectSectionText>
+                Each organisation decides which sites and apps count as productive. The
+                configuration screen edits those lists, and every chart on the dashboard
+                is classified by them. Forms like this one across the app are built on
+                Formik.
+              </ProjectSectionText>
+            </ProjectTextRow>
+          </ProjectSectionContent>
         </ProjectSection>
         <ProjectSection>
-          <ProjectSectionColumns>
-            <ProjectSectionContent>
-              <ProjectTextRow>
-                <ProjectSectionHeading>
-                  Scalable Frontend Architecture
-                </ProjectSectionHeading>
-                <ProjectSectionText>
-                  Designed a modular architecture with React Query for server-state
-                  caching, Formik for complex forms, and React Table for data-heavy
-                  views. The system supports internationalization via React Intl and
-                  handles complex role-based access control across the application.
-                  Optimized performance through lazy loading, code splitting, and
-                  virtualization for large data grids.
-                </ProjectSectionText>
-              </ProjectTextRow>
-            </ProjectSectionContent>
+          <ProjectSectionContent>
             <div className={styles.imagePair}>
               <Image
                 raised
-                srcSet={`${mmTimeClaim} 400w`}
-                width={400}
-                height={600}
-                placeholder={mmTimeClaimPlaceholder}
-                alt="Time claim management interface"
-                sizes={`(max-width: ${media.mobile}px) 50vw, 25vw`}
+                srcSet={`${mmAttendance} ${SCREENSHOT.width}w`}
+                {...SCREENSHOT}
+                placeholder={mmAttendancePlaceholder}
+                alt="Attendance report: days present and daily totals per member."
+                sizes={`(max-width: ${media.mobile}px) 100vw, 40vw`}
               />
               <Image
                 raised
-                srcSet={`${mmHoursSaved} 400w`}
-                width={400}
-                height={600}
-                placeholder={mmHoursSavedPlaceholder}
-                alt="Hours saved per week through productivity insights"
-                sizes={`(max-width: ${media.mobile}px) 50vw, 25vw`}
+                srcSet={`${mmTimeClaim} ${SCREENSHOT.width}w`}
+                {...SCREENSHOT}
+                placeholder={mmTimeClaimPlaceholder}
+                alt="Time claim screen: a day's activity sessions with their status, ready to be claimed."
+                sizes={`(max-width: ${media.mobile}px) 100vw, 40vw`}
               />
             </div>
-          </ProjectSectionColumns>
+            <ProjectTextRow>
+              <ProjectSectionHeading>Attendance and time claims</ProjectSectionHeading>
+              <ProjectSectionText>
+                Attendance rolls tracked activity up into per-member attendance. Time
+                claims let a member account for time the tracker
+                couldn&rsquo;t see — a meeting away from the desk — and send it for
+                approval, so the report reflects the working day rather than just
+                keyboard activity.
+              </ProjectSectionText>
+            </ProjectTextRow>
+          </ProjectSectionContent>
+        </ProjectSection>
+        <ProjectSection light>
+          <ProjectSectionContent>
+            <Image
+              srcSet={`${mmPrivateMode} ${SCREENSHOT.width}w`}
+              {...SCREENSHOT}
+              placeholder={mmPrivateModePlaceholder}
+              alt="The desktop tracker's session panel with a private-mode toggle."
+              sizes={`(max-width: ${media.mobile}px) 100vw, 80vw`}
+            />
+            <ProjectTextRow>
+              <ProjectSectionHeading>Private mode</ProjectSectionHeading>
+              <ProjectSectionText>
+                Monitoring software is only acceptable if people can see and control it.
+                Private mode pauses capture for personal time, and the session panel
+                shows the current and recent sessions.
+              </ProjectSectionText>
+            </ProjectTextRow>
+          </ProjectSectionContent>
+        </ProjectSection>
+        <ProjectSection>
+          <ProjectTextRow>
+            <ProjectSectionHeading>Sign-in</ProjectSectionHeading>
+            <ProjectSectionText>
+              Organisations sign in with the identity provider they already use:
+              Microsoft accounts through MSAL and Google accounts through OAuth. I
+              integrated both single sign-on flows into the web app.
+            </ProjectSectionText>
+          </ProjectTextRow>
         </ProjectSection>
         <ProjectSection>
           <ProjectSectionContent>
             <ProjectTextRow>
               <ProjectSectionHeading>How the pieces fit together</ProjectSectionHeading>
               <ProjectSectionText>
-                Four concerns, deliberately kept separate: what the user sees,
-                where state lives, how data arrives, and who the user is. Server
-                state sits in React Query rather than Redux, so cache
-                invalidation and refetching are not hand-rolled; Redux holds only
-                the client state that genuinely spans routes. Live monitoring
-                arrives over SignalR rather than polling, because the dashboard
-                shows activity as it happens.
+                Four concerns, deliberately kept separate: what the user sees, where state
+                lives, how data arrives, and who the user is. Server state sits in React
+                Query rather than Redux, so cache invalidation and refetching are not
+                hand-rolled; Redux holds only the client state that genuinely spans
+                routes. Live activity arrives over SignalR rather than polling.
               </ProjectSectionText>
             </ProjectTextRow>
             <ArchitectureDiagram
@@ -352,7 +234,6 @@ export const MeraMonitor = () => {
                   nodes: [
                     { id: 'msal', label: 'Microsoft MSAL', detail: 'enterprise SSO' },
                     { id: 'google', label: 'Google OAuth', detail: 'SSO' },
-                    { id: 'jwt', label: 'JWT', detail: 'session' },
                   ],
                 },
               ]}
@@ -362,29 +243,14 @@ export const MeraMonitor = () => {
         <ProjectSection>
           <ProjectSectionContent>
             <ProjectTextRow center centerMobile noMargin>
-              <ProjectSectionHeading>Project Outcomes</ProjectSectionHeading>
+              <ProjectSectionHeading>Load time</ProjectSectionHeading>
               <ProjectSectionText>
-                Mera Monitor now serves {metrics.activeUsers.value} active users
-                across multiple enterprise clients. Lazy loading, route-level code
-                splitting and bundle trimming cut initial load time by{' '}
-                {metrics.loadTimeReduction.value} —{' '}
-                {metrics.loadTimeReduction.method}. Visit{' '}
-                <Link href={liveUrl}>meramonitor.com</Link> to learn more.
+                Route-level code splitting, lazy-loaded chart libraries and bundle
+                trimming cut initial load time by {metrics.loadTimeReduction.value} (
+                {metrics.loadTimeReduction.method}). The product is live at{' '}
+                <Link href={liveUrl}>meramonitor.com</Link>.
               </ProjectSectionText>
             </ProjectTextRow>
-          </ProjectSectionContent>
-        </ProjectSection>
-        <ProjectSection light>
-          <ProjectSectionContent>
-            <ProjectImage
-              raised
-              srcSet={`${mmTeamSupport} 1280w`}
-              width={1280}
-              height={800}
-              placeholder={mmTeamSupportPlaceholder}
-              alt="Mera Monitor team support and enterprise deployment"
-              sizes="100vw"
-            />
           </ProjectSectionContent>
         </ProjectSection>
       </ProjectContainer>

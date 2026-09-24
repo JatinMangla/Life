@@ -1,0 +1,19 @@
+@layer layout {
+  .tableWrap {
+    width: 100%;
+    overflow-x: auto;
+    margin-block: var(--spaceXL);
+
+    /* Scroll sideways on a phone instead of squeezing a column to one word
+       per line. */
+    & table {
+      min-width: 560px;
+    }
+  }
+
+  .key {
+    font-family: var(--fontStackMonospace, ui-monospace, monospace);
+    font-size: 0.9em;
+    white-space: nowrap;
+  }
+}

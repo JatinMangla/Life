@@ -150,7 +150,9 @@
        link below its text width and the labels overlap. */
     @media (--mediaMobile), (--mediaMobileLandscape) {
       font-size: calc((14 / 16) * 1rem);
-      padding: var(--spaceXS) var(--spaceXS);
+      /* 8px vertical padding keeps the tap target above WCAG 2.5.8's 24px
+         minimum; 4px left the links about 22px tall. */
+      padding: var(--spaceS) var(--spaceXS);
       white-space: nowrap;
       flex: 0 0 auto;
     }

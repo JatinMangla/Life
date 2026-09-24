@@ -41,7 +41,16 @@ export function useWindowSize(): WindowSize {
   }, []);
 
   useEffect(() => {
-    const handleResize = () => setWindowSize(getSize());
+    // iOS fires resize as the URL bar slides in and out. Returning the same
+    // object when nothing changed lets React skip the re-render, instead of
+    // every consumer resizing its WebGL canvas (which clears it) each time.
+    const handleResize = () => {
+      const next = getSize();
+
+      setWindowSize(previous =>
+        previous.width === next.width && previous.height === next.height ? previous : next
+      );
+    };
 
     handleResize();
     window.addEventListener('resize', handleResize);

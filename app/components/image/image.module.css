@@ -118,5 +118,10 @@
     &:focus {
       opacity: 1;
     }
+
+    /* No hover on touch screens, so the control has to be there already. */
+    @media (hover: none) {
+      opacity: 1;
+    }
   }
 }

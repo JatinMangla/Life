@@ -1,17 +1,8 @@
 import { test, expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { pages } from './routes';
 
-const pages = [
-  { name: 'home', path: '/' },
-  { name: 'contact', path: '/contact' },
-  { name: 'tech stack', path: '/uses' },
-  { name: 'Mera Monitor case study', path: '/projects/mera-monitor' },
-  { name: 'Screen Coach case study', path: '/projects/screen-coach' },
-  { name: 'Kundli Predict case study', path: '/projects/kundli-predict' },
-  { name: 'CareerPilot AI case study', path: '/projects/careerpilot-ai' },
-  { name: '404', path: '/this-page-does-not-exist' },
-];
 
 /**
  * Sections reveal on scroll by transitioning from `opacity: 0`, and axe

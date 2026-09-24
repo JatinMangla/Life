@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { baseMeta, OG_IMAGE_SIZE } from './meta';
+import { baseMeta, OG_IMAGE_SIZE, projectMeta, projectMetaTitle } from './meta';
 import config from '~/config.json';
+import { getProject, projects } from '~/data/projects';
 
 interface MetaTag {
   title?: string;
@@ -14,9 +15,8 @@ const find = (tags: MetaTag[], value: string) =>
 
 describe('baseMeta', () => {
   const tags = baseMeta({
-    title: 'Mera Monitor',
+    title: 'Mera Monitor case study',
     description: 'A case study.',
-    prefix: 'Projects',
     path: '/projects/mera-monitor',
   }) as MetaTag[];
 
@@ -36,8 +36,26 @@ describe('baseMeta', () => {
     expect(broken).toEqual([]);
   });
 
-  it('composes the title from the prefix and the page title', () => {
-    expect(tags.find(tag => 'title' in tag)?.title).toBe('Projects | Mera Monitor');
+  it('leads with the page and ends with my name', () => {
+    expect(tags.find(tag => 'title' in tag)?.title).toBe(
+      `Mera Monitor case study | ${config.name}`
+    );
+  });
+
+  it('keeps every project title within what search results display', () => {
+    for (const project of projects) {
+      const [title] = baseMeta({
+        title: projectMetaTitle(project.shortTitle),
+        description: project.description,
+      }) as MetaTag[];
+
+      expect(title?.title?.length).toBeLessThanOrEqual(60);
+    }
+  });
+
+  it('declares the default social card at its real size', () => {
+    expect(find(tags, 'og:image:width')).toBe(String(OG_IMAGE_SIZE.width));
+    expect(find(tags, 'og:image:height')).toBe(String(OG_IMAGE_SIZE.height));
   });
 
   it('declares the real pixel size of the preview image', () => {
@@ -70,5 +88,18 @@ describe('baseMeta', () => {
     const rootTags = baseMeta({ title: 'Contact', description: 'Say hello.' }) as MetaTag[];
 
     expect(find(rootTags, 'og:url')).toBe(`${config.url}/`);
+  });
+
+  it('gives each case study CreativeWork structured data attributed to me', () => {
+    const tags = projectMeta(getProject('personal-vault')) as Array<Record<string, unknown>>;
+    const schema = tags.find(tag => 'script:ld+json' in tag)?.['script:ld+json'] as
+      | Record<string, unknown>
+      | undefined;
+
+    expect(schema).toMatchObject({
+      '@type': 'CreativeWork',
+      url: `${config.url}/projects/personal-vault`,
+      author: { '@id': `${config.url}/#person` },
+    });
   });
 });

@@ -28,6 +28,7 @@ export const ProjectAtmosphere = ({ hue, className }: ProjectAtmosphereProps) =>
     >
       <div className={styles.glow} />
       <div className={styles.grid} />
+      <div className={styles.vignette} />
     </div>
   );
 };

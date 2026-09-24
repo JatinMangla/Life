@@ -13,12 +13,6 @@
     @media (--mediaMobile) {
       grid-template-columns: 1fr;
       gap: var(--spaceL);
-      max-width: 360px;
-      margin-inline: auto;
-    }
-  }
-
-  .imagePair[data-narrow='true'] {
-    max-width: 600px;
+          }
   }
 }

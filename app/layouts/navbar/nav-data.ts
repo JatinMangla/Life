@@ -19,8 +19,10 @@ export const navLinks: NavLink[] = [
     pathname: '/#project-1',
   },
   {
+    // Experience sits directly above the bio, so "About" lands on the work
+    // history first — a fifth link would not fit the mobile bar.
     label: 'About',
-    pathname: '/#details',
+    pathname: '/#experience',
   },
   {
     label: 'Tech Stack',

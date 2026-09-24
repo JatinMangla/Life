@@ -321,6 +321,11 @@ export const Model = ({
     return () => {
       renderTarget.current.dispose();
       renderTargetBlur.current.dispose();
+      // Never attached to a mesh for long (the shadow pass swaps them onto
+      // the blur plane per frame), so cleanScene's traversal misses them.
+      depthMaterial.current.dispose();
+      horizontalBlurMaterial.current.dispose();
+      verticalBlurMaterial.current.dispose();
       removeLights(lights.current);
       cleanScene(scene.current);
       cleanRenderer(renderer.current);
@@ -431,9 +436,26 @@ const Device = ({
   onLoad,
   show,
 }: DeviceProps): null => {
-  const [loadDevice, setLoadDevice] = useState<{ start: () => Promise<DeviceHandles> }>();
+  const [loadDevice, setLoadDevice] = useState<{
+    start: () => Promise<DeviceHandles | null>;
+  }>();
+  const [failure, setFailure] = useState<{ error: unknown }>();
   const reduceMotion = useReducedMotion();
   const placeholderScreen = useRef<Mesh<BufferGeometry, MeshStandardMaterial>>();
+  const unmounted = useRef(false);
+
+  // A failed download or decode is rethrown during render so the
+  // DecorativeBoundary around the model can swap in the poster. As an
+  // unhandled rejection it left the loading spinner up forever.
+  if (failure) throw failure.error;
+
+  useEffect(() => {
+    unmounted.current = false;
+
+    return () => {
+      unmounted.current = true;
+    };
+  }, []);
 
   useEffect(() => {
     const applyScreenTexture = async (texture: Texture, node: ScreenMesh) => {
@@ -456,10 +478,21 @@ const Device = ({
       let loadFullResTexture: (() => Promise<void>) | undefined;
       let playAnimation: (() => AnimationPlaybackControls | undefined) | undefined;
 
+      // In parallel: awaiting each inside the array ran them one after the
+      // other, so the model download waited for the texture.
       const [placeholder, gltf] = await Promise.all([
-        await textureLoader.loadAsync(texture.placeholder),
-        await modelLoader.loadAsync(url),
+        textureLoader.loadAsync(texture.placeholder),
+        modelLoader.loadAsync(url),
       ]);
+
+      // Navigated away mid-download: the scene and renderer are already
+      // disposed, so free what just arrived instead of adding it to them.
+      if (unmounted.current) {
+        placeholder.dispose();
+        cleanScene(gltf.scene);
+
+        return null;
+      }
 
       modelGroup.current.add(gltf.scene);
 
@@ -579,7 +612,11 @@ const Device = ({
     let animation: AnimationPlaybackControls | undefined;
 
     const onModelLoad = async () => {
-      const { loadFullResTexture, playAnimation } = await loadDevice.start();
+      const handles = await loadDevice.start();
+
+      if (!handles || unmounted.current) return;
+
+      const { loadFullResTexture, playAnimation } = handles;
 
       setLoaded(true);
       onLoad?.();
@@ -596,7 +633,9 @@ const Device = ({
     };
 
     startTransition(() => {
-      onModelLoad();
+      onModelLoad().catch(error => {
+        if (!unmounted.current) setFailure({ error });
+      });
     });
 
     return () => {

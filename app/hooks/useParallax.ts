@@ -1,15 +1,24 @@
 import { useReducedMotion } from 'framer-motion';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
  * Report a scroll-derived offset, clamped to one viewport height and batched
- * into a single rAF per frame. Does nothing when reduced motion is preferred.
+ * into a single rAF per frame. Does nothing when reduced motion is preferred
+ * or the multiplier is 0.
  */
 export function useParallax(multiplier: number, onChange: (offset: number) => void): void {
   const reduceMotion = useReducedMotion();
+  // Every caller passes an inline arrow. With `onChange` in the effect's
+  // dependencies, each re-render of the caller tore down the scroll listener
+  // and forced a fresh measurement.
+  const onChangeRef = useRef(onChange);
 
   useEffect(() => {
-    if (reduceMotion) return;
+    onChangeRef.current = onChange;
+  });
+
+  useEffect(() => {
+    if (reduceMotion || multiplier === 0) return;
 
     let ticking = false;
     let animationFrame = 0;
@@ -18,7 +27,7 @@ export function useParallax(multiplier: number, onChange: (offset: number) => vo
       const { innerHeight } = window;
       const offset = Math.max(0, window.scrollY) * multiplier;
 
-      onChange(Math.max(-innerHeight, Math.min(innerHeight, offset)));
+      onChangeRef.current(Math.max(-innerHeight, Math.min(innerHeight, offset)));
       ticking = false;
     };
 
@@ -29,12 +38,12 @@ export function useParallax(multiplier: number, onChange: (offset: number) => vo
       animationFrame = requestAnimationFrame(animate);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
       cancelAnimationFrame(animationFrame);
     };
-  }, [multiplier, onChange, reduceMotion]);
+  }, [multiplier, reduceMotion]);
 }
