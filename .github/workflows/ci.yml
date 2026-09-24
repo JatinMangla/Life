@@ -196,12 +196,20 @@ jobs:
             ? { 'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_SECRET,
                 'x-vercel-set-bypass-cookie': 'true' }
             : {})")
+          # Vercel sends X-Robots-Tag: noindex on every preview, which alone
+          # takes the SEO category from 1.0 to about 0.6. Skip that one audit on
+          # previews only; on production it must pass.
+          skip=()
+          if [ "${{ github.event.deployment_status.environment }}" != "Production" ]; then
+            skip=(--settings.skipAudits=is-crawlable)
+          fi
           npx --yes @lhci/cli@0.14.0 collect --config=.lighthouserc.json \
             --url="$BASE_URL/" \
             --url="$BASE_URL/projects/personal-vault" \
             --url="$BASE_URL/projects/mera-monitor" \
             --url="$BASE_URL/contact" \
-            --settings.extraHeaders="$headers"
+            --settings.extraHeaders="$headers" \
+            "${skip[@]}"
           npx --yes @lhci/cli@0.14.0 assert --config=.lighthouserc.json
 
       # A shareable report link in the log, pass or fail.
