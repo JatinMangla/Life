@@ -212,7 +212,10 @@ jobs:
             "${skip[@]}"
           npx --yes @lhci/cli@0.14.0 assert --config=.lighthouserc.json
 
-      # A shareable report link in the log, pass or fail.
+      # Shareable report links, then scores and any failing audits as
+      # annotations and a job-summary table — pass or fail.
       - name: Upload Lighthouse report
         if: ${{ !cancelled() && steps.reach.outputs.ok == 'true' }}
-        run: npx --yes @lhci/cli@0.14.0 upload --target=temporary-public-storage || true
+        run: |
+          npx --yes @lhci/cli@0.14.0 upload --target=temporary-public-storage || true
+          node scripts/lighthouse-summary.cjs
