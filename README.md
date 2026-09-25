@@ -101,7 +101,7 @@ regression tests pinning down bugs that were found and fixed:
 `npm run test:e2e` drives a real browser. It runs
 [axe](https://github.com/dequelabs/axe-core) against WCAG 2.1 AA over every
 page — the list is derived from `app/data/projects.ts` — at desktop and mobile
-widths and in both themes, and checks the skip link, theme toggle, contact
+widths and in both themes (the `light` project switches with the toggle first), and checks the skip link, theme toggle, contact
 flow, social links, `/home` returning 404, and the sitemap. Sections reveal on
 scroll, so the audit scrolls each page first.
 
@@ -147,9 +147,10 @@ app/
 Notable pieces:
 
 - **Theming** — `components/theme-provider/theme.ts` generates CSS custom
-  properties from a token object. A saved choice persists in a cookie; without
-  one, Chromium's `Sec-CH-Prefers-Color-Scheme` client hint picks the OS
-  theme. Either way the first server render already has the right theme.
+  properties from a token object. The site loads dark; a visitor's choice
+  persists in a cookie that the root loader reads, so the first server render
+  already has the right theme. (Following the OS setting through a client hint
+  was tried and removed: it cost first-time visitors a second page request.)
 - **3D** — device models and the hero sphere are lazy-loaded behind
   `React.lazy` + `IntersectionObserver`, so Three.js stays out of the initial
   bundle. Each scene sits in a `DecorativeBoundary`: without a usable GPU it

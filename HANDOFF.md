@@ -44,8 +44,7 @@ worked through a four-phase improvement plan. Branch:
 - Model loader: parallel fetch, cancel on unmount, failures reach the boundary.
 - A11y: touch-visible video pause, persistent live region + focus on contact
   success, 24px+ mobile nav targets, `100svh`, reduced-motion delays, error page
-  heading, marquee duplicate hidden. Theme follows the OS via the
-  `Sec-CH-Prefers-Color-Scheme` client hint when no choice is saved.
+  heading, marquee duplicate hidden.
 
 **Phase 3 — SEO & content**
 - Titles "X case study | Jatin Mangla"; one canonical URL form
@@ -82,8 +81,46 @@ Remix 2 / React Router 6 line or `@vercel/remix`.
   same canvas; now only when the canvas has left the page. Added
   `canUseWebGL()` probe before starting scenes.
 - `scripts/serve-build.mjs` serves the production build locally for e2e.
+- Deployment CI runs no longer cancel each other (shared concurrency group).
+- Lighthouse now runs via `@lhci/cli` with Playwright's Chromium, on previews
+  too (bypass header), instead of `treosh/lighthouse-ci-action`, which kept
+  failing at "collect".
+- **Removed the OS-theme client hint.** Lighthouse showed `Critical-CH` made
+  Chrome fetch the page twice — ~0.7s on every first visit. The site loads
+  dark again; the `light` Playwright project toggles before auditing.
 - Owner completed: SESSION_SECRET (Vercel), bypass secret (GitHub), `.env`,
   résumé (`public/resume.pdf`, `config.resume`).
+
+### Branch `lighthouse-and-first-paint` (2026-09-25)
+
+Goal: the `deployed` CI job green on preview deployments, Lighthouse included.
+
+- Lighthouse runs with `@lhci/cli` and Playwright's Chromium on previews
+  (bypass header only; `is-crawlable` and `robots-txt` skipped on previews,
+  enforced on production). Scores and failing audits appear as annotations
+  and a job-summary table (`scripts/lighthouse-summary.cjs`).
+- **Why `/contact` never produced a report:** GPU-less runners give Chrome
+  SwiftShader, a software renderer that passed `canUseWebGL()` —
+  `failIfMajorPerformanceCaveat` doesn't reject it. The globe then decoded and
+  drew its 1MB model on the CPU, the tab stopped answering, and Lighthouse
+  died with `PROTOCOL_TIMEOUT` / `Target.setAutoAttach timed out` on all three
+  attempts. Reproduced locally with `--use-angle=swiftshader`.
+- **Fix:** `canUseWebGL()` (`app/utils/webgl.ts`) also refuses known software
+  renderers (SwiftShader, llvmpipe/softpipe, Windows' Basic Render Driver),
+  read from `WEBGL_debug_renderer_info`. Real visitors without GPU
+  acceleration now get the page without the decorative scenes instead of a
+  frozen tab; project cards show their posters. With a GPU nothing changes.
+- **Reporting:** the workflow collects one page at a time (`--additive`), so
+  one bad page no longer hides the rest, and a page that can't be audited is
+  named with Lighthouse's own error — in the step, and again by the summary
+  script (`LIGHTHOUSE_PATHS` / `LIGHTHOUSE_ERRORS` in `ci.yml`).
+- First green `deployed` run (run 36102070146, commit 270847a): Playwright
+  48/48; Lighthouse performance / accessibility / best practices / SEO was
+  100 / 100 / 96 / 100 on `/`, `/projects/personal-vault`,
+  `/projects/mera-monitor` and `/contact`. `/contact` scores 100 in CI
+  because the globe doesn't run there — see item 4 under "Next planned work".
+- Verified locally: typecheck, lint, 110/110 unit, build, 48/48 e2e on the
+  production build.
 
 ## Waiting on the owner
 
@@ -113,6 +150,12 @@ Remix 2 / React Router 6 line or `@vercel/remix`.
    `entry.server.tsx`, remove the static CSP in `vercel.json`).
 3. Tooling: ESLint 9 flat config, Vite 6 / Vitest 3, Storybook 8 (or drop
    Storybook — 14 stories, never deployed).
-4. Contact hardening (needs owner accounts): Cloudflare Turnstile, Upstash
+4. Contact page performance: with a GPU, Lighthouse shows ~1.5–2.9s total
+   blocking time from the 1MB earth.glb and its textures decoding on the main
+   thread (performance ~0.5 locally). CI can't see this any more — its
+   runners have no GPU, so the globe doesn't start there — measure locally.
+   Options: KTX2/compressed textures, a smaller model, or loading the globe
+   on idle/in view.
+5. Contact hardening (needs owner accounts): Cloudflare Turnstile, Upstash
    rate limit (already used in two of the owner's projects), Resend instead of
    Gmail SMTP.

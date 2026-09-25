@@ -103,7 +103,10 @@ createServer(async (req, res) => {
       res.setHeader(key, value);
     }
 
-    const cookies = response.headers.getSetCookie?.() ?? [];
+    // installGlobals() swaps in Remix's Headers, which has raw() but not the
+    // standard getSetCookie(); without the fallback every cookie was dropped.
+    const cookies =
+      response.headers.getSetCookie?.() ?? response.headers.raw?.()['set-cookie'] ?? [];
     if (cookies.length) res.setHeader('Set-Cookie', cookies);
 
     if (response.body) {

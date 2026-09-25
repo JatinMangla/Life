@@ -16,7 +16,9 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? 'github' : 'list',
+  // In CI, annotations on the run plus an HTML report the workflow uploads as
+  // an artifact; 'github' alone writes no files, so the upload found nothing.
+  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
 
   // axe walks the whole tree, and these pages carry large WebGL scenes.
   // Dev-mode first compile of the three.js chunks is slow; these pages carry
@@ -38,11 +40,11 @@ export default defineConfig({
     // Accessibility and layout problems show up at mobile widths that desktop
     // hides, and the nav switches behaviour here.
     { name: 'mobile', use: { ...devices['Pixel 5'] } },
-    // The theme follows the OS preference (a client hint) on first visit, so
-    // the default runs above audit the light theme. This one audits dark.
+    // The site loads dark; the accessibility spec switches this project to the
+    // light theme with the toggle first, so both themes are audited.
     {
-      name: 'dark',
-      use: { ...devices['Desktop Chrome'], colorScheme: 'dark' },
+      name: 'light',
+      use: { ...devices['Desktop Chrome'] },
       testMatch: /accessibility\.spec\.ts/,
     },
   ],

@@ -115,6 +115,10 @@ jobs:
       # Preview deployments sit behind Vercel Authentication. The tests send
       # this "Protection Bypass for Automation" secret as a header.
       VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+      # Pages Lighthouse audits. The summary script reads the same list, so a
+      # page that produced no report is named rather than silently missing.
+      LIGHTHOUSE_PATHS: / /projects/personal-vault /projects/mera-monitor /contact
+      LIGHTHOUSE_ERRORS: ${{ github.workspace }}/lighthouse-errors.tsv
 
     steps:
       - uses: actions/checkout@v4
@@ -183,16 +187,67 @@ jobs:
           path: playwright-report
           retention-days: 7
 
-      # Production only: scores are only meaningful for what visitors get.
+      # Run Lighthouse CI directly with the Chromium Playwright just installed
+      # and used. treosh/lighthouse-ci-action launched the runner's own Chrome,
+      # and every run from August on died at "collect" with no usable error.
+      # Runs on previews too — the bypass header gets it past Vercel's
+      # protection — so a pull request shows the scores before it is merged.
       - name: Lighthouse
-        if: steps.reach.outputs.ok == 'true' && github.event.deployment_status.environment == 'Production'
-        uses: treosh/lighthouse-ci-action@v12
-        with:
-          urls: |
-            ${{ env.BASE_URL }}/
-            ${{ env.BASE_URL }}/projects/personal-vault
-            ${{ env.BASE_URL }}/projects/mera-monitor
-            ${{ env.BASE_URL }}/contact
-          configPath: ./.lighthouserc.json
-          uploadArtifacts: true
-          temporaryPublicStorage: true
+        if: steps.reach.outputs.ok == 'true'
+        run: |
+          export CHROME_PATH="$(node -p "require('playwright').chromium.executablePath()")"
+          # The bypass header alone. Lighthouse sends extra headers on every
+          # request, and adding x-vercel-set-bypass-cookie made Vercel answer
+          # each one with a cookie-setting redirect: ERR_TOO_MANY_REDIRECTS in
+          # the console cost Best Practices 7 points.
+          headers=$(node -p "JSON.stringify(process.env.VERCEL_AUTOMATION_BYPASS_SECRET
+            ? { 'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_SECRET }
+            : {})")
+          # Two SEO audits can't pass on a protected preview, so they are
+          # skipped there and still enforced on production:
+          # - is-crawlable: Vercel sends X-Robots-Tag: noindex on every
+          #   preview, which alone takes SEO from 1.0 to about 0.6.
+          # - robots-txt: Lighthouse fetches robots.txt without the extra
+          #   headers, so on a preview it gets Vercel's login page instead.
+          skip=()
+          if [ "${{ github.event.deployment_status.environment }}" != "Production" ]; then
+            skip=(--settings.skipAudits=is-crawlable,robots-txt)
+          fi
+          # One page per collect. Given every URL at once, lhci stops at the
+          # first page it can't audit and the step fails as a bare "exit code
+          # 1" — that is how /contact went unexplained. Per page, the others
+          # still get scored, and the failing one is named with Lighthouse's
+          # own error, here and again by the summary step.
+          # A step's default shell has no pipefail, which would hand the `if`
+          # below tee's exit status instead of lhci's.
+          set -o pipefail
+          : > "$LIGHTHOUSE_ERRORS"
+          additive=()
+          for path in $LIGHTHOUSE_PATHS; do
+            log="$RUNNER_TEMP/lighthouse${path//\//-}.log"
+            if ! npx --yes @lhci/cli@0.14.0 collect --config=.lighthouserc.json \
+              --url="$BASE_URL$path" \
+              --settings.extraHeaders="$headers" \
+              "${skip[@]}" "${additive[@]}" 2>&1 | tee "$log"; then
+              # Lighthouse's "Runtime error encountered" line names the cause
+              # (NO_FCP, PROTOCOL_TIMEOUT...); otherwise the first error line.
+              reason=$(grep -m1 -E 'Runtime error encountered|PROTOCOL_TIMEOUT|timed out' "$log" \
+                || grep -m1 -iE 'error' "$log" || echo 'lhci collect failed; see the log above')
+              printf '%s\t%s\n' "$path" "$reason" >> "$LIGHTHOUSE_ERRORS"
+              echo "::error title=Lighthouse could not audit $path::$reason"
+            fi
+            # Keep the reports already collected; only the first run clears
+            # results left over from earlier.
+            additive=(--additive)
+          done
+          # Assert whatever was collected, then fail if any page wasn't.
+          npx --yes @lhci/cli@0.14.0 assert --config=.lighthouserc.json
+          test ! -s "$LIGHTHOUSE_ERRORS"
+
+      # Shareable report links, then scores and any failing audits as
+      # annotations and a job-summary table — pass or fail.
+      - name: Upload Lighthouse report
+        if: ${{ !cancelled() && steps.reach.outputs.ok == 'true' }}
+        run: |
+          npx --yes @lhci/cli@0.14.0 upload --target=temporary-public-storage || true
+          node scripts/lighthouse-summary.cjs

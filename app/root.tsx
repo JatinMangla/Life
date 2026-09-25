@@ -60,30 +60,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   // Read-only. This used to re-commit the session on every HTML response,
   // handing every visitor a cookie they never asked for and making every
   // page uncacheable. The theme cookie is only written by /api/set-theme.
+  //
+  // Dark unless the visitor chose light. Following the OS setting through the
+  // Sec-CH-Prefers-Color-Scheme client hint was tried and removed: getting the
+  // hint on a first visit needs Critical-CH, which makes Chrome request the
+  // page a second time — about 0.7s before anything appears, measured by
+  // Lighthouse, for every new visitor.
   const session = await getSession(request.headers.get('Cookie'));
-  const chosen = session.get('theme');
-  // No saved choice: follow the OS setting where the browser sends it as a
-  // client hint (Chromium), resolved on the server so there is no flash.
-  const preferred = request.headers.get('Sec-CH-Prefers-Color-Scheme');
-  const theme: ThemeId =
-    chosen === 'light' || chosen === 'dark' ? chosen : preferred === 'light' ? 'light' : 'dark';
+  const theme: ThemeId = session.get('theme') === 'light' ? 'light' : 'dark';
 
-  return json<RootLoaderData>(
-    { canonicalUrl, theme },
-    {
-      headers: {
-        'Accept-CH': 'Sec-CH-Prefers-Color-Scheme',
-        // Makes Chromium retry the very first request with the hint, rather
-        // than only sending it from the second page view onwards.
-        'Critical-CH': 'Sec-CH-Prefers-Color-Scheme',
-        Vary: 'Sec-CH-Prefers-Color-Scheme, Cookie',
-      },
-    }
-  );
+  return json<RootLoaderData>({ canonicalUrl, theme });
 };
-
-/** Document responses carry the loader's client-hint and Vary headers. */
-export const headers = ({ loaderHeaders }: { loaderHeaders: Headers }) => loaderHeaders;
 
 export default function App() {
   const { canonicalUrl, theme: sessionTheme } = useLoaderData<typeof loader>();

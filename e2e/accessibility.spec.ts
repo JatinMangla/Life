@@ -65,9 +65,32 @@ async function revealPage(page: Page) {
   await page.waitForTimeout(1500);
 }
 
+/**
+ * Switch this context to the light theme through the same endpoint the toggle
+ * calls. Clicking the toggle here depended on hydration, which a cold dev
+ * server re-optimising dependencies could hold up past any timeout; the click
+ * itself is covered by the theme toggle smoke test. The request shares the
+ * page's cookie jar, so every page loaded afterwards renders light.
+ */
+async function useLightTheme(page: Page, baseURL: string) {
+  const response = await page.request.post('/api/set-theme', {
+    form: { theme: 'light' },
+    // The endpoint only accepts same-origin requests, as a browser sends them.
+    headers: { Origin: new URL(baseURL).origin },
+  });
+
+  expect(response.status()).toBe(200);
+}
+
 for (const { name, path } of pages) {
-  test(`${name} has no detectable accessibility violations`, async ({ page }) => {
+  test(`${name} has no detectable accessibility violations`, async ({ page, baseURL }, testInfo) => {
+    if (testInfo.project.name === 'light') await useLightTheme(page, baseURL!);
+
     await page.goto(path);
+
+    if (testInfo.project.name === 'light') {
+      await expect(page.locator('body')).toHaveAttribute('data-theme', 'light');
+    }
     await revealPage(page);
 
     const results = await new AxeBuilder({ page })
