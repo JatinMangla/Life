@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Matches engines.node in package.json and the Vercel function runtime.
       # Node 20 is disabled on Vercel from 1 October 2026.
@@ -77,7 +77,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v4
         with:
@@ -121,7 +121,7 @@ jobs:
       LIGHTHOUSE_ERRORS: ${{ github.workspace }}/lighthouse-errors.tsv
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # Production is tested at the public address visitors use (url in
       # app/config.json). The URL in the deployment event is the unique
