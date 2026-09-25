@@ -115,6 +115,10 @@ jobs:
       # Preview deployments sit behind Vercel Authentication. The tests send
       # this "Protection Bypass for Automation" secret as a header.
       VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+      # Pages Lighthouse audits. The summary script reads the same list, so a
+      # page that produced no report is named rather than silently missing.
+      LIGHTHOUSE_PATHS: / /projects/personal-vault /projects/mera-monitor /contact
+      LIGHTHOUSE_ERRORS: ${{ github.workspace }}/lighthouse-errors.tsv
 
     steps:
       - uses: actions/checkout@v4
@@ -209,14 +213,36 @@ jobs:
           if [ "${{ github.event.deployment_status.environment }}" != "Production" ]; then
             skip=(--settings.skipAudits=is-crawlable,robots-txt)
           fi
-          npx --yes @lhci/cli@0.14.0 collect --config=.lighthouserc.json \
-            --url="$BASE_URL/" \
-            --url="$BASE_URL/projects/personal-vault" \
-            --url="$BASE_URL/projects/mera-monitor" \
-            --url="$BASE_URL/contact" \
-            --settings.extraHeaders="$headers" \
-            "${skip[@]}"
+          # One page per collect. Given every URL at once, lhci stops at the
+          # first page it can't audit and the step fails as a bare "exit code
+          # 1" — that is how /contact went unexplained. Per page, the others
+          # still get scored, and the failing one is named with Lighthouse's
+          # own error, here and again by the summary step.
+          # A step's default shell has no pipefail, which would hand the `if`
+          # below tee's exit status instead of lhci's.
+          set -o pipefail
+          : > "$LIGHTHOUSE_ERRORS"
+          additive=()
+          for path in $LIGHTHOUSE_PATHS; do
+            log="$RUNNER_TEMP/lighthouse${path//\//-}.log"
+            if ! npx --yes @lhci/cli@0.14.0 collect --config=.lighthouserc.json \
+              --url="$BASE_URL$path" \
+              --settings.extraHeaders="$headers" \
+              "${skip[@]}" "${additive[@]}" 2>&1 | tee "$log"; then
+              # Lighthouse's "Runtime error encountered" line names the cause
+              # (NO_FCP, PROTOCOL_TIMEOUT...); otherwise the first error line.
+              reason=$(grep -m1 -E 'Runtime error encountered|PROTOCOL_TIMEOUT|timed out' "$log" \
+                || grep -m1 -iE 'error' "$log" || echo 'lhci collect failed; see the log above')
+              printf '%s\t%s\n' "$path" "$reason" >> "$LIGHTHOUSE_ERRORS"
+              echo "::error title=Lighthouse could not audit $path::$reason"
+            fi
+            # Keep the reports already collected; only the first run clears
+            # results left over from earlier.
+            additive=(--additive)
+          done
+          # Assert whatever was collected, then fail if any page wasn't.
           npx --yes @lhci/cli@0.14.0 assert --config=.lighthouserc.json
+          test ! -s "$LIGHTHOUSE_ERRORS"
 
       # Shareable report links, then scores and any failing audits as
       # annotations and a job-summary table — pass or fail.
