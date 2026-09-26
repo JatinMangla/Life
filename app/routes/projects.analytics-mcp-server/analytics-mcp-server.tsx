@@ -71,6 +71,7 @@ export const AnalyticsMcpServer = () => {
       <ProjectContainer>
         <ProjectAtmosphere hue={hue} />
         <ProjectHeader
+          slug="analytics-mcp-server"
           title={title}
           description={description}
           roles={roles}

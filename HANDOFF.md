@@ -122,6 +122,51 @@ Goal: the `deployed` CI job green on preview deployments, Lighthouse included.
 - Verified locally: typecheck, lint, 110/110 unit, build, 48/48 e2e on the
   production build.
 
+### Branch `redesign-3d` (2026-09-26)
+
+Goal: replace the dated template look (2019-era Hamish Williams design) with
+a 2026-style 3D portfolio, and give every project a 3D preview.
+
+- **Design system:** Geist / Geist Mono (self-hosted, OFL) replace Jost; blue-
+  tinted dark palette with `accent2` violet; glass tokens (`surface`,
+  `border`, `shadow`, `radius*`); aurora glow + film grain on `body::before/
+  ::after`; pill buttons; floating glass navbar.
+- **3D stack:** `@react-three/fiber` 8 + `@react-three/drei` 9 (MIT), always
+  lazy-loaded. `components/scene/SceneCanvas` renders only while on screen,
+  on demand for reduced motion, with `failIfMajorPerformanceCaveat`.
+  `StudioEnvironment` builds reflections from coloured panels (no HDR
+  download; drei's presets fetch from a CDN the CSP blocks).
+- **Home:** new hero (`hero-scene.tsx`, iridescent core + rings + sparkles,
+  follows the cursor and scroll; own band above the copy on phones; CSS orb
+  fallback), tech strip, glass project cards with cursor spotlight, bento
+  About, timeline Experience. Katakana decorations and the displacement
+  sphere are gone.
+- **Project scenes** (`components/project-scene/`): Personal Vault padlock
+  (unlocks on hover), MCP node network with request/response pulses,
+  CareerPilot paper plane through job cards, Kundli armillary sphere.
+  Metaphors, not product screenshots, so the "no fake screenshots" rule
+  holds. Poster remains the no-WebGL fallback. A test requires every project
+  to have a device model or a scene.
+- **Cascade-layer bug fixed:** layer order is now declared in the inline
+  theme style (`LAYER_ORDER`). It was only in reset.css, so on /contact a
+  `layout` stylesheet loaded first and the reset outranked layout and
+  component styles (square theme toggle, padding-less submit button,
+  collapsed form spacing). Likely the root cause of the earlier
+  production-only toggle bug too.
+- Dev server: `resolve.dedupe` + `optimizeDeps.include` in `vite.config.js`,
+  or the lazily discovered R3F got a second React ("Invalid hook call").
+
+- **Case studies (follow-up):** `ProjectHeader` takes `slug` and shows the
+  project's 3D preview beside the title (shared `components/project-preview`,
+  also used by the home cards), with roles as numbered tiles beneath.
+  Screenshots lean toward the cursor with a glare (`components/tilt`, CSS
+  only; off for touch and reduced motion). Architecture diagrams float as a
+  tilted 3D stack on wide mouse screens and lie flat on hover/focus.
+
+Verified: typecheck, lint, 119/119 unit, build, 48/48 e2e on the production
+build; screenshots in dark, light and mobile. Production audit unchanged
+(9, none critical). Not yet measured: Lighthouse with a GPU on the new home.
+
 ## Waiting on the owner
 
 1. ~~Résumé~~ — done.

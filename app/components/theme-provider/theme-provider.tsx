@@ -1,5 +1,5 @@
-import JostVariable from '~/assets/fonts/jost-variable.woff2';
-import JostVariableItalic from '~/assets/fonts/jost-variable-italic.woff2';
+import GeistVariable from '~/assets/fonts/geist-variable.woff2';
+import GeistMonoVariable from '~/assets/fonts/geist-mono-variable.woff2';
 import IPAGothic from '~/assets/fonts/ipa-gothic.woff2';
 import { createContext, useContext } from 'react';
 import type { CSSProperties, ElementType, ReactNode } from 'react';
@@ -128,27 +128,28 @@ const tokenStyles = squish(`
 `);
 
 /**
- * Jost is a variable font under the SIL Open Font License, and IPA Gothic is
- * free under the IPA Font License. One variable file covers 400-700 per style.
+ * Geist and Geist Mono (Vercel, SIL Open Font License) are variable fonts, so
+ * one file each covers every weight. IPA Gothic (IPA Font License) is only for
+ * the DecoderText glyph scramble.
  *
  * Note: everything in this template literal is inlined into the <head> of
  * every server response, so keep comments out of it.
  */
 const fontStyles = squish(`
   @font-face {
-    font-family: Jost;
-    font-weight: 400 700;
-    src: url(${JostVariable}) format('woff2-variations');
+    font-family: Geist;
+    font-weight: 100 900;
+    src: url(${GeistVariable}) format('woff2-variations');
     font-display: swap;
     font-style: normal;
   }
 
   @font-face {
-    font-family: Jost;
-    font-weight: 400 700;
-    src: url(${JostVariableItalic}) format('woff2-variations');
+    font-family: Geist Mono;
+    font-weight: 100 900;
+    src: url(${GeistMonoVariable}) format('woff2-variations');
     font-display: swap;
-    font-style: italic;
+    font-style: normal;
   }
 
   @font-face {
@@ -160,7 +161,20 @@ const fontStyles = squish(`
   }
 `);
 
+/**
+ * Cascade layer order, stated before any stylesheet can state it.
+ *
+ * Layer order is fixed by whichever stylesheet names a layer first. reset.css
+ * declares this same order, but Remix emits route and component stylesheets
+ * in a different order per page: on /contact a `layout` stylesheet came first,
+ * which ranked `reset` above `layout`, and the reset's `button { border: 0;
+ * border-radius: 0; background-color: transparent }` stripped the navbar's
+ * theme toggle. This inline style precedes every <link> in the head.
+ */
+export const LAYER_ORDER = '@layer reset, layout, components;';
+
 export const themeStyles = squish(`
+  ${LAYER_ORDER}
   ${tokenStyles}
   ${fontStyles}
 `);

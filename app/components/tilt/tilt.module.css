@@ -1,0 +1,49 @@
+@layer components {
+  .tilt {
+    --tiltX: 0deg;
+    --tiltY: 0deg;
+    --glareX: 50%;
+    --glareY: 50%;
+
+    perspective: 1400px;
+    display: grid;
+  }
+
+  .inner {
+    position: relative;
+    display: grid;
+    transform: rotateX(var(--tiltX)) rotateY(var(--tiltY));
+    transform-style: preserve-3d;
+    transition: transform 0.7s var(--bezierOutExpo);
+
+    .tilt[data-tilting='true'] & {
+      /* Follows the pointer closely while moving; eases back when it leaves. */
+      transform: rotateX(var(--tiltX)) rotateY(var(--tiltY)) scale(1.015);
+      transition: transform 0.12s linear;
+    }
+
+    & > :first-child {
+      border-radius: var(--radiusM);
+      overflow: hidden;
+    }
+  }
+
+  .glare {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    border-radius: var(--radiusM);
+    pointer-events: none;
+    background: radial-gradient(
+      circle at var(--glareX) var(--glareY),
+      color-mix(in oklab, var(--white) 18%, transparent),
+      transparent 50%
+    );
+    opacity: 0;
+    transition: opacity var(--durationM) ease;
+
+    .tilt[data-tilting='true'] & {
+      opacity: 1;
+    }
+  }
+}

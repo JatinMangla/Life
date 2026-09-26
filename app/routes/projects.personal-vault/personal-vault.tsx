@@ -69,6 +69,7 @@ export const PersonalVault = () => {
       <ProjectContainer>
         <ProjectAtmosphere hue={hue} />
         <ProjectHeader
+          slug="personal-vault"
           title={title}
           description={description}
           url={liveUrl}

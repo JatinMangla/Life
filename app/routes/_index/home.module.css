@@ -2,4 +2,105 @@
   overflow-x: hidden;
   width: 100%;
   max-width: 100%;
+  padding-bottom: var(--space4XL);
+}
+
+.strip {
+  display: flex;
+  overflow: hidden;
+  padding: var(--spaceL) 0;
+  border-block: 1px solid var(--border);
+  background: color-mix(in oklab, var(--background) 60%, transparent);
+  mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+}
+
+.stripTrack {
+  display: flex;
+  flex: 0 0 auto;
+  gap: var(--space2XL);
+  padding: 0 var(--space2XL) 0 0;
+  margin: 0;
+  list-style: none;
+
+  @media (--mediaUseMotion) {
+    animation: strip-scroll 40s linear infinite;
+  }
+}
+
+.stripItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space2XL);
+  font-size: var(--fontSizeBodyL);
+  font-weight: var(--fontWeightMedium);
+  letter-spacing: -0.01em;
+  color: var(--textLight);
+  white-space: nowrap;
+
+  &::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+  }
+}
+
+@keyframes strip-scroll {
+  to {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+.workHeader {
+  max-width: var(--maxWidthXL);
+  margin: 0 auto;
+  padding-top: var(--space5XL);
+  padding-bottom: var(--space2XL);
+  box-sizing: content-box;
+
+  @media (--mediaMobile) {
+    padding-top: var(--space4XL);
+    padding-bottom: var(--spaceL);
+  }
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spaceS);
+  margin: 0 0 var(--spaceL);
+  font-family: var(--monoFontStack);
+  font-size: var(--fontSizeBodyXS);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+
+  &::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: currentColor;
+  }
+}
+
+.workTitle {
+  margin: 0 0 var(--spaceL);
+  max-width: 16ch;
+  font-size: clamp(2.5rem, 6vw, 5.5rem);
+  font-weight: 620;
+  letter-spacing: -0.05em;
+  line-height: 0.98;
+  color: var(--textTitle);
+
+  & span {
+    color: var(--textLight);
+  }
+}
+
+.workLede {
+  margin: 0;
+  max-width: 36rem;
+  font-size: var(--fontSizeBodyL);
+  color: var(--textBody);
 }

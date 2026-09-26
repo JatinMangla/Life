@@ -6,7 +6,16 @@
     z-index: var(--zIndex4);
     transform: translate3d(0, 0, 0);
     margin-left: auto;
-    margin-right: 4rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radiusFull);
+    backdrop-filter: blur(16px) saturate(140%);
+
+    /* The button's own size lives in the later `components` layer, which
+       beats this one; an important declaration in an earlier layer wins. */
+    @media (--mediaMobile) {
+      --buttonSize: 44px !important;
+    }
 
     /*
      * There used to be a rule here hiding this toggle on mobile in favour of a

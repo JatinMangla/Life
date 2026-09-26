@@ -1,0 +1,13 @@
+@layer components {
+  .canvas {
+    position: absolute;
+    inset: 0;
+
+    & canvas {
+      display: block;
+      /* R3F sizes the canvas from the container; stop touch-scrolling from
+         being swallowed by the canvas on phones. */
+      touch-action: pan-y;
+    }
+  }
+}

@@ -8,8 +8,13 @@ import { Text } from '~/components/text';
 import { tokens } from '~/components/theme-provider/theme';
 import { Transition } from '~/components/transition';
 import { ProjectReveal } from './project-reveal';
+import { ProjectPreview } from '~/components/project-preview';
+import { Tilt } from '~/components/tilt';
+import { projects } from '~/data/projects';
+import type { ProjectSlug } from '~/data/projects';
+import { projectModels } from '~/data/project-models';
 import { useParallax } from '~/hooks';
-import { forwardRef, useRef } from 'react';
+import { forwardRef, useRef, useState } from 'react';
 import type { ElementType, HTMLAttributes, ReactNode, Ref } from 'react';
 import { classes, cssProps, msToNum, numToMs } from '~/utils/style';
 import styles from './project.module.css';
@@ -32,6 +37,11 @@ export interface ProjectHeaderProps {
   repoUrl?: string;
   /** Caveat about the live link, e.g. that it sits behind owner-only auth. */
   note?: string;
+  /**
+   * Show the project's 3D preview beside the title — the same device or
+   * scene as its home-page card, so the two pages read as one thing.
+   */
+  slug?: ProjectSlug;
   className?: string;
 }
 
@@ -45,12 +55,17 @@ export function ProjectHeader({
   hue = '202.24',
   repoUrl,
   note,
+  slug,
   className,
 }: ProjectHeaderProps) {
+  const [stageActive, setStageActive] = useState(false);
+  const project = slug ? projects.find(entry => entry.slug === slug) : undefined;
+
   return (
     <Section className={classes(styles.header, className)} as="section">
       <div
         className={styles.headerContent}
+        data-stage={!!project}
         style={cssProps({ initDelay: numToMs(initDelay), hue })}
       >
         <div className={styles.details}>
@@ -103,8 +118,25 @@ export function ProjectHeader({
             </Text>
           )}
         </div>
+        {!!project && (
+          <div
+            className={styles.headerStage}
+            onPointerEnter={() => setStageActive(true)}
+            onPointerLeave={() => setStageActive(false)}
+          >
+            <ProjectPreview
+              eager
+              slug={project.slug}
+              title={project.shortTitle}
+              stack={project.stack}
+              hue={project.hue}
+              model={projectModels[project.slug]}
+              active={stageActive}
+            />
+          </div>
+        )}
         {!!roles?.length && (
-          <ul className={styles.meta}>
+          <ul className={styles.meta} aria-label={project ? 'My role' : undefined}>
             {roles.map((role, index) => (
               <li
                 className={styles.metaItem}
@@ -215,7 +247,9 @@ export const ProjectBackground = ({
 
 export const ProjectImage = ({ className, alt, ...rest }: ImageProps) => (
   <div className={classes(styles.image, className)}>
-    <Image reveal alt={alt} delay={300} {...rest} />
+    <Tilt>
+      <Image reveal alt={alt} delay={300} {...rest} />
+    </Tilt>
   </div>
 );
 

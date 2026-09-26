@@ -6,6 +6,9 @@ import { ProjectSummary } from './project-summary';
 import { useEffect, useRef, useState } from 'react';
 import { projects, projectPath } from '~/data/projects';
 import { projectModels } from '~/data/project-models';
+import { marqueeTags } from '~/data/skills';
+import { Section } from '~/components/section';
+import { ProjectReveal } from '~/layouts/project/project-reveal';
 import config from '~/config.json';
 import { employer } from '~/data/experience';
 import styles from './home.module.css';
@@ -38,10 +41,43 @@ export const meta = () => {
   });
 };
 
+const numberWords = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+
+/** "Two", or "12" once a word would be silly. Counts come from projects.ts. */
+const countWord = (count: number, lower = false) => {
+  const word = numberWords[count] ?? String(count);
+
+  return lower ? word.toLowerCase() : word;
+};
+
+const workCount = projects.filter(project => project.kind === 'work').length;
+const personalCount = projects.length - workCount;
+
+/** The stack, scrolling past between the hero and the work. */
+function TechStrip() {
+  return (
+    <div className={styles.strip}>
+      <ul className={styles.stripTrack} aria-label="Technologies I work with">
+        {marqueeTags.map(tag => (
+          <li key={tag} className={styles.stripItem}>
+            {tag}
+          </li>
+        ))}
+      </ul>
+      {/* The second copy makes the loop seamless; it's hidden from assistive
+          tech so the list isn't read twice. */}
+      <ul className={styles.stripTrack} aria-hidden>
+        {marqueeTags.map(tag => (
+          <li key={tag} className={styles.stripItem}>
+            {tag}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export const Home = () => {
-  // Tracked by element id rather than by ref, so nothing has to read
-  // `ref.current` during render to decide what's visible.
-  const [visibleSections, setVisibleSections] = useState(() => new Set());
   const [scrollIndicatorHidden, setScrollIndicatorHidden] = useState(false);
   const intro = useRef<HTMLElement>(null);
   const details = useRef<HTMLElement>(null);
@@ -49,18 +85,6 @@ export const Home = () => {
   const projectRefs = useRef<(HTMLElement | null)[]>([]);
 
   useEffect(() => {
-    const sectionObserver = new IntersectionObserver(
-      (entries, observer) => {
-        entries.forEach(entry => {
-          if (!entry.isIntersecting) return;
-
-          observer.unobserve(entry.target);
-          setVisibleSections(previous => new Set(previous).add(entry.target.id));
-        });
-      },
-      { rootMargin: '0px 0px -10% 0px', threshold: 0.1 }
-    );
-
     const indicatorObserver = new IntersectionObserver(
       ([entry]) => {
         setScrollIndicatorHidden(!entry?.isIntersecting);
@@ -68,23 +92,9 @@ export const Home = () => {
       { rootMargin: '-100% 0px 0px 0px' }
     );
 
-    const sections = [
-      intro.current,
-      ...projectRefs.current,
-      experience.current,
-      details.current,
-    ];
-
-    sections.forEach(section => {
-      if (section) sectionObserver.observe(section);
-    });
-
     if (intro.current) indicatorObserver.observe(intro.current);
 
-    return () => {
-      sectionObserver.disconnect();
-      indicatorObserver.disconnect();
-    };
+    return () => indicatorObserver.disconnect();
   }, []);
 
   return (
@@ -94,6 +104,19 @@ export const Home = () => {
         sectionRef={intro}
         scrollIndicatorHidden={scrollIndicatorHidden}
       />
+      <TechStrip />
+      <Section className={styles.workHeader}>
+        <ProjectReveal>
+          <p className={styles.eyebrow}>Selected work</p>
+          <p className={styles.workTitle}>
+            Things I&rsquo;ve built, <span>and how they went.</span>
+          </p>
+          <p className={styles.workLede}>
+            {countWord(workCount)} products from my day job and {countWord(personalCount, true)}{' '}
+            I designed, built and run myself. Every one has a full case study.
+          </p>
+        </ProjectReveal>
+      </Section>
       {projects.map((project, index) => {
         const id = `project-${index + 1}`;
 
@@ -101,15 +124,16 @@ export const Home = () => {
           <ProjectSummary
             key={project.slug}
             id={id}
+            slug={project.slug}
             sectionRef={(element: HTMLElement | null) => {
               projectRefs.current[index] = element;
             }}
-            visible={visibleSections.has(id)}
             index={index + 1}
+            total={projects.length}
             alternate={index % 2 === 1}
             title={project.shortTitle}
             description={project.description}
-            buttonText="View project"
+            buttonText="Read the case study"
             buttonLink={projectPath(project.slug)}
             model={projectModels[project.slug]}
             stack={project.stack}
@@ -118,16 +142,8 @@ export const Home = () => {
           />
         );
       })}
-      <Experience
-        sectionRef={experience}
-        visible={visibleSections.has('experience')}
-        id="experience"
-      />
-      <Profile
-        sectionRef={details}
-        visible={visibleSections.has('details')}
-        id="details"
-      />
+      <Experience sectionRef={experience} id="experience" />
+      <Profile sectionRef={details} id="details" />
     </div>
   );
 };

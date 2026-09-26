@@ -2,6 +2,7 @@
   .figure {
     margin: 0;
     width: 100%;
+    perspective: 1800px;
   }
 
   .diagram {
@@ -9,8 +10,11 @@
     flex-direction: column;
     gap: var(--spaceM);
     padding: var(--spaceXL);
-    border: 1px solid color-mix(in lab, var(--text) 15%, transparent);
-    background: color-mix(in lab, var(--text) 3%, transparent);
+    border-radius: var(--radiusL);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transform-style: preserve-3d;
+    transition: transform 0.9s var(--bezierOutExpo);
 
     @media (--mediaMobile) {
       padding: var(--spaceL) var(--spaceM);
@@ -18,20 +22,51 @@
   }
 
   .layer {
+    --lift: 0;
+
     display: grid;
     grid-template-columns: 128px 1fr;
     align-items: center;
     gap: var(--spaceL);
-    padding-block: var(--spaceM);
-
-    /* The connecting rule between layers, in place of drawn arrows. */
-    & + & {
-      border-top: 1px solid color-mix(in lab, var(--text) 12%, transparent);
-    }
+    padding: var(--spaceM) var(--spaceL);
+    border-radius: var(--radiusM);
+    border: 1px solid var(--border);
+    background: color-mix(in oklab, var(--background) 70%, transparent);
+    transition:
+      transform 0.9s var(--bezierOutExpo),
+      box-shadow 0.9s var(--bezierOutExpo);
 
     @media (--mediaMobile) {
       grid-template-columns: 1fr;
       gap: var(--spaceS);
+      padding: var(--spaceM);
+    }
+  }
+
+  /*
+   * The 3D stack: only with a mouse, room to spare and motion allowed. Each
+   * layer rises by its --lift above the one beneath, so requests visibly
+   * travel down through the stack; hover or focus lays it flat to read.
+   */
+  @media (hover: hover) and (pointer: fine) and (min-width: 1041px) and (--mediaUseMotion) {
+    .diagram {
+      transform: rotateX(26deg) rotateZ(-3deg) scale(0.92);
+    }
+
+    .layer {
+      transform: translateZ(calc(var(--lift) * 26px));
+      box-shadow: 0 calc(12px + var(--lift) * 10px) 30px -18px oklch(0% 0 0 / 0.55);
+    }
+
+    .figure:hover .diagram,
+    .figure:focus-within .diagram {
+      transform: none;
+    }
+
+    .figure:hover .layer,
+    .figure:focus-within .layer {
+      transform: none;
+      box-shadow: none;
     }
   }
 
@@ -53,6 +88,7 @@
     flex-direction: column;
     gap: 2px;
     padding: var(--spaceS) var(--spaceM);
+    border-radius: var(--radiusS);
     border: 1px solid color-mix(in lab, var(--accent) 45%, transparent);
     background: color-mix(in lab, var(--accent) 8%, transparent);
     min-width: 0;

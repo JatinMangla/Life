@@ -1,144 +1,215 @@
 .profile {
-  width: 100%;
-  min-height: 100vh;
-  margin-top: 60px;
-  margin-bottom: 40px;
-  padding-top: 120px;
-  padding-bottom: 40px;
-  display: flex;
-  justify-content: center;
-
-  @media (--mediaTablet) {
-    padding-top: 50px;
-    padding-right: 80px;
-    padding-left: 80px;
-    height: auto;
-    margin-top: 40px;
-    margin-bottom: 20px;
-  }
+  padding-top: var(--space5XL);
 
   @media (--mediaMobile) {
-    margin-top: 0;
     padding-top: var(--space4XL);
-    overflow-x: hidden;
-  }
-
-  @media (--mediaMobile), (--mediaMobileLS) {
-    padding-right: var(--spaceOuter);
-    padding-left: var(--spaceOuter);
-  }
-
-  @media (max-width: 820px) and (max-height: 420px) {
-    padding-right: var(--space4XL);
-    padding-left: var(--space4XL);
   }
 }
 
 .content {
-  display: grid;
-  grid-template-columns: 1fr 50%;
-  grid-column-gap: var(--space2XL);
-  max-width: var(--maxWidthL);
-  width: 100%;
+  max-width: var(--maxWidthXL);
+  margin: 0 auto;
+}
 
-  @media (--mediaTablet) {
-    max-width: 600px;
-    grid-template-columns: 100%;
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spaceS);
+  margin: 0 0 var(--spaceL);
+  font-family: var(--monoFontStack);
+  font-size: var(--fontSizeBodyXS);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+
+  &::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: currentColor;
   }
 }
 
-.column {
-  position: relative;
+/*
+ * Bento: the bio spans two rows on the left, the portrait sits top right,
+ * and two small tiles share the bottom right.
+ */
+.bento {
+  display: grid;
+  grid-template-columns: 1.35fr 0.65fr 0.65fr;
+  grid-template-areas:
+    'bio portrait portrait'
+    'bio now toolkit';
+  gap: var(--spaceM);
+
+  @media (--mediaTablet) {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      'bio bio'
+      'portrait now'
+      'portrait toolkit';
+  }
+
+  @media (--mediaMobile) {
+    grid-template-columns: 100%;
+    grid-template-areas:
+      'portrait'
+      'bio'
+      'now'
+      'toolkit';
+  }
+
+  & [data-tile] {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radiusL);
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+}
+
+.bio {
+  grid-area: bio;
+  padding: var(--space3XL);
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: 40px;
-  transform: translate3d(0, 0, 0);
+
+  @media (--mediaMobile) {
+    padding: var(--spaceXL) var(--spaceL);
+  }
 }
 
 .title {
-  white-space: nowrap;
-  margin-bottom: var(--spaceL);
-  opacity: 0;
-  transition: opacity var(--durationXL) ease var(--durationM);
-
-  &[data-visible='true'] {
-    opacity: 1;
-  }
+  margin: 0 0 var(--spaceXL);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 620;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  background: linear-gradient(100deg, var(--textTitle) 30%, var(--accent) 80%, var(--accent2));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .description {
-  margin-bottom: var(--spaceXL);
-  opacity: 0;
-  transition: opacity var(--durationXL) ease var(--durationL);
+  margin: 0 0 var(--spaceL);
+  font-size: var(--fontSizeBodyM);
+  line-height: 1.7;
+  color: var(--textBody);
 
-  &[data-visible='true'] {
-    opacity: 1;
-  }
-}
-
-.tag {
-  /* margin-top: 220px; */
-  margin-bottom: 1rem;
-  display: grid;
-  grid-template-columns: var(--space4XL) 1fr;
-  gap: 12px;
-  align-items: center;
-
-  @media (--mediaTablet) {
-    margin-top: 30px;
-  }
-}
-
-.tagText {
-  font-size: var(--fontSizeBodyS);
-  font-weight: var(--fontWeightMedium);
-  color: var(--primary);
-  opacity: 0;
-  transition-property: opacity;
-  transition-timing-function: var(--bezierFastoutSlowin);
-  transition-duration: var(--durationM);
-  transition-delay: 1.3s;
-
-  @media (--mediaUseMotion) {
-    transition-property: opacity, transform;
-    transform: translate3d(calc(var(--spaceM) * -1), 0, 0);
-  }
-
-  &[data-visible='true'] {
-    transform: none;
-    opacity: 1;
-  }
-}
-
-.image {
-  position: relative;
-  width: 100%;
-}
-
-.svg {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  top:8rem;
-  transform: translate3d(50%, -20%, 0);
-  height: 100%;
-  z-index: var(--zIndex3);
-  opacity: 0;
-  transition: opacity var(--durationM) ease var(--durationL);
-  fill: var(--textTitle);
-
-  &[data-visible='true'] {
-    opacity: 1;
+  &:first-of-type {
+    color: var(--textTitle);
   }
 }
 
 .button {
-  opacity: 0;
-  transition: opacity var(--durationXL) ease var(--durationL);
+  align-self: flex-start;
+  margin-top: auto;
+}
 
-  &[data-visible='true'] {
-    transform: none;
-    opacity: 1;
+.portrait {
+  grid-area: portrait;
+  min-height: 360px;
+
+  @media (--mediaTablet) {
+    min-height: 0;
+  }
+
+  /* Soft fade into the tile so the photo reads as part of the card. */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 55%, color-mix(in oklab, var(--background) 55%, transparent));
+    pointer-events: none;
+  }
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+
+  & img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+  }
+
+  @media (--mediaMobile) {
+    position: relative;
+    aspect-ratio: 4 / 4.2;
+  }
+}
+
+.now,
+.toolkit {
+  padding: var(--spaceXL);
+
+  @media (--mediaMobile) {
+    padding: var(--spaceL);
+  }
+}
+
+.now {
+  grid-area: now;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(120% 90% at 100% 0%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 60%),
+    var(--surface);
+}
+
+.toolkit {
+  grid-area: toolkit;
+  background:
+    radial-gradient(120% 90% at 100% 0%, color-mix(in oklab, var(--accent2) 16%, transparent), transparent 60%),
+    var(--surface);
+}
+
+.tileLabel {
+  margin: 0 0 var(--spaceM);
+  font-family: var(--monoFontStack);
+  font-size: var(--fontSizeBodyXS);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--textLight);
+}
+
+.nowRole {
+  margin: 0 0 var(--spaceS);
+  font-size: var(--fontSizeH5);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--textTitle);
+}
+
+.nowPlace {
+  margin: 0;
+  font-size: var(--fontSizeBodyS);
+  line-height: 1.6;
+  color: var(--textBody);
+}
+
+.toolkitList {
+  display: grid;
+  gap: var(--spaceM);
+  margin: 0;
+}
+
+.toolkitRow {
+  & dt {
+    margin-bottom: 2px;
+    font-size: var(--fontSizeBodyXS);
+    font-weight: 600;
+    color: var(--textTitle);
+  }
+
+  & dd {
+    margin: 0;
+    font-size: var(--fontSizeBodyXS);
+    line-height: 1.5;
+    color: var(--textBody);
   }
 }

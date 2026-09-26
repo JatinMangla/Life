@@ -1,9 +1,9 @@
 @layer components {
   .button {
-    --buttonSize: calc((56 / 16) * 1rem);
-    --buttonFontSize: calc((18 / 16) * 1rem);
+    --buttonSize: calc((52 / 16) * 1rem);
+    --buttonFontSize: calc((16 / 16) * 1rem);
     --buttonFocusWidth: 4px;
-    --buttonPadding: 0 var(--spaceL);
+    --buttonPadding: 0 calc(var(--spaceL) + 4px);
     --buttonTextColor: var(--background);
     --buttonTextOpacity: 1;
     --buttonLoaderDelay: 0s;
@@ -33,20 +33,21 @@
       position: absolute;
       inset: 0;
       z-index: -1;
-      clip-path: polygon(
-        0 0,
-        100% 0,
-        100% calc(100% - 8px),
-        calc(100% - 8px) 100%,
-        0 100%
-      );
+      border-radius: var(--radiusFull);
+      box-shadow: inset 0 1px 0 color-mix(in oklab, var(--white) 35%, transparent);
+    }
+
+    &:hover::after {
+      box-shadow:
+        inset 0 1px 0 color-mix(in oklab, var(--white) 35%, transparent),
+        0 10px 40px -8px color-mix(in oklab, var(--primary) 55%, transparent);
     }
 
     @media (--mediaUseMotion) {
       transition-property: transform, opacity, color, background;
 
       &:hover {
-        transform: scale(1.05);
+        transform: translateY(-2px);
       }
 
       &:active {
@@ -73,7 +74,8 @@
         background-color: color-mix(in lab, var(--primary) 20%, transparent);
         transform: scale3d(0, 1, 1);
         transform-origin: right;
-        clip-path: none;
+        border-radius: var(--radiusS);
+        box-shadow: none;
       }
 
       &:hover {
@@ -84,6 +86,7 @@
       &:hover::after {
         transform: scale3d(1, 1, 1);
         transform-origin: left;
+        box-shadow: none;
       }
 
       &[data-icon='chevron-right'] {
@@ -116,10 +119,13 @@
 
       &::after {
         background: color-mix(in lab, var(--text) 0%, transparent);
+        border-radius: var(--radiusFull);
+        box-shadow: none;
       }
 
       &:hover::after {
         background: color-mix(in lab, var(--text) 10%, transparent);
+        box-shadow: none;
       }
     }
 

@@ -79,6 +79,16 @@ module.exports = {
       },
     },
 
+    // React Three Fiber scenes: their JSX elements are three.js objects, not
+    // DOM nodes, so props like `args`, `position` and `metalness` are real.
+    // TypeScript still checks every one of them against three's types.
+    {
+      files: ['app/components/scene/**', 'app/components/project-scene/**', '**/*-scene.tsx'],
+      rules: {
+        'react/no-unknown-property': 'off',
+      },
+    },
+
     // Node scripts and config files
     {
       files: ['scripts/**/*.cjs', '*.cjs', '*.config.js'],

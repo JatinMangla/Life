@@ -14,8 +14,8 @@ import type { ProjectModel, ProjectSlug } from './projects';
  */
 /**
  * Only the two work projects ship device screenshots. The personal projects
- * are auth-gated, so there is no honest screenshot to show — they render a
- * ProjectPoster instead. See hasDeviceModel() in projects.ts.
+ * are auth-gated, so there is no honest screenshot to show — they get a 3D
+ * scene instead (components/project-scene). See hasDeviceModel() in projects.ts.
  */
 export const projectModels: Partial<Record<ProjectSlug, ProjectModel>> = {
   'mera-monitor': {

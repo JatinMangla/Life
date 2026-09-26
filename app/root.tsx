@@ -16,7 +16,7 @@ import { getSession } from '~/utils/session.server';
 import { canonicalUrlFor } from '~/utils/url';
 import { useNonce } from '~/utils/csp';
 import { ThemeProvider, themeStyles } from '~/components/theme-provider';
-import JostVariable from '~/assets/fonts/jost-variable.woff2';
+import GeistVariable from '~/assets/fonts/geist-variable.woff2';
 
 import { Error } from '~/layouts/error';
 import type { RouteErrorLike } from '~/layouts/error/error';
@@ -32,11 +32,11 @@ import './global.css';
 const JS_FLAG_SCRIPT = "document.documentElement.dataset.js='';";
 
 export const links = () => [
-  // One variable file covers every weight the site uses, so a single
-  // preload replaces the two the static Gotham cuts needed.
+  // One variable file covers every weight the site uses. Geist Mono only
+  // sets small labels, so it isn't worth a preload.
   {
     rel: 'preload',
-    href: JostVariable,
+    href: GeistVariable,
     as: 'font',
     type: 'font/woff2',
     crossOrigin: '',
