@@ -102,10 +102,12 @@ pre {
   color: var(--black);
 }
 
+/* No border-radius here: this rule is unlayered, so a radius would square
+   off every rounded control the moment it takes focus. Outlines follow the
+   element's own radius. */
 :focus {
   outline: 2px solid var(--accent);
   outline-offset: 4px;
-  border-radius: 4px;
 }
 
 :focus:not(:focus-visible) {

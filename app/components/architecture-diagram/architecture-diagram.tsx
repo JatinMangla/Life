@@ -1,4 +1,4 @@
-import { classes } from '~/utils/style';
+import { classes, cssProps } from '~/utils/style';
 import styles from './architecture-diagram.module.css';
 
 export interface DiagramNode {
@@ -28,6 +28,9 @@ export interface ArchitectureDiagramProps {
  * The visual is `aria-hidden`; the same information is rendered as a nested
  * list for assistive tech, because a box-and-arrow picture communicates
  * nothing to a screen reader.
+ *
+ * On wide screens with a mouse the layers float as a tilted 3D stack, top
+ * layer highest, and settle flat for reading on hover or focus.
  */
 export const ArchitectureDiagram = ({
   caption,
@@ -36,8 +39,12 @@ export const ArchitectureDiagram = ({
 }: ArchitectureDiagramProps) => (
   <figure className={classes(styles.figure, className)}>
     <div className={styles.diagram} aria-hidden>
-      {layers.map(layer => (
-        <div className={styles.layer} key={layer.name}>
+      {layers.map((layer, index) => (
+        <div
+          className={styles.layer}
+          key={layer.name}
+          style={cssProps({ lift: String(layers.length - 1 - index) })}
+        >
           <span className={styles.layerName}>{layer.name}</span>
           <div className={styles.nodes}>
             {layer.nodes.map(node => (

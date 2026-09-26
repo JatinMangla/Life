@@ -28,6 +28,7 @@ export const KundliPredict = () => {
       <ProjectContainer>
         <ProjectAtmosphere hue={hue} />
         <ProjectHeader
+          slug="kundli-predict"
           title={title}
           description={description}
           url={liveUrl}

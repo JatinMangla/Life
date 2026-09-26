@@ -46,6 +46,7 @@ export function ScreenCoach() {
       <ProjectContainer>
         <ProjectAtmosphere hue={hue} />
         <ProjectHeader
+          slug="screen-coach"
           title={title}
           description={description}
           url={liveUrl}

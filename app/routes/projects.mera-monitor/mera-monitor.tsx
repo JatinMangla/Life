@@ -48,6 +48,7 @@ export const MeraMonitor = () => {
       <ProjectContainer>
         <ProjectAtmosphere hue={hue} />
         <ProjectHeader
+          slug="mera-monitor"
           title={title}
           description={description}
           url={liveUrl}

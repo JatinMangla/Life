@@ -372,6 +372,98 @@
     }
   }
 
+  /*
+   * Header with a 3D stage: title and summary on the left, the project's
+   * device or scene on the right, and the roles as a row of tiles beneath.
+   */
+  .headerContent[data-stage='true'] {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space3XL) var(--space4XL);
+    align-items: center;
+    max-width: var(--maxWidthXL);
+    width: 100%;
+
+    @media (--mediaLaptop) {
+      gap: var(--space2XL) var(--space3XL);
+    }
+
+    @media (--mediaTablet) {
+      grid-template-columns: 100%;
+      gap: var(--spaceXL);
+    }
+  }
+
+  .headerStage {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    aspect-ratio: 1 / 0.9;
+    min-height: 380px;
+    border-radius: var(--radiusL);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+
+    @media (--mediaUseMotion) {
+      opacity: 0;
+      animation: projectFadeSlide 1.4s var(--bezierFastoutSlowin) calc(var(--initDelay) + 200ms)
+        forwards;
+    }
+
+    @media (--mediaTablet) {
+      aspect-ratio: 4 / 3;
+      min-height: 0;
+    }
+
+    @media (--mediaMobile) {
+      aspect-ratio: 1 / 1;
+    }
+  }
+
+  .headerContent[data-stage='true'] .meta {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spaceM);
+    margin: 0;
+    counter-reset: role;
+
+    @media (--mediaMobile) {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spaceS);
+    }
+  }
+
+  .headerContent[data-stage='true'] .metaItem {
+    counter-increment: role;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spaceS);
+    padding: var(--spaceL);
+    border: 1px solid var(--border);
+    border-radius: var(--radiusM);
+    background: var(--surface);
+
+    &:last-child {
+      border-bottom: 1px solid var(--border);
+    }
+
+    &::before {
+      content: counter(role, decimal-leading-zero);
+      font-family: var(--monoFontStack);
+      font-size: var(--fontSizeBodyXS);
+      color: oklch(72% 0.16 var(--hue));
+
+      [data-theme='light'] & {
+        color: oklch(45% 0.16 var(--hue));
+      }
+    }
+
+    @media (--mediaMobile) {
+      padding: var(--spaceM);
+    }
+  }
+
   .image {
     position: relative;
     display: grid;

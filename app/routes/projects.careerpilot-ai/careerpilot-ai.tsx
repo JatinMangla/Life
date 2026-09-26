@@ -28,6 +28,7 @@ export const CareerPilotAi = () => {
       <ProjectContainer>
         <ProjectAtmosphere hue={hue} />
         <ProjectHeader
+          slug="careerpilot-ai"
           title={title}
           description={description}
           url={liveUrl}

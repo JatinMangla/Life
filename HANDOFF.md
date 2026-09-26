@@ -156,6 +156,13 @@ a 2026-style 3D portfolio, and give every project a 3D preview.
 - Dev server: `resolve.dedupe` + `optimizeDeps.include` in `vite.config.js`,
   or the lazily discovered R3F got a second React ("Invalid hook call").
 
+- **Case studies (follow-up):** `ProjectHeader` takes `slug` and shows the
+  project's 3D preview beside the title (shared `components/project-preview`,
+  also used by the home cards), with roles as numbered tiles beneath.
+  Screenshots lean toward the cursor with a glare (`components/tilt`, CSS
+  only; off for touch and reduced motion). Architecture diagrams float as a
+  tilted 3D stack on wide mouse screens and lie flat on hover/focus.
+
 Verified: typecheck, lint, 119/119 unit, build, 48/48 e2e on the production
 build; screenshots in dark, light and mobile. Production audit unchanged
 (9, none critical). Not yet measured: Lighthouse with a GPU on the new home.
