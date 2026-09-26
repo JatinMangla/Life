@@ -295,7 +295,8 @@
   }
 
   .stackItem {
-    padding: 4px var(--spaceS);
+    padding: 4px 11px;
+    border-radius: var(--radiusFull);
     font-size: var(--fontSizeBodyXS);
     color: var(--textBody);
     border: 1px solid color-mix(in lab, var(--stackAccent) 40%, transparent);

@@ -1,44 +1,44 @@
 import { Button } from '~/components/button';
 import { DecorativeBoundary } from '~/components/decorative-boundary';
 import { canUseWebGL } from '~/utils/webgl';
-import { Divider } from '~/components/divider';
-import { Heading } from '~/components/heading';
 import { deviceModels } from '~/components/model/device-models';
 import { Section } from '~/components/section';
-import { Text } from '~/components/text';
-import { useTheme } from '~/components/theme-provider';
-import { Transition } from '~/components/transition';
 import { Loader } from '~/components/loader';
-import { Suspense, lazy, useState } from 'react';
-import type { Ref } from 'react';
-import type { ProjectModel } from '~/data/projects';
+import { ProjectReveal } from '~/layouts/project/project-reveal';
+import { Suspense, lazy, useRef, useState } from 'react';
+import type { PointerEvent, Ref } from 'react';
+import type { ProjectModel, ProjectSlug } from '~/data/projects';
 import { ProjectPoster } from '~/components/project-poster';
 import { cssProps, media } from '~/utils/style';
 import { useHydrated } from '~/hooks/useHydrated';
-import katakana from './katakana.svg';
+import { useInViewport } from '~/hooks';
 import styles from './project-summary.module.css';
 
 const Model = lazy(() =>
   import('~/components/model').then(module => ({ default: module.Model }))
 );
 
+const ProjectScene = lazy(() =>
+  import('~/components/project-scene').then(module => ({ default: module.ProjectScene }))
+);
+
 export interface ProjectSummaryProps {
   id: string;
-  /** Whether the section has scrolled into view. */
-  visible?: boolean;
   sectionRef: Ref<HTMLElement>;
-  /** 1-based position, rendered as the large index number. */
+  slug: ProjectSlug;
+  /** 1-based position, rendered as the index number. */
   index: number;
+  /** How many projects there are, for the "01 / 06" counter. */
+  total: number;
   title: string;
   description: string;
-  /** Omit for projects with no honest screenshot; a poster is shown instead. */
+  /** A device with a real screenshot. Projects without one get a 3D scene. */
   model?: ProjectModel;
-  /** Rendered in the poster when there is no device model. */
-  stack?: readonly string[];
-  /** OKLCH hue for the poster's accent. */
-  hue?: string;
-  /** Small label above the poster title. */
-  eyebrow?: string;
+  stack: readonly string[];
+  /** OKLCH hue for the card's glow and the poster fallback. */
+  hue: string;
+  /** Small label above the title. */
+  eyebrow: string;
   buttonText: string;
   buttonLink: string;
   /** Mirror the layout, putting the preview on the left. */
@@ -47,9 +47,10 @@ export interface ProjectSummaryProps {
 
 export function ProjectSummary({
   id,
-  visible: sectionVisible,
   sectionRef,
+  slug,
   index,
+  total,
   title,
   description,
   model,
@@ -59,176 +60,103 @@ export function ProjectSummary({
   buttonText,
   buttonLink,
   alternate,
-  ...rest
 }: ProjectSummaryProps) {
-  const [focused, setFocused] = useState(false);
-  const [modelLoaded, setModelLoaded] = useState(false);
-  // No WebGL, or the model failed to download: show the poster instead of a
-  // spinner that never resolves.
-  const [modelFailed, setModelFailed] = useState(false);
-  const { theme } = useTheme();
+  const stage = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(false);
+  const [previewLoaded, setPreviewLoaded] = useState(false);
+  // No WebGL, or the scene failed: show the poster instead of a spinner that
+  // never resolves.
+  const [previewFailed, setPreviewFailed] = useState(false);
   const isHydrated = useHydrated();
+  // Start loading a little before the card arrives, and keep it once loaded.
+  const nearViewport = useInViewport(stage, true, { rootMargin: '300px 0px' });
   const titleId = `${id}-title`;
-  const svgOpacity = theme === 'light' ? 0.7 : 1;
-  const indexText = index < 10 ? `0${index}` : index;
-  const phoneSizes = `(max-width: ${media.tablet}px) 30vw, 20vw`;
-  const laptopSizes = `(max-width: ${media.tablet}px) 80vw, 40vw`;
+  const pad = (value: number) => String(value).padStart(2, '0');
+  const showPoster = previewFailed || (isHydrated && !canUseWebGL());
 
-  function handleModelLoad() {
-    setModelLoaded(true);
-  }
+  // Written straight to CSS variables: a state update per pointer move would
+  // re-render the card, and the WebGL scene inside it, at 60+ Hz.
+  const handlePointerMove = (event: PointerEvent<HTMLElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
 
-  function renderKatakana(device: string, visible: boolean) {
-    return (
-      <svg
-        aria-hidden="true"
-        data-visible={visible && modelLoaded}
-        data-light={theme === 'light'}
-        style={cssProps({ opacity: svgOpacity })}
-        className={styles.svg}
-        data-device={device}
-        viewBox="0 0 751 136"
-      >
-        <use href={`${katakana}#katakana-project`} />
-      </svg>
-    );
-  }
+    event.currentTarget.style.setProperty('--spotX', `${event.clientX - bounds.left}px`);
+    event.currentTarget.style.setProperty('--spotY', `${event.clientY - bounds.top}px`);
+  };
 
-  function renderDetails(visible: boolean) {
-    return (
-      <div className={styles.details}>
-        <div aria-hidden className={styles.index}>
-          <Divider
-            notchWidth="64px"
-            notchHeight="8px"
-            collapsed={!visible}
-            collapseDelay={1000}
-          />
-          <span className={styles.indexNumber} data-visible={visible}>
-            {indexText}
-          </span>
-        </div>
-        {/* Shown on every card, not just posters: without it the work and
-            personal projects were indistinguishable at a glance. */}
-        {!!eyebrow && (
-          <Text size="s" as="p" className={styles.kind} data-visible={visible}>
-            {eyebrow}
-          </Text>
-        )}
-        <Heading
-          level={3}
-          as="h2"
-          className={styles.title}
-          data-visible={visible}
-          id={titleId}
-        >
-          {title}
-        </Heading>
-        <Text className={styles.description} data-visible={visible} as="p">
-          {description}
-        </Text>
-        <div className={styles.button} data-visible={visible}>
-          <Button iconHoverShift href={buttonLink} iconEnd="arrow-right">
-            {buttonText}
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  function renderPreview(visible: boolean) {
-    // No device model means no honest product screenshot exists — the two
-    // personal projects are auth-gated. Present them typographically instead.
-    if (!model || modelFailed || (isHydrated && !canUseWebGL())) {
+  function renderPreview() {
+    if (showPoster) {
       return (
-        <div className={styles.preview}>
-          <div className={styles.posterWrapper}>
-            <ProjectPoster
-              title={title}
-              stack={stack ?? []}
-              hue={hue ?? '202.24'}
-              visible={visible}
-            />
-          </div>
+        <div className={styles.poster}>
+          <ProjectPoster title={title} stack={stack} hue={hue} visible />
         </div>
       );
     }
 
+    if (!isHydrated || !nearViewport) return null;
+
+    const onError = () => setPreviewFailed(true);
+    const onLoad = () => setPreviewLoaded(true);
+
+    if (!model) {
+      return (
+        <DecorativeBoundary onError={onError}>
+          <Suspense>
+            <ProjectScene
+              slug={slug}
+              active={active}
+              className={styles.scene}
+              onReady={onLoad}
+            />
+          </Suspense>
+        </DecorativeBoundary>
+      );
+    }
+
+    const isLaptop = model.type === 'laptop';
+
     return (
-      <div className={styles.preview}>
-        {model.type === 'laptop' && (
-          <>
-            {renderKatakana('laptop', visible)}
-            <div className={styles.model} data-device="laptop">
-              {!modelLoaded && (
-                <Loader center className={styles.loader} data-visible={visible} />
-              )}
-              {isHydrated && visible && (
-                <DecorativeBoundary onError={() => setModelFailed(true)}>
-                  <Suspense>
-                    <Model
-                      alt={model.alt}
-                      cameraPosition={{ x: 0, y: 0, z: 8 }}
-                      showDelay={700}
-                      onLoad={handleModelLoad}
-                      show={visible}
-                      models={[
-                        {
-                          ...deviceModels.laptop,
-                          texture: {
-                            ...model.textures[0]!,
-                            sizes: laptopSizes,
-                          },
+      <div className={styles.model} data-device={model.type}>
+        <DecorativeBoundary onError={onError}>
+          <Suspense>
+            <Model
+              alt={model.alt}
+              cameraPosition={isLaptop ? { x: 0, y: 0, z: 7.4 } : { x: 0, y: 0, z: 10.5 }}
+              showDelay={isLaptop ? 300 : 150}
+              onLoad={onLoad}
+              show
+              models={
+                isLaptop
+                  ? [
+                      {
+                        ...deviceModels.laptop,
+                        texture: {
+                          ...model.textures[0]!,
+                          sizes: `(max-width: ${media.tablet}px) 90vw, 50vw`,
                         },
-                      ]}
-                    />
-                  </Suspense>
-                </DecorativeBoundary>
-              )}
-            </div>
-          </>
-        )}
-        {model.type === 'phone' && (
-          <>
-            {renderKatakana('phone', visible)}
-            <div className={styles.model} data-device="phone">
-              {!modelLoaded && (
-                <Loader center className={styles.loader} data-visible={visible} />
-              )}
-              {isHydrated && visible && (
-                <DecorativeBoundary onError={() => setModelFailed(true)}>
-                  <Suspense>
-                    <Model
-                      alt={model.alt}
-                      cameraPosition={{ x: 0, y: 0, z: 11.5 }}
-                      showDelay={300}
-                      onLoad={handleModelLoad}
-                      show={visible}
-                      models={[
-                        {
-                          ...deviceModels.phone,
-                          position: { x: -0.6, y: 1.1, z: 0 },
-                          texture: {
-                            ...model.textures[0]!,
-                            sizes: phoneSizes,
-                          },
+                      },
+                    ]
+                  : [
+                      {
+                        ...deviceModels.phone,
+                        position: { x: -0.65, y: 0.9, z: 0 },
+                        texture: {
+                          ...model.textures[0]!,
+                          sizes: `(max-width: ${media.tablet}px) 30vw, 20vw`,
                         },
-                        {
-                          ...deviceModels.phone,
-                          position: { x: 0.6, y: -0.5, z: 0.3 },
-                          texture: {
-                            ...model.textures[1]!,
-                            sizes: phoneSizes,
-                          },
+                      },
+                      {
+                        ...deviceModels.phone,
+                        position: { x: 0.65, y: -0.6, z: 0.3 },
+                        texture: {
+                          ...model.textures[1]!,
+                          sizes: `(max-width: ${media.tablet}px) 30vw, 20vw`,
                         },
-                      ]}
-                    />
-                  </Suspense>
-                </DecorativeBoundary>
-              )}
-            </div>
-          </>
-        )}
+                      },
+                    ]
+              }
+            />
+          </Suspense>
+        </DecorativeBoundary>
       </div>
     );
   }
@@ -236,31 +164,65 @@ export function ProjectSummary({
   return (
     <Section
       className={styles.summary}
-      data-alternate={alternate}
-      data-first={index === 1}
-      onFocus={() => setFocused(true)}
-      onBlur={() => setFocused(false)}
       as="section"
       aria-labelledby={titleId}
       ref={sectionRef}
       id={id}
       tabIndex={-1}
-      {...rest}
     >
-      <div className={styles.content}>
-        <Transition in={sectionVisible || focused}>
-          {({ visible }) => (
-            <>
-              {/* DOM order is fixed and the alternate/mobile layouts are
-                  expressed as grid placement in CSS. Swapping the order here
-                  instead would remount the whole Three.js model every time the
-                  breakpoint changed. */}
-              {renderDetails(visible)}
-              {renderPreview(visible)}
-            </>
-          )}
-        </Transition>
-      </div>
+      <ProjectReveal stagger={0}>
+        <article
+          className={styles.card}
+          data-alternate={alternate}
+          data-active={active}
+          style={cssProps({ hue })}
+          onPointerMove={handlePointerMove}
+          onPointerEnter={() => setActive(true)}
+          onPointerLeave={() => setActive(false)}
+          onFocus={() => setActive(true)}
+          onBlur={() => setActive(false)}
+        >
+          <div className={styles.details}>
+            <p className={styles.meta}>
+              <span className={styles.index}>
+                {pad(index)}
+                <span className={styles.total}> / {pad(total)}</span>
+              </span>
+              <span className={styles.kind}>{eyebrow}</span>
+            </p>
+            <h2 className={styles.title} id={titleId}>
+              {title}
+            </h2>
+            <p className={styles.description}>{description}</p>
+            <ul className={styles.stack} aria-label="Built with">
+              {stack.slice(0, 5).map(item => (
+                <li key={item} className={styles.chip}>
+                  {item}
+                </li>
+              ))}
+              {stack.length > 5 && (
+                <li className={styles.chip} data-more>
+                  +{stack.length - 5} more
+                </li>
+              )}
+            </ul>
+            <Button iconHoverShift href={buttonLink} iconEnd="arrow-right" className={styles.button}>
+              {buttonText}
+            </Button>
+          </div>
+          {/* Not aria-hidden as a whole: the device model labels its canvas
+              with a description of the screenshot. The 3D scenes hide
+              themselves. */}
+          <div ref={stage} className={styles.stage}>
+            <div aria-hidden className={styles.glow} />
+            <div aria-hidden className={styles.grid} />
+            {!showPoster && !previewLoaded && isHydrated && (
+              <Loader center className={styles.loader} />
+            )}
+            {renderPreview()}
+          </div>
+        </article>
+      </ProjectReveal>
     </Section>
   );
 }

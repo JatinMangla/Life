@@ -11,6 +11,16 @@ export default defineConfig({
   server: {
     port: 7777,
   },
+  // One copy of React and three.js for everything. The R3F scenes load
+  // lazily, so without this the dev server discovered them mid-session,
+  // re-bundled, and handed the canvas a second React ("Invalid hook call")
+  // and drei a second three.js.
+  resolve: {
+    dedupe: ['react', 'react-dom', 'three'],
+  },
+  optimizeDeps: {
+    include: ['three', 'three-stdlib', '@react-three/fiber', '@react-three/drei'],
+  },
   plugins: [
     // The home page is routes/_index/, Remix's own index convention. It used
     // to be routes/home/ remapped to "/" here, which the flat-routes

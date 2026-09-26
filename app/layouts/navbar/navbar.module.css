@@ -1,23 +1,25 @@
 @layer layout {
   .navbar {
-    --headerNavFontSize: calc((16 / 16) * 1rem);
+    --headerNavFontSize: calc((15 / 16) * 1rem);
     width: 100%;
-    height: 8rem;
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: flex-start;
-    padding: 0rem 4rem;
-    /* width: var(--space2XL); */
+    justify-content: space-between;
+    gap: var(--spaceM);
+    padding: var(--spaceL) var(--space2XL);
     position: fixed;
-    /* top: var(--spaceOuter);
-    left: var(--spaceOuter); */
-    /* bottom: var(--spaceOuter); */
+    inset-block-start: 0;
     z-index: var(--zIndex4);
     isolation: isolate;
+    pointer-events: none;
+
+    & > * {
+      pointer-events: auto;
+    }
 
     @media (--mediaTablet) {
-      padding: 0 var(--space2XL);
+      padding: var(--spaceM) var(--spaceL);
     }
 
     @media (--mediaMobile) {
@@ -28,160 +30,130 @@
        */
       --headerNavFontSize: calc((14 / 16) * 1rem);
 
-      height: auto;
       flex-wrap: wrap;
-      align-items: center;
-      padding: var(--spaceS) var(--spaceM);
+      padding: var(--spaceS) var(--spaceS);
       column-gap: var(--spaceS);
       row-gap: var(--spaceXS);
-    }
-
-    @media (--mediaMobile), (--mediaMobileLandscape) {
-      bottom: auto;
     }
   }
 
   .logo {
     display: flex;
     align-items: center;
+    justify-content: center;
     position: relative;
     z-index: var(--zIndex2);
     flex: 0 0 auto;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radiusFull);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(16px) saturate(140%);
 
-    @media (--mediaMobile) {
-      margin-right: auto;
+    & svg {
+      width: 30px;
+      height: auto;
     }
 
     @media (--mediaMobile) {
-      padding-bottom: 0;
+      width: 44px;
+      height: 44px;
+      margin-right: auto;
     }
   }
 
+  /*
+   * The glass pill. It sits in the middle of the header on wide screens and
+   * takes the whole second row on phones.
+   */
   .nav {
     display: flex;
-    /* flex-direction: column; */
-    justify-content: space-between;
-    /* align-items: center; */
-    flex: 1 1 auto;
-    /* max-width: var(--space2XL); */
+    align-items: center;
+    gap: var(--spaceXS);
+    padding: var(--spaceXS);
+    border-radius: var(--radiusFull);
+    background: color-mix(in oklab, var(--background) 55%, transparent);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(18px) saturate(160%);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 
     @media (--mediaMobile), (--mediaMobileLandscape) {
-      display: flex;
+      position: static;
+      transform: none;
       justify-content: space-between;
-      align-items: center;
-      gap: var(--spaceS);
       min-width: 0;
-      /* Take the full second row. */
       flex: 1 0 100%;
       order: 3;
     }
   }
 
   .navList {
-    /* background-color: #111111; */
-    background: color-mix(in lab, var(--background) 90%, transparent);
-    border-radius: 25px;
-    padding-left: 2rem;
-    /* display: flex; */
-    /* transform: rotate(180deg);
-    flex-direction: row-reverse;
-    position: relative;
-    writing-mode: vertical-lr; */
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
 
     @media (--mediaMobile), (--mediaMobileLandscape) {
-      padding-left: 0;
-      background: transparent;
-      /* Block display let the four links wrap onto a second row once the
-         social icons joined the bar; flex keeps them on one line, and
-         flex: 0 0 auto stops the row squeezing the box narrower than its
-         own text, which pushed the labels out under the icons. */
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: center;
       flex: 0 0 auto;
     }
   }
 
   .navLink {
-    padding: var(--spaceM);
-    color: color-mix(in lab, var(--text) 80%, transparent);
+    padding: var(--spaceS) var(--spaceM);
+    border-radius: var(--radiusFull);
+    color: var(--textBody);
     font-weight: var(--fontWeightMedium);
     font-size: var(--headerNavFontSize);
     text-decoration: none;
     position: relative;
-    transition: color var(--durationS) ease 0.1s;
-    line-height: 1;
+    line-height: 1.2;
+    white-space: nowrap;
     display: inline-flex;
     align-items: center;
+    transition:
+      color var(--durationS) ease,
+      background var(--durationS) ease;
 
     &:hover,
-    &:active,
+    &:active {
+      color: var(--textTitle);
+      background: var(--surfaceStrong);
+    }
+
     &[aria-current='page'] {
-      color: var(--textBody);
+      color: var(--textTitle);
+      background: var(--surfaceStrong);
+      box-shadow: inset 0 0 0 1px var(--border);
     }
 
-    &::after {
-      content: '';
-      position: absolute;
-      inset-block-end: 0;
-      inset-inline-start: var(--spaceS);
-      inset-inline-end: var(--spaceS);
-      block-size: 4px;
-      background: var(--accent);
-      transform: scaleY(0) translateZ(0);
-      transform-origin: bottom;
-    }
-
-    @media (--mediaUseMotion) {
-      &::after {
-        transition: transform var(--durationM) var(--bezierFastoutSlowin);
-      }
-    }
-
-    &:hover::after,
-    &:active::after,
-    &[aria-current='page']::after {
-      transform: scaleY(1) translateZ(0);
-      transform-origin: top;
-    }
-
-    /* Four links now share the bar with both social icons and the theme
-       toggle. flex-shrink: 0 matters — without it the flex row compresses each
-       link below its text width and the labels overlap. */
+    /* Four links share the bar with both social icons on phones.
+       flex-shrink: 0 matters — without it the flex row compresses each link
+       below its text width and the labels overlap. 8px vertical padding keeps
+       the tap target above WCAG 2.5.8's 24px minimum. */
     @media (--mediaMobile), (--mediaMobileLandscape) {
-      font-size: calc((14 / 16) * 1rem);
-      /* 8px vertical padding keeps the tap target above WCAG 2.5.8's 24px
-         minimum; 4px left the links about 22px tall. */
-      padding: var(--spaceS) var(--spaceXS);
-      white-space: nowrap;
+      padding: var(--spaceS) var(--spaceS);
       flex: 0 0 auto;
     }
   }
 
   .navIcons {
     display: flex;
+    align-items: center;
     position: relative;
     z-index: var(--zIndex2);
+    padding-left: var(--spaceXS);
+    margin-left: var(--spaceXS);
+    border-left: 1px solid var(--border);
 
     /*
-     * Stays visible at every width. These used to be hidden below 696px, with
-     * the mobile nav sheet expected to carry them — but that sheet has been
-     * unreachable since the hamburger was removed, so phones had no route to
-     * either profile at all. The footer covered it for a while; the footer is
-     * gone, so this is the only route now.
+     * Stays visible at every width: with no footer and no mobile menu this is
+     * the only route to either profile on a phone.
      */
     @media (--mediaMobile), (--mediaMobileLandscape) {
-      gap: var(--spaceXS);
-      /* Must not shrink, or the flex row collapses the icons to nothing. */
       flex: 0 0 auto;
-    }
-
-    @media (max-width: 820px) and (max-height: 420px) {
-      left: var(--spaceL);
-      transform: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
     }
   }
 
@@ -189,27 +161,24 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--spaceS);
-    width: var(--space2XL);
-    height: var(--space2XL);
-
-    @media (--mediaMobile) {
-      width: var(--space2XL);
-      height: var(--space2XL);
-      padding: var(--spaceS);
-    }
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radiusFull);
     color: var(--textLight);
-    transition: color var(--durationM) var(--bezierFastoutSlowin);
+    transition:
+      color var(--durationM) var(--bezierFastoutSlowin),
+      background var(--durationS) ease;
 
     &:hover,
     &:active {
       color: var(--accent);
+      background: var(--surfaceStrong);
     }
   }
 
   .navIcon {
     fill: currentColor;
-    transition: fill var(--durationM) ease;
+    width: 20px;
+    height: 20px;
   }
-
 }

@@ -1,24 +1,23 @@
-import { DecoderText } from '~/components/decoder-text';
+import { Button } from '~/components/button';
 import { DecorativeBoundary } from '~/components/decorative-boundary';
-import { Heading } from '~/components/heading';
 import { Section } from '~/components/section';
 import { useTheme } from '~/components/theme-provider';
-import { tokens } from '~/components/theme-provider/theme';
-import { Transition } from '~/components/transition';
 import { VisuallyHidden } from '~/components/visually-hidden';
 import { Link as RouterLink } from '@remix-run/react';
-import { useInterval, useParallax, usePrevious, useScrollToHash } from '~/hooks';
-import { Suspense, lazy, useEffect, useRef, useState } from 'react';
+import { useReducedMotion } from 'framer-motion';
+import { useInterval, useParallax, useScrollToHash } from '~/hooks';
+import { Suspense, lazy, useRef, useState } from 'react';
 import type { MouseEvent, Ref } from 'react';
-import { cssProps } from '~/utils/style';
 import config from '~/config.json';
+import { employer, metrics, yearsOfExperience } from '~/data/experience';
+import { projects } from '~/data/projects';
 import { disciplines } from '~/data/skills';
 import { useHydrated } from '~/hooks/useHydrated';
 import { canUseWebGL } from '~/utils/webgl';
 import styles from './intro.module.css';
 
-const DisplacementSphere = lazy(() =>
-  import('./displacement-sphere').then(module => ({ default: module.DisplacementSphere }))
+const HeroScene = lazy(() =>
+  import('./hero-scene').then(module => ({ default: module.HeroScene }))
 );
 
 export interface IntroProps {
@@ -29,44 +28,45 @@ export interface IntroProps {
 }
 
 export function Intro({ id, sectionRef, scrollIndicatorHidden, ...rest }: IntroProps) {
-  const { theme } = useTheme();
+  const { theme = 'dark' } = useTheme();
   const [disciplineIndex, setDisciplineIndex] = useState(0);
-  const prevTheme = usePrevious(theme);
+  const [sceneReady, setSceneReady] = useState(false);
   const introLabel = [disciplines.slice(0, -1).join(', '), disciplines.slice(-1)[0]].join(
     ', and '
   );
-  const currentDiscipline = disciplines.find((item, index) => index === disciplineIndex);
   const titleId = `${id}-title`;
   const scrollToHash = useScrollToHash();
   const isHydrated = useHydrated();
   const textRef = useRef<HTMLDivElement>(null);
+  const [firstName, ...otherNames] = config.name.split(' ');
+  const showScene = isHydrated && canUseWebGL();
+  const reduceMotion = useReducedMotion();
 
-  // Cinematic parallax: hero text drifts down slightly as the user scrolls,
-  // so it separates from the sphere receding behind it. Skipped for
-  // reduced motion (useParallax is a no-op there).
+  // The copy drifts down a little as the page scrolls, so it separates from
+  // the 3D object rising behind it. useParallax is a no-op for reduced motion.
   useParallax(0.18, value => {
-    textRef.current?.style.setProperty('--introDrift', `${value * 0.5}px`);
+    textRef.current?.style.setProperty('--introDrift', `${value * 0.4}px`);
   });
 
+  // Held on the first word for reduced motion: a word swapping every few
+  // seconds is movement too.
   useInterval(
     () => {
-      const index = (disciplineIndex + 1) % disciplines.length;
-      setDisciplineIndex(index);
+      setDisciplineIndex(index => (index + 1) % disciplines.length);
     },
-    5000,
-    theme
+    reduceMotion ? null : 2800
   );
 
-  useEffect(() => {
-    if (prevTheme && prevTheme !== theme) {
-      setDisciplineIndex(0);
-    }
-  }, [theme, prevTheme]);
-
-  const handleScrollClick = (event: MouseEvent<HTMLAnchorElement>) => {
+  const handleScrollClick = (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    scrollToHash(event.currentTarget.href);
+    scrollToHash('#project-1');
   };
+
+  const stats = [
+    { value: `${yearsOfExperience()}+`, label: 'years building production React' },
+    { value: metrics.activeUsers.value, label: metrics.activeUsers.label },
+    { value: String(projects.length), label: 'projects written up in depth' },
+  ];
 
   return (
     <Section
@@ -78,93 +78,73 @@ export function Intro({ id, sectionRef, scrollIndicatorHidden, ...rest }: IntroP
       tabIndex={-1}
       {...rest}
     >
-      {/* Outside the theme-keyed Transition below. That key replays the text
-          entrance on a theme change, and used to remount the sphere with it:
-          a new WebGL context and shader compile on every toggle. The sphere's
-          lighting already follows the theme by itself. */}
-      {isHydrated && canUseWebGL() && (
+      {/* A CSS orb holds the scene's place: it shows while three.js loads,
+          and stays for visitors whose browser can't run WebGL. */}
+      <div aria-hidden className={styles.orb} data-hidden={sceneReady} />
+      {showScene && (
         <DecorativeBoundary>
           <Suspense>
-            <DisplacementSphere />
+            <HeroScene
+              theme={theme}
+              className={styles.scene}
+              onReady={() => setSceneReady(true)}
+            />
           </Suspense>
         </DecorativeBoundary>
       )}
-      <Transition in key={theme} timeout={3000}>
-        {({ visible, status }) => (
-          <>
-            <header ref={textRef} className={styles.text}>
-              <h1 className={styles.name} data-visible={visible} id={titleId}>
-                <DecoderText text={config.name} delay={500} />
-              </h1>
-              <Heading level={0} as="h2" className={styles.title}>
-                <VisuallyHidden className={styles.label}>
-                  {`${config.role} + ${introLabel}`}
-                </VisuallyHidden>
-                <span aria-hidden className={styles.row}>
-                  <span
-                    className={styles.word}
-                    data-status={status}
-                    style={cssProps({ delay: tokens.base.durationXS })}
-                  >
-                    {config.role}
-                  </span>
-                  <span className={styles.line} data-status={status} />
-                </span>
-                <div className={styles.row}>
-                  {disciplines.map(item => (
-                    <Transition
-                      unmount
-                      in={item === currentDiscipline}
-                      timeout={{ enter: 3000, exit: 2000 }}
-                      key={item}
-                    >
-                      {({ status, nodeRef }) => (
-                        <span
-                          aria-hidden
-                          ref={nodeRef}
-                          className={styles.word}
-                          data-plus={true}
-                          data-status={status}
-                          style={cssProps({ delay: tokens.base.durationL })}
-                        >
-                          {item}
-                        </span>
-                      )}
-                    </Transition>
-                  ))}
-                </div>
-              </Heading>
-            </header>
-            <RouterLink
-              to="/#project-1"
-              className={styles.scrollIndicator}
-              data-status={status}
-              data-hidden={scrollIndicatorHidden}
-              onClick={handleScrollClick}
-            >
-              <VisuallyHidden>Scroll to projects</VisuallyHidden>
-            </RouterLink>
-            <RouterLink
-              to="/#project-1"
-              className={styles.mobileScrollIndicator}
-              data-status={status}
-              data-hidden={scrollIndicatorHidden}
-              onClick={handleScrollClick}
-            >
-              <VisuallyHidden>Scroll to projects</VisuallyHidden>
-              <svg
-                aria-hidden
-                stroke="currentColor"
-                width="43"
-                height="15"
-                viewBox="0 0 43 15"
-              >
-                <path d="M1 1l20.5 12L42 1" strokeWidth="2" fill="none" />
-              </svg>
-            </RouterLink>
-          </>
-        )}
-      </Transition>
+      <header ref={textRef} className={styles.text}>
+        <p className={styles.status}>
+          <span aria-hidden className={styles.statusDot} />
+          {employer.role} at {employer.shortName}
+        </p>
+        <h1 className={styles.name} id={titleId}>
+          <span className={styles.nameLine}>{firstName}</span>
+          <span className={styles.nameLine} data-accent>
+            {otherNames.join(' ')}
+          </span>
+        </h1>
+        <h2 className={styles.title}>
+          <VisuallyHidden>{`${config.role} + ${introLabel}`}</VisuallyHidden>
+          <span aria-hidden className={styles.titleRow}>
+            {config.role} working in{' '}
+            <span key={disciplineIndex} className={styles.word}>
+              {disciplines[disciplineIndex]}
+            </span>
+          </span>
+        </h2>
+        <p className={styles.lede}>
+          Data-heavy dashboards at {employer.shortName}; complete products, end to end, on my
+          own time — each one written up with what went wrong as well as what worked.
+        </p>
+        <div className={styles.actions}>
+          <Button href="/#project-1" iconEnd="arrow-right" iconHoverShift onClick={handleScrollClick}>
+            See the work
+          </Button>
+          <Button secondary href="/contact" icon="send">
+            Get in touch
+          </Button>
+        </div>
+        <dl className={styles.stats}>
+          {stats.map(stat => (
+            <div key={stat.label} className={styles.stat}>
+              <dt className={styles.statLabel}>{stat.label}</dt>
+              <dd className={styles.statValue}>{stat.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </header>
+      <RouterLink
+        to="/#project-1"
+        className={styles.scrollIndicator}
+        data-hidden={scrollIndicatorHidden}
+        onClick={handleScrollClick}
+      >
+        <VisuallyHidden>Scroll to projects</VisuallyHidden>
+        <span aria-hidden className={styles.scrollLabel}>
+          Scroll
+        </span>
+        <span aria-hidden className={styles.scrollTrack} />
+      </RouterLink>
     </Section>
   );
 }

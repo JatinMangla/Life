@@ -229,6 +229,10 @@ export function getProject<S extends ProjectSlug>(slug: S) {
   return project;
 }
 
-/** Projects that have a 3D device preview; the rest render a poster instead. */
+/**
+ * Projects that have a 3D device preview with a real screenshot. The rest get
+ * a procedural scene (components/project-scene) and fall back to a poster
+ * only when WebGL isn't available.
+ */
 export const hasDeviceModel = (slug: ProjectSlug) =>
   slug === 'mera-monitor' || slug === 'screen-coach';
