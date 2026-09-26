@@ -17,6 +17,13 @@
       --buttonSize: 44px !important;
     }
 
+    /* The logo's auto margin already pushes the right-hand group over; a
+       second auto margin here would split the space and strand the social
+       icons in the middle of the row. */
+    @media (--mediaMobile), (--mediaMobileLandscape) {
+      margin-left: 0;
+    }
+
     /*
      * There used to be a rule here hiding this toggle on mobile in favour of a
      * second one in the mobile nav sheet. The sheet is long gone, and the only
