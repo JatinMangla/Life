@@ -60,6 +60,34 @@ test('social profiles are reachable at every width', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Linkedin', exact: true })).toBeVisible();
 });
 
+// Regression test. "Visible" passes for an icon hanging half off the screen:
+// the 2026 redesign put four links and both icons in one pill, and below
+// 390px the GitHub icon ran past the right edge. 320px is the narrowest phone
+// still in use; 360 and 375 are the most common Android and iPhone widths.
+for (const width of [320, 360, 375]) {
+  test(`navbar fits inside a ${width}px screen`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto('/');
+
+    const items = [
+      page.getByRole('link', { name: 'Github', exact: true }),
+      page.getByRole('link', { name: 'Linkedin', exact: true }),
+      page.getByRole('button', { name: /toggle theme/i }).first(),
+      ...['Projects', 'About', 'Tech Stack', 'Contact'].map(name =>
+        page.getByRole('navigation').getByRole('link', { name, exact: true })
+      ),
+    ];
+
+    for (const item of items) {
+      const box = await item.boundingBox();
+
+      expect(box, 'navbar item should be rendered').not.toBeNull();
+      expect(box!.x).toBeGreaterThanOrEqual(0);
+      expect(box!.x + box!.width).toBeLessThanOrEqual(width);
+    }
+  });
+}
+
 test('contact form confirms a sent message and moves focus to it', async ({ page }) => {
   // The real route sends mail through Gmail; the form's behaviour is what is
   // under test here, and route.test.ts covers the server side.

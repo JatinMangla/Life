@@ -7,6 +7,7 @@ import type { MouseEvent } from 'react';
 import { ThemeToggle } from './theme-toggle';
 import { navLinks, socialLinks } from './nav-data';
 import config from '~/config.json';
+import { classes } from '~/utils/style';
 import styles from './navbar.module.css';
 
 export const Navbar = () => {
@@ -76,17 +77,20 @@ export const Navbar = () => {
             </RouterLink>
           ))}
         </div>
-        {/* Right navbar */}
-        <NavbarIcons desktop />
+        <NavbarIcons desktop className={styles.navIconsDesktop} />
       </nav>
-      
+      {/* Phones get their own copy up in the top row beside the theme
+          toggle: four links and two icons need ~380px in one pill, so below
+          390px the GitHub icon ran off the screen. Only one copy is ever
+          displayed, so assistive tech never sees both. */}
+      <NavbarIcons className={styles.navIconsMobile} />
       <ThemeToggle data-navbar-item />
     </header>
   );
 };
 
-const NavbarIcons = ({ desktop }: { desktop?: boolean }) => (
-  <div className={styles.navIcons}>
+const NavbarIcons = ({ desktop, className }: { desktop?: boolean; className?: string }) => (
+  <div className={classes(styles.navIcons, className)}>
     {socialLinks.map(({ label, url, icon }) => (
       <a
         key={label}
