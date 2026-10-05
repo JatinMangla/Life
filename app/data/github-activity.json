@@ -1,6 +1,28 @@
 {
-  "generatedAt": "2026-09-28",
+  "generatedAt": "2026-10-05",
   "repos": [
+    {
+      "name": "jarvis-app",
+      "url": "https://github.com/JatinMangla/jarvis-app",
+      "description": "Jarvis Android app: APK releases only (no source, no secrets)",
+      "caseStudy": null,
+      "commit": {
+        "subject": "Jarvis app 0.2.0 (build 4)",
+        "url": "https://github.com/JatinMangla/jarvis-app/commit/04dcd51ee685d031fefcccc8d5bd24882fb3a5a8",
+        "date": "2026-09-30"
+      }
+    },
+    {
+      "name": "predict",
+      "url": "https://github.com/JatinMangla/predict",
+      "description": "",
+      "caseStudy": "kundli-predict",
+      "commit": {
+        "subject": "Merge pull request #1 from JatinMangla/overhaul/accuracy-and-features",
+        "url": "https://github.com/JatinMangla/predict/commit/7951d277b9492883214a8a4fc6371d28d3683dfc",
+        "date": "2026-09-29"
+      }
+    },
     {
       "name": "personal-vault",
       "url": "https://github.com/JatinMangla/personal-vault",
@@ -21,17 +43,6 @@
         "subject": "Handoff doc: all audit items closed",
         "url": "https://github.com/JatinMangla/CareerPilot-AI/commit/c911a2ffcdd4a47c84867cc6781508511704a1ff",
         "date": "2026-09-25"
-      }
-    },
-    {
-      "name": "predict",
-      "url": "https://github.com/JatinMangla/predict",
-      "description": "",
-      "caseStudy": "kundli-predict",
-      "commit": {
-        "subject": "Move the Gemini call to gemini-3.6-flash",
-        "url": "https://github.com/JatinMangla/predict/commit/55a25614082a1a8291846e9a6db0f8632461a61c",
-        "date": "2026-09-08"
       }
     }
   ]
