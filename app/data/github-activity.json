@@ -1,6 +1,17 @@
 {
-  "generatedAt": "2026-10-12",
+  "generatedAt": "2026-10-19",
   "repos": [
+    {
+      "name": "personal-voice-assistant",
+      "url": "https://github.com/JatinMangla/personal-voice-assistant",
+      "description": "",
+      "caseStudy": null,
+      "commit": {
+        "subject": "Coder: one 65 KB file connects any machine, with no clone of this repo",
+        "url": "https://github.com/JatinMangla/personal-voice-assistant/commit/86a34fd8833cc7ac9b933e3f19f64309fac37cba",
+        "date": "2026-10-13"
+      }
+    },
     {
       "name": "jarvis-app",
       "url": "https://github.com/JatinMangla/jarvis-app",
@@ -21,17 +32,6 @@
         "subject": "Merge pull request #1 from JatinMangla/overhaul/accuracy-and-features",
         "url": "https://github.com/JatinMangla/predict/commit/7951d277b9492883214a8a4fc6371d28d3683dfc",
         "date": "2026-09-29"
-      }
-    },
-    {
-      "name": "personal-vault",
-      "url": "https://github.com/JatinMangla/personal-vault",
-      "description": "",
-      "caseStudy": "personal-vault",
-      "commit": {
-        "subject": "Merge pull request #16 from JatinMangla/fix/kit-test",
-        "url": "https://github.com/JatinMangla/personal-vault/commit/e41d6bb887abb85100383e20aad1b59b595fd45b",
-        "date": "2026-09-26"
       }
     },
     {
