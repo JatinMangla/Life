@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-26",
+  "generatedAt": "2026-11-02",
   "repos": [
     {
       "name": "personal-voice-assistant",
@@ -7,9 +7,20 @@
       "description": "",
       "caseStudy": null,
       "commit": {
-        "subject": "Coder: one 65 KB file connects any machine, with no clone of this repo",
-        "url": "https://github.com/JatinMangla/personal-voice-assistant/commit/86a34fd8833cc7ac9b933e3f19f64309fac37cba",
-        "date": "2026-10-13"
+        "subject": "Docs: the Coder hardening verified live on Kaggle",
+        "url": "https://github.com/JatinMangla/personal-voice-assistant/commit/b7cffdac740a26cb213095888dd795cf78d963a4",
+        "date": "2026-11-02"
+      }
+    },
+    {
+      "name": "CareerPilot-AI",
+      "url": "https://github.com/JatinMangla/CareerPilot-AI",
+      "description": "",
+      "caseStudy": "careerpilot-ai",
+      "commit": {
+        "subject": "Handoff doc: the 2026-11-01 work is deployed",
+        "url": "https://github.com/JatinMangla/CareerPilot-AI/commit/05df7f72a80818a281019327a4f72bd9cb493452",
+        "date": "2026-11-01"
       }
     },
     {
@@ -32,17 +43,6 @@
         "subject": "Merge pull request #1 from JatinMangla/overhaul/accuracy-and-features",
         "url": "https://github.com/JatinMangla/predict/commit/7951d277b9492883214a8a4fc6371d28d3683dfc",
         "date": "2026-09-29"
-      }
-    },
-    {
-      "name": "CareerPilot-AI",
-      "url": "https://github.com/JatinMangla/CareerPilot-AI",
-      "description": "",
-      "caseStudy": "careerpilot-ai",
-      "commit": {
-        "subject": "Handoff doc: all audit items closed",
-        "url": "https://github.com/JatinMangla/CareerPilot-AI/commit/c911a2ffcdd4a47c84867cc6781508511704a1ff",
-        "date": "2026-09-25"
       }
     }
   ]
