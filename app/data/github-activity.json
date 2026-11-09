@@ -1,6 +1,17 @@
 {
-  "generatedAt": "2026-11-02",
+  "generatedAt": "2026-11-09",
   "repos": [
+    {
+      "name": "potli-releases",
+      "url": "https://github.com/JatinMangla/potli-releases",
+      "description": "Potli Android app downloads (APK)",
+      "caseStudy": null,
+      "commit": {
+        "subject": "Initial commit",
+        "url": "https://github.com/JatinMangla/potli-releases/commit/2fa66863cf55bd3ecb5f669336b770b4e1c0f050",
+        "date": "2026-11-07"
+      }
+    },
     {
       "name": "personal-voice-assistant",
       "url": "https://github.com/JatinMangla/personal-voice-assistant",
@@ -32,17 +43,6 @@
         "subject": "Jarvis app 0.2.0 (build 4)",
         "url": "https://github.com/JatinMangla/jarvis-app/commit/04dcd51ee685d031fefcccc8d5bd24882fb3a5a8",
         "date": "2026-09-30"
-      }
-    },
-    {
-      "name": "predict",
-      "url": "https://github.com/JatinMangla/predict",
-      "description": "",
-      "caseStudy": "kundli-predict",
-      "commit": {
-        "subject": "Merge pull request #1 from JatinMangla/overhaul/accuracy-and-features",
-        "url": "https://github.com/JatinMangla/predict/commit/7951d277b9492883214a8a4fc6371d28d3683dfc",
-        "date": "2026-09-29"
       }
     }
   ]
