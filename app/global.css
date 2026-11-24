@@ -7,6 +7,11 @@
    happen to be short don't trigger the mobile nav. */
 @custom-media --mediaMobileLandscape (max-height: 500px) and (max-width: 900px);
 @custom-media --mediaMobileS (max-width: 400px);
+/* Tablets held upright (iPad 768–1024px wide). Keep in sync with
+   heroStackedQuery in app/utils/style.ts. */
+@custom-media --mediaTabletPortrait (max-width: 1040px) and (orientation: portrait);
+/* A finger is the main input: no hover. Matches touchPrimaryQuery. */
+@custom-media --mediaTouchPrimary (hover: none) and (pointer: coarse);
 @custom-media --mediaUseMotion (prefers-reduced-motion: no-preference);
 @custom-media --mediaReduceMotion (prefers-reduced-motion: reduce);
 @custom-media --mediaTouch (pointer: coarse);

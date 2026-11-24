@@ -16,6 +16,7 @@ import {
   WebGLRenderer,
 } from 'three';
 import type { BufferGeometry, Group, Light, Mesh, MeshStandardMaterial } from 'three';
+import { media } from '~/utils/style';
 import { cleanRenderer, cleanScene, modelLoader, removeLights, textureLoader } from '~/utils/three';
 import styles from './earth.module.css';
 
@@ -25,7 +26,15 @@ import styles from './earth.module.css';
 const ROTATION_SPEED = 0.084;
 
 // How far back the camera sits — larger value = smaller globe within its box.
+// Beside the form the globe is meant to overflow its box: the section clips
+// its right half. Stacked under the form (tablets and phones) it's shown
+// whole in a square, and at 2.3 it was wider than the square, so the canvas
+// edges cut it into an octagon.
 const CAMERA_DISTANCE = 2.3;
+const CAMERA_DISTANCE_STACKED = 3;
+
+const cameraDistance = () =>
+  window.innerWidth <= media.tablet ? CAMERA_DISTANCE_STACKED : CAMERA_DISTANCE;
 
 export type ContactEarthProps = HTMLAttributes<HTMLCanvasElement>;
 
@@ -73,7 +82,7 @@ export const ContactEarth = (props: ContactEarthProps) => {
     renderer.current.toneMapping = ACESFilmicToneMapping;
 
     camera.current = new PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.current.position.z = CAMERA_DISTANCE;
+    camera.current.position.z = cameraDistance();
     camera.current.lookAt(0, 0, 0);
 
     scene.current = new Scene();
@@ -144,6 +153,7 @@ export const ContactEarth = (props: ContactEarthProps) => {
     const { width, height } = getSize();
     renderer.current.setSize(width, height, false);
     camera.current.aspect = width / height;
+    camera.current.position.z = cameraDistance();
     camera.current.updateProjectionMatrix();
     renderer.current.render(scene.current, camera.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps

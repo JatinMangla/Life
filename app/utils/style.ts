@@ -14,6 +14,22 @@ export const media = {
 
 export type Breakpoint = keyof typeof media;
 
+/**
+ * Where the home hero stacks its 3D object in a band above the copy instead
+ * of beside it: phones, and tablets held upright. On an iPad in portrait
+ * (768–1024px wide) the object used to sit on top of the headline, because
+ * those widths got the desktop layout. Mirrors `--mediaMobile,
+ * --mediaTabletPortrait` in app/global.css.
+ */
+export const heroStackedQuery = `(max-width: ${media.mobile}px), (max-width: ${media.tablet}px) and (orientation: portrait)`;
+
+/**
+ * Devices whose main input is a finger: no hover, coarse pointer. An iPad
+ * with a trackpad reports hover and drops out of this, which is what we
+ * want — it then gets the cursor effects like a laptop.
+ */
+export const touchPrimaryQuery = '(hover: none) and (pointer: coarse)';
+
 /** Convert a px string to a number. */
 export const pxToNum = (px: string): number => Number(px.replace('px', ''));
 

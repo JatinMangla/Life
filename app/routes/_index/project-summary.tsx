@@ -2,10 +2,12 @@ import { Button } from '~/components/button';
 import { ProjectPreview } from '~/components/project-preview';
 import { Section } from '~/components/section';
 import { ProjectReveal } from '~/layouts/project/project-reveal';
-import { useState } from 'react';
+import { useInViewport } from '~/hooks';
+import { useMediaQuery } from '~/hooks/useMediaQuery';
+import { useRef, useState } from 'react';
 import type { PointerEvent, Ref } from 'react';
 import type { ProjectModel, ProjectSlug } from '~/data/projects';
-import { cssProps } from '~/utils/style';
+import { cssProps, touchPrimaryQuery } from '~/utils/style';
 import styles from './project-summary.module.css';
 
 export interface ProjectSummaryProps {
@@ -47,7 +49,14 @@ export function ProjectSummary({
   buttonLink,
   alternate,
 }: ProjectSummaryProps) {
-  const [active, setActive] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const cardRef = useRef<HTMLElement>(null);
+  const isTouch = useMediaQuery(touchPrimaryQuery);
+  // Touch screens can't hover, so the scenes' reactions (the vault unlocking,
+  // the glow brightening) never played on a phone or iPad. There the card
+  // wakes up while it crosses the middle of the screen instead.
+  const centred = useInViewport(cardRef, false, { rootMargin: '-35% 0px -35% 0px' }, isTouch);
+  const active = isTouch ? centred : hovered;
   const titleId = `${id}-title`;
   const pad = (value: number) => String(value).padStart(2, '0');
 
@@ -72,15 +81,16 @@ export function ProjectSummary({
     >
       <ProjectReveal stagger={0}>
         <article
+          ref={cardRef}
           className={styles.card}
           data-alternate={alternate}
           data-active={active}
           style={cssProps({ hue })}
           onPointerMove={handlePointerMove}
-          onPointerEnter={() => setActive(true)}
-          onPointerLeave={() => setActive(false)}
-          onFocus={() => setActive(true)}
-          onBlur={() => setActive(false)}
+          onPointerEnter={() => setHovered(true)}
+          onPointerLeave={() => setHovered(false)}
+          onFocus={() => setHovered(true)}
+          onBlur={() => setHovered(false)}
         >
           <div className={styles.details}>
             <p className={styles.meta}>

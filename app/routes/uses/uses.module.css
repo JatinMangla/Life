@@ -14,6 +14,15 @@
 .marqueeSection {
   padding-top: var(--space2XL);
   padding-bottom: var(--space2XL);
+
+  /* The section's inner column centres its children, which sizes the reveal
+     wrapper to its content — and the marquee's content is one 4,000px row.
+     The page hid the scrollbar, but iOS Safari still let it pan and zoom out
+     sideways. Stretched, the wrapper takes the screen's width and the
+     marquee clips inside it. (section > inner column > reveal wrapper) */
+  & > * > * {
+    align-self: stretch;
+  }
 }
 
 /* --- Marquee of floating tech badges --- */

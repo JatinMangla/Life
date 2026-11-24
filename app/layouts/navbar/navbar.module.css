@@ -73,7 +73,10 @@
     gap: var(--spaceXS);
     padding: var(--spaceXS);
     border-radius: var(--radiusFull);
-    background: color-mix(in oklab, var(--background) 55%, transparent);
+    /* Opaque enough to read on its own: where the blur doesn't apply (iOS
+       Low Power Mode, Reduce Transparency, older WebKit) the page's text
+       showed straight through the links. */
+    background: color-mix(in oklab, var(--background) 78%, transparent);
     border: 1px solid var(--border);
     box-shadow: var(--shadow);
     backdrop-filter: blur(18px) saturate(160%);

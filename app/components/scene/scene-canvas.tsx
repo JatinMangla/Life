@@ -3,7 +3,8 @@ import { useReducedMotion } from 'framer-motion';
 import { useRef } from 'react';
 import type { ReactNode } from 'react';
 import { useInViewport } from '~/hooks';
-import { classes } from '~/utils/style';
+import { useMediaQuery } from '~/hooks/useMediaQuery';
+import { classes, touchPrimaryQuery } from '~/utils/style';
 import { StudioEnvironment } from './studio-environment';
 import styles from './scene-canvas.module.css';
 
@@ -42,12 +43,16 @@ export function SceneCanvas({
   const container = useRef<HTMLDivElement>(null);
   const inView = useInViewport(container, false, { rootMargin: '120px 0px' });
   const reduceMotion = useReducedMotion();
+  // Tablets and phones are 2–3x screens on mobile GPUs; 1.5x keeps the
+  // edges clean at well under half the pixels of 3x.
+  const isTouch = useMediaQuery(touchPrimaryQuery);
+  const dprCap = isTouch ? Math.min(maxDpr, 1.5) : maxDpr;
 
   return (
     <div ref={container} className={classes(styles.canvas, className)} aria-hidden>
       <Canvas
         frameloop={reduceMotion ? 'demand' : inView ? 'always' : 'never'}
-        dpr={[1, maxDpr]}
+        dpr={[1, dprCap]}
         camera={{ position: camera.position, fov: camera.fov ?? 35, near: 0.1, far: 100 }}
         gl={{
           alpha: true,

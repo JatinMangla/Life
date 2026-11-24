@@ -6,6 +6,8 @@ import { MathUtils } from 'three';
 import type { Group, Mesh } from 'three';
 import { SceneCanvas, usePointer } from '~/components/scene';
 import type { ThemeId } from '~/components/theme-provider';
+import { useMediaQuery } from '~/hooks/useMediaQuery';
+import { heroStackedQuery } from '~/utils/style';
 
 interface RingProps {
   radius: number;
@@ -92,13 +94,22 @@ function HeroObject({ theme }: { theme: ThemeId }) {
   const reduceMotion = useReducedMotion();
   const viewport = useThree(state => state.viewport);
   const size = useThree(state => state.size);
-  const isNarrow = size.width < 820;
+  // The same query that turns the canvas into a band in intro.module.css. It
+  // used to be `width < 820`, which disagreed with the CSS between 697 and
+  // 1040px: on an iPad in portrait the canvas was full-bleed but the object
+  // was centred, right on top of the headline.
+  const isStacked = useMediaQuery(heroStackedQuery);
+  // Tablets in landscape and small laptops (1024–1279px) have less room
+  // beside the copy, so the object moves further right and shrinks a little.
+  const isCompact = !isStacked && size.width < 1280;
 
-  // Beside the headline on wide screens. On phones the canvas is a band of
-  // its own above the copy, so the object just fills it.
-  const baseX = isNarrow ? 0 : viewport.width * 0.2;
+  // Beside the headline on wide screens. In the stacked layout the canvas is
+  // a band of its own above the copy, so the object just fills it.
+  const baseX = isStacked ? 0 : viewport.width * (isCompact ? 0.25 : 0.2);
   const baseY = 0;
-  const baseScale = isNarrow ? Math.min(0.72, viewport.height / 6.4) : Math.min(1, viewport.width / 11);
+  const baseScale = isStacked
+    ? Math.min(0.72, viewport.height / 6.4)
+    : Math.min(isCompact ? 0.82 : 1, viewport.width / 11);
 
   useFrame((state, delta) => {
     const scroll = typeof window === 'undefined' ? 0 : window.scrollY / window.innerHeight;
@@ -163,7 +174,7 @@ function HeroObject({ theme }: { theme: ThemeId }) {
       />
       <Debris theme={theme} />
       <Sparkles
-        count={isNarrow ? 40 : 80}
+        count={isStacked ? 40 : 80}
         scale={[7, 5, 4]}
         size={2.2}
         speed={reduceMotion ? 0 : 0.35}

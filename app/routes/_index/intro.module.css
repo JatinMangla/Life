@@ -8,8 +8,17 @@
   padding-top: 120px;
   padding-bottom: var(--space4XL);
 
-  /* Phones: the object gets its own band above the copy. Behind the text it
-     made every line fight the reflections for contrast. */
+  /* Phones and upright tablets: the object gets its own band above the
+     copy. Behind the text it made every line fight the reflections for
+     contrast, and on an iPad in portrait it sat right on the headline. */
+  @media (--mediaTabletPortrait) {
+    --sceneBand: min(36svh, 420px);
+
+    align-items: flex-start;
+    padding-top: calc(var(--sceneBand) + 88px);
+    padding-bottom: var(--space3XL);
+  }
+
   @media (--mediaMobile) {
     --sceneBand: min(44svh, 380px);
 
@@ -20,12 +29,13 @@
 }
 
 /* Full-bleed behind the copy on wide screens, with the object right of the
-   headline (see hero-scene.tsx); a band at the top on phones. */
+   headline (see hero-scene.tsx); a band at the top on phones and upright
+   tablets (heroStackedQuery). */
 .scene {
   z-index: -1;
   animation: scene-in 1.6s var(--bezierOutExpo) both;
 
-  @media (--mediaMobile) {
+  @media (--mediaMobile), (--mediaTabletPortrait) {
     inset: 88px 0 auto;
     height: var(--sceneBand);
   }
@@ -64,8 +74,8 @@
     opacity: 0;
   }
 
-  @media (--mediaMobile) {
-    --orbSize: 46vw;
+  @media (--mediaMobile), (--mediaTabletPortrait) {
+    --orbSize: min(46vw, 300px);
     top: calc(88px + var(--sceneBand) / 2);
     right: 50%;
     transform: translate(50%, -50%);
@@ -240,9 +250,14 @@
     animation: rise 1.1s var(--bezierOutExpo) 0.42s both;
   }
 
-  @media (--mediaMobile) {
+  /* Three equal columns wherever the row would otherwise wrap 2 + 1. */
+  @media (--mediaTablet) {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--spaceL);
+  }
+
+  @media (--mediaMobile) {
     margin-top: var(--space2XL);
     gap: var(--spaceM);
   }
@@ -288,7 +303,10 @@
     pointer-events: none;
   }
 
-  @media (--mediaMobile), (max-height: 760px) {
+  /* Only where the hero has room below its copy. On a 768px-tall laptop or
+     an iPad in landscape the copy reaches the bottom and the cue landed on
+     the third stat. */
+  @media (--mediaTablet), (max-height: 900px) {
     display: none;
   }
 }

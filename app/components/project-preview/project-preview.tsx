@@ -5,8 +5,9 @@ import { ProjectPoster } from '~/components/project-poster';
 import type { ProjectModel, ProjectSlug } from '~/data/projects';
 import { useInViewport } from '~/hooks';
 import { useHydrated } from '~/hooks/useHydrated';
-import { Suspense, lazy, useRef, useState } from 'react';
-import { classes, cssProps, media } from '~/utils/style';
+import { useMediaQuery } from '~/hooks/useMediaQuery';
+import { Suspense, lazy, useEffect, useRef, useState } from 'react';
+import { classes, cssProps, media, touchPrimaryQuery } from '~/utils/style';
 import { canUseWebGL } from '~/utils/webgl';
 import styles from './project-preview.module.css';
 
@@ -56,10 +57,21 @@ export function ProjectPreview({
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
   const isHydrated = useHydrated();
-  // Start loading a little before it arrives, and keep it once loaded.
-  const nearViewport = useInViewport(root, true, { rootMargin: '300px 0px' });
+  const isTouch = useMediaQuery(touchPrimaryQuery);
+  // Start loading a little before it arrives. With a mouse, keep it once
+  // loaded. On phones and iPads, let it go again once it is a screen away:
+  // the home page holds seven WebGL canvases, and iOS Safari, short on
+  // memory, starts dropping contexts, so scenes went blank part way down.
+  const nearViewport = useInViewport(root, !isTouch, {
+    rootMargin: isTouch ? '100% 0px' : '300px 0px',
+  });
   const showPoster = failed || (isHydrated && !canUseWebGL());
   const shouldLoad = isHydrated && (eager || nearViewport);
+
+  // A released scene shows the loader again when it comes back.
+  useEffect(() => {
+    if (!shouldLoad) setLoaded(false);
+  }, [shouldLoad]);
 
   const onError = () => setFailed(true);
   const onLoad = () => setLoaded(true);
