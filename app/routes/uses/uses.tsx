@@ -1,12 +1,9 @@
 import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import type { ComponentType, CSSProperties, MouseEvent, ReactNode } from 'react';
-import usesBackgroundPlaceholder from '~/assets/uses-background-placeholder.jpg';
-import usesBackground from '~/assets/uses-background.mp4';
 import { Link } from '~/components/link';
 import { Table, TableBody, TableCell, TableHeadCell, TableRow } from '~/components/table';
 import {
-  ProjectBackground,
   ProjectContainer,
   ProjectHeader,
   ProjectSection,
@@ -151,11 +148,6 @@ export const Uses = () => {
   return (
     <>
       <ProjectContainer className={styles.uses}>
-        <ProjectBackground
-          src={usesBackground}
-          placeholder={usesBackgroundPlaceholder}
-          opacity={0.7}
-        />
         <ProjectHeader
           title="Tech Stack"
           description="What I build with day to day, and on the projects written up on this site — from React interfaces to serverless APIs, language-model integrations and the infrastructure under them."

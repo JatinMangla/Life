@@ -266,6 +266,10 @@
 .stat {
   display: flex;
   flex-direction: column-reverse;
+  /* In a reversed column, flex-end is the top. Without it the grid cells
+     packed to the bottom, so a stat with a one-line label sat lower than
+     its neighbours with two. */
+  justify-content: flex-end;
   gap: var(--spaceXS);
 }
 
