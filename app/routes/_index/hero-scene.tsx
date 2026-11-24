@@ -189,11 +189,17 @@ export interface HeroSceneProps {
   theme: ThemeId;
   className?: string;
   onReady?: () => void;
+  onContextLost?: () => void;
 }
 
-export function HeroScene({ theme, className, onReady }: HeroSceneProps) {
+export function HeroScene({ theme, className, onReady, onContextLost }: HeroSceneProps) {
   return (
-    <SceneCanvas className={className} camera={{ position: [0, 0, 7], fov: 38 }} onReady={onReady}>
+    <SceneCanvas
+      className={className}
+      camera={{ position: [0, 0, 7], fov: 38 }}
+      onReady={onReady}
+      onContextLost={onContextLost}
+    >
       <ambientLight intensity={0.4} />
       <directionalLight position={[3, 4, 5]} intensity={1.2} />
       <HeroObject theme={theme} />

@@ -17,7 +17,15 @@ import {
 } from 'three';
 import type { BufferGeometry, Group, Light, Mesh, MeshStandardMaterial } from 'three';
 import { media } from '~/utils/style';
-import { cleanRenderer, cleanScene, modelLoader, removeLights, textureLoader } from '~/utils/three';
+import {
+  cleanRenderer,
+  cleanScene,
+  isContextLost,
+  modelLoader,
+  removeLights,
+  textureLoader,
+  watchContextLoss,
+} from '~/utils/three';
 import styles from './earth.module.css';
 
 // Slow ambient spin in radians per second — gentle enough to read as "alive"
@@ -58,6 +66,12 @@ export const ContactEarth = (props: ContactEarthProps) => {
     return { width: el?.clientWidth || 1, height: el?.clientHeight || 1 };
   };
 
+  // Every draw goes through here: the context can be lost between frames,
+  // and three.js only notices a task later.
+  const draw = () => {
+    if (!isContextLost(renderer.current)) renderer.current.render(scene.current, camera.current);
+  };
+
   // Set up renderer, camera, scene, and lights once.
   useEffect(() => {
     const { width, height } = getSize();
@@ -80,6 +94,8 @@ export const ContactEarth = (props: ContactEarthProps) => {
     renderer.current.setSize(width, height, false);
     renderer.current.outputColorSpace = SRGBColorSpace;
     renderer.current.toneMapping = ACESFilmicToneMapping;
+    // A lost context fades the globe out rather than breaking the page.
+    const stopWatchingContext = watchContextLoss(renderer.current, () => setLoaded(false));
 
     camera.current = new PerspectiveCamera(45, width / height, 0.1, 100);
     camera.current.position.z = cameraDistance();
@@ -94,6 +110,7 @@ export const ContactEarth = (props: ContactEarthProps) => {
     lights.current.forEach(light => scene.current.add(light));
 
     return () => {
+      stopWatchingContext();
       removeLights(lights.current);
       // The environment map isn't attached to any mesh, so cleanScene's
       // traversal never reaches it.
@@ -155,7 +172,7 @@ export const ContactEarth = (props: ContactEarthProps) => {
     camera.current.aspect = width / height;
     camera.current.position.z = cameraDistance();
     camera.current.updateProjectionMatrix();
-    renderer.current.render(scene.current, camera.current);
+    draw();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [windowSize]);
 
@@ -171,13 +188,13 @@ export const ContactEarth = (props: ContactEarthProps) => {
       const elapsed = Math.min(now - lastFrame, 100) / 1000;
       lastFrame = now;
       if (model.current) model.current.rotation.y += ROTATION_SPEED * elapsed;
-      renderer.current.render(scene.current, camera.current);
+      draw();
     };
 
     if (!reduceMotion && isInViewport) {
       animate();
     } else {
-      renderer.current.render(scene.current, camera.current);
+      draw();
     }
 
     return () => cancelAnimationFrame(animation);

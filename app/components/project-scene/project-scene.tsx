@@ -26,15 +26,27 @@ export interface ProjectSceneProps extends SceneProps {
   slug: ProjectSlug;
   className?: string;
   onReady?: () => void;
+  onContextLost?: () => void;
 }
 
-export function ProjectScene({ slug, active, className, onReady }: ProjectSceneProps) {
+export function ProjectScene({
+  slug,
+  active,
+  className,
+  onReady,
+  onContextLost,
+}: ProjectSceneProps) {
   const Scene = scenes[slug];
 
   if (!Scene) return null;
 
   return (
-    <SceneCanvas className={className} camera={{ position: [0, 0, 6.2], fov: 36 }} onReady={onReady}>
+    <SceneCanvas
+      className={className}
+      camera={{ position: [0, 0, 6.2], fov: 36 }}
+      onReady={onReady}
+      onContextLost={onContextLost}
+    >
       <ambientLight intensity={0.35} />
       <directionalLight position={[3, 5, 4]} intensity={1.4} />
       <directionalLight position={[-4, -2, 2]} intensity={0.4} color="#8fb6ff" />

@@ -31,6 +31,9 @@ export function Intro({ id, sectionRef, scrollIndicatorHidden, ...rest }: IntroP
   const { theme = 'dark' } = useTheme();
   const [disciplineIndex, setDisciplineIndex] = useState(0);
   const [sceneReady, setSceneReady] = useState(false);
+  // The browser took the scene's GPU context back (iPad Safari does when
+  // short on memory): drop it and let the CSS orb take its place again.
+  const [sceneLost, setSceneLost] = useState(false);
   const introLabel = [disciplines.slice(0, -1).join(', '), disciplines.slice(-1)[0]].join(
     ', and '
   );
@@ -39,7 +42,7 @@ export function Intro({ id, sectionRef, scrollIndicatorHidden, ...rest }: IntroP
   const isHydrated = useHydrated();
   const textRef = useRef<HTMLDivElement>(null);
   const [firstName, ...otherNames] = config.name.split(' ');
-  const showScene = isHydrated && canUseWebGL();
+  const showScene = isHydrated && !sceneLost && canUseWebGL();
   const reduceMotion = useReducedMotion();
 
   // The copy drifts down a little as the page scrolls, so it separates from
@@ -80,7 +83,7 @@ export function Intro({ id, sectionRef, scrollIndicatorHidden, ...rest }: IntroP
     >
       {/* A CSS orb holds the scene's place: it shows while three.js loads,
           and stays for visitors whose browser can't run WebGL. */}
-      <div aria-hidden className={styles.orb} data-hidden={sceneReady} />
+      <div aria-hidden className={styles.orb} data-hidden={sceneReady && !sceneLost} />
       {showScene && (
         <DecorativeBoundary>
           <Suspense>
@@ -88,6 +91,7 @@ export function Intro({ id, sectionRef, scrollIndicatorHidden, ...rest }: IntroP
               theme={theme}
               className={styles.scene}
               onReady={() => setSceneReady(true)}
+              onContextLost={() => setSceneLost(true)}
             />
           </Suspense>
         </DecorativeBoundary>

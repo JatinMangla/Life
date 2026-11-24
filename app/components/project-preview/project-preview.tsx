@@ -5,9 +5,8 @@ import { ProjectPoster } from '~/components/project-poster';
 import type { ProjectModel, ProjectSlug } from '~/data/projects';
 import { useInViewport } from '~/hooks';
 import { useHydrated } from '~/hooks/useHydrated';
-import { useMediaQuery } from '~/hooks/useMediaQuery';
-import { Suspense, lazy, useEffect, useRef, useState } from 'react';
-import { classes, cssProps, media, touchPrimaryQuery } from '~/utils/style';
+import { Suspense, lazy, useRef, useState } from 'react';
+import { classes, cssProps, media } from '~/utils/style';
 import { canUseWebGL } from '~/utils/webgl';
 import styles from './project-preview.module.css';
 
@@ -57,21 +56,15 @@ export function ProjectPreview({
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
   const isHydrated = useHydrated();
-  const isTouch = useMediaQuery(touchPrimaryQuery);
-  // Start loading a little before it arrives. With a mouse, keep it once
-  // loaded. On phones and iPads, let it go again once it is a screen away:
-  // the home page holds seven WebGL canvases, and iOS Safari, short on
-  // memory, starts dropping contexts, so scenes went blank part way down.
-  const nearViewport = useInViewport(root, !isTouch, {
-    rootMargin: isTouch ? '100% 0px' : '300px 0px',
-  });
+  // Start loading a little before it arrives, and keep it once loaded.
+  //
+  // Not released again off screen: that was tried for iPad, and creating a
+  // fresh WebGL context every time a card scrolled back in pushed WebKit
+  // past its cap on live contexts, so it killed the oldest ones mid-draw.
+  // Off screen a scene already costs nothing (SceneCanvas stops its loop).
+  const nearViewport = useInViewport(root, true, { rootMargin: '300px 0px' });
   const showPoster = failed || (isHydrated && !canUseWebGL());
   const shouldLoad = isHydrated && (eager || nearViewport);
-
-  // A released scene shows the loader again when it comes back.
-  useEffect(() => {
-    if (!shouldLoad) setLoaded(false);
-  }, [shouldLoad]);
 
   const onError = () => setFailed(true);
   const onLoad = () => setLoaded(true);
@@ -91,7 +84,13 @@ export function ProjectPreview({
       return (
         <DecorativeBoundary onError={onError}>
           <Suspense>
-            <ProjectScene slug={slug} active={active} className={styles.scene} onReady={onLoad} />
+            <ProjectScene
+              slug={slug}
+              active={active}
+              className={styles.scene}
+              onReady={onLoad}
+              onContextLost={onError}
+            />
           </Suspense>
         </DecorativeBoundary>
       );
@@ -109,6 +108,7 @@ export function ProjectPreview({
               cameraPosition={isLaptop ? { x: 0, y: 0, z: 7.4 } : { x: 0, y: 0, z: 10.5 }}
               showDelay={isLaptop ? 300 : 150}
               onLoad={onLoad}
+              onContextLost={onError}
               show
               models={
                 isLaptop

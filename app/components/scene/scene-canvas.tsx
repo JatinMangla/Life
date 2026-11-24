@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import { useInViewport } from '~/hooks';
 import { useMediaQuery } from '~/hooks/useMediaQuery';
 import { classes, touchPrimaryQuery } from '~/utils/style';
+import { watchContextLoss } from '~/utils/three';
 import { StudioEnvironment } from './studio-environment';
 import styles from './scene-canvas.module.css';
 
@@ -17,6 +18,8 @@ export interface SceneCanvasProps {
   onReady?: () => void;
   /** Upper bound on device pixel ratio; phones with 3x screens don't need it. */
   maxDpr?: number;
+  /** The browser took the GPU context back; show the static fallback. */
+  onContextLost?: () => void;
 }
 
 /**
@@ -39,6 +42,7 @@ export function SceneCanvas({
   camera = { position: [0, 0, 6], fov: 35 },
   onReady,
   maxDpr = 1.75,
+  onContextLost,
 }: SceneCanvasProps) {
   const container = useRef<HTMLDivElement>(null);
   const inView = useInViewport(container, false, { rootMargin: '120px 0px' });
@@ -60,7 +64,12 @@ export function SceneCanvas({
           powerPreference: 'high-performance',
           failIfMajorPerformanceCaveat: true,
         }}
-        onCreated={() => onReady?.()}
+        onCreated={({ gl }) => {
+          // R3F disposes the renderer itself on unmount; the listener goes
+          // with the detached canvas.
+          watchContextLoss(gl, () => onContextLost?.());
+          onReady?.();
+        }}
       >
         <StudioEnvironment />
         {children}

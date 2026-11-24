@@ -35,9 +35,11 @@ import { classes, cssProps, numToMs } from '~/utils/style';
 import {
   cleanRenderer,
   cleanScene,
+  isContextLost,
   modelLoader,
   removeLights,
   textureLoader,
+  watchContextLoss,
 } from '~/utils/three';
 import { ModelAnimationType } from './device-models';
 import type { DeviceModel } from './device-models';
@@ -96,6 +98,8 @@ export interface ModelProps {
   style?: CSSProperties;
   className?: string;
   onLoad?: () => void;
+  /** The browser took the GPU context back; show the static fallback. */
+  onContextLost?: () => void;
   /** Describes the rendered scene; the canvas itself is not accessible. */
   alt: string;
   [key: string]: unknown;
@@ -109,6 +113,7 @@ export const Model = ({
   style,
   className,
   onLoad,
+  onContextLost,
   alt,
   ...rest
 }: ModelProps) => {
@@ -135,6 +140,9 @@ export const Model = ({
   const rotationX = useSpring(0, rotationSpringConfig);
   const rotationY = useSpring(0, rotationSpringConfig);
   const renderFrameRef = useRef<() => void>(null!);
+  // Read through a ref so the one-time setup effect sees the latest callback.
+  const onContextLostRef = useRef(onContextLost);
+  onContextLostRef.current = onContextLost;
 
   const blurShadow = useCallback((amount: number) => {
     blurPlane.current.visible = true;
@@ -160,6 +168,11 @@ export const Model = ({
 
   // Handle render passes for a single frame
   const renderFrame = useCallback(() => {
+    // Springs and the lid animation call this from their own frame loops,
+    // outside React. A draw on a lost context threw there, past every error
+    // boundary, and the whole page fell to the root error screen.
+    if (isContextLost(renderer.current)) return;
+
     const blurAmount = 5;
 
     // Remove the background
@@ -209,6 +222,9 @@ export const Model = ({
     renderer.current.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.current.setSize(clientWidth, clientHeight);
     renderer.current.outputColorSpace = SRGBColorSpace;
+    const stopWatchingContext = watchContextLoss(renderer.current, () =>
+      onContextLostRef.current?.()
+    );
 
     camera.current = new PerspectiveCamera(36, clientWidth / clientHeight, 0.1, 100);
     camera.current.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
@@ -319,6 +335,7 @@ export const Model = ({
     const unsubscribeY = rotationY.on('change', () => renderFrameRef.current());
 
     return () => {
+      stopWatchingContext();
       renderTarget.current.dispose();
       renderTargetBlur.current.dispose();
       // Never attached to a mesh for long (the shadow pass swaps them onto
