@@ -181,8 +181,18 @@ orientations, two iPhones, a 1366x768 laptop and 1080p.
 - **Touch:** `usePointer` maps scroll to the tilt on touch-primary devices
   (`touchPrimaryQuery`); project cards go `active` while centred on screen
   instead of on hover. iPad + trackpad keeps cursor behaviour.
-- **iOS memory:** on touch, project previews unmount a screen away (seven
-  canvases on home) and scenes cap at 1.5x DPR.
+- **iOS memory:** scenes cap at 1.5x DPR on touch. *Don't* unmount
+  previews off screen to save contexts — tried, and it caused the next
+  bug: every return made a new context, WebKit killed the oldest past its
+  cap, and three.js threw on the dead context (`getProgramInfoLog(...)
+  .trim()` on null) from a spring callback, past the DecorativeBoundary
+  that was unmounting, so iPad users got the root "unexpected error" page
+  while scrolling. Fixed the same day: previews stay mounted;
+  `watchContextLoss()` in `utils/three.ts` disables three's shader-log
+  check in production and swaps any scene whose context the browser
+  reclaims for its fallback (poster / CSS orb / globe fade);
+  hand-written renderers check `isContextLost()` before drawing. To test:
+  WebKit at iPad size, force `WEBGL_lose_context` on every canvas, scroll.
 - Fixed: `/uses` marquee made the page 4,000px wide (iOS let it pan);
   contact globe clipped into an octagon when stacked; scroll cue on the
   third stat at 768px tall; stats misaligned; navbar pill more opaque.
