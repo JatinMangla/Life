@@ -34,6 +34,12 @@ updates:
         update-types: [version-update:semver-minor]
       - dependency-name: '@types/three'
         update-types: [version-update:semver-minor]
+      # Storybook packages must share one major. A lone addon bumped to 8
+      # against Storybook 7 cannot work; upgrade them together (HANDOFF.md).
+      - dependency-name: '@storybook/*'
+        update-types: [version-update:semver-major]
+      - dependency-name: storybook
+        update-types: [version-update:semver-major]
 
   - package-ecosystem: github-actions
     directory: /
