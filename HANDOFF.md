@@ -167,6 +167,39 @@ Verified: typecheck, lint, 119/119 unit, build, 48/48 e2e on the production
 build; screenshots in dark, light and mobile. Production audit unchanged
 (9, none critical). Not yet measured: Lighthouse with a GPU on the new home.
 
+### Cross-device pass (2026-11-24, merged straight to `main`)
+
+Owner reported the animated design breaking on iPad. Checked in Playwright
+WebKit (the iPad Safari engine) at iPad mini / Air / Pro sizes in both
+orientations, two iPhones, a 1366x768 laptop and 1080p.
+
+- **iPad portrait hero:** 697–1040px got the desktop layout and the scene
+  centred itself under 820px, so the 3D object sat on the headline. Upright
+  tablets now stack it above the copy like phones. CSS
+  (`--mediaTabletPortrait`) and the scene share `heroStackedQuery` in
+  `app/utils/style.ts`; `useMediaQuery` hook added.
+- **Touch:** `usePointer` maps scroll to the tilt on touch-primary devices
+  (`touchPrimaryQuery`); project cards go `active` while centred on screen
+  instead of on hover. iPad + trackpad keeps cursor behaviour.
+- **iOS memory:** on touch, project previews unmount a screen away (seven
+  canvases on home) and scenes cap at 1.5x DPR.
+- Fixed: `/uses` marquee made the page 4,000px wide (iOS let it pan);
+  contact globe clipped into an octagon when stacked; scroll cue on the
+  third stat at 768px tall; stats misaligned; navbar pill more opaque.
+- **Removed `/uses` background video** — a clip of a real actor from a
+  feature film, left from the template.
+- LinkedIn is now `linkedin.com/in/jatinmangla-profile` (`config.json`).
+- Dependencies: Actions v7; safe minor/patch, eslint-config-prettier 10,
+  framer-motion 13.4. **Skipped** react-dom 19, three 0.185, Storybook
+  addon 8 — they need the React 19 / R3F 9 / Storybook 8 upgrades.
+- `e2e/responsive.spec.ts`: overflow at phone/iPad widths on every page,
+  tablet hero layout, scroll cue. All seven failed on the old production.
+- All other branches were merged or deleted at the owner's request.
+
+Verified: typecheck, lint, 119 unit, build, 61 e2e on the production build.
+Not verified on a physical iPad — WebKit on Windows has no backdrop blur and
+different GPU limits.
+
 ## Waiting on the owner
 
 1. ~~Résumé~~ — done.
