@@ -162,7 +162,7 @@ jobs:
           echo "::error title=Deployment unreachable::$BASE_URL answered HTTP $status."
           exit 1
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.reach.outputs.ok == 'true'
         with:
           node-version-file: .nvmrc
@@ -180,7 +180,7 @@ jobs:
         if: steps.reach.outputs.ok == 'true'
         run: npm run test:e2e -- --max-failures=5
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() && steps.reach.outputs.ok == 'true' }}
         with:
           name: playwright-report-deployed
